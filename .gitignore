@@ -1,16 +1,102 @@
-# Julia
-*.log
-*.out
+# ==============================================================================
+# Python
+# ==============================================================================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
 
-# Python Virtual Environments
-.venv/
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+.env
+.venv
+env/
 venv/
 ENV/
+env.bak/
+venv.bak/
 
-# IDE and editor files
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# ==============================================================================
+# Julia
+# ==============================================================================
+# History / Logs
+*.log
+*.out
+*.err
+repl_history.jl
+
+# Precompiled files (important for Julia)
+*.ji
+*.so
+*.dll
+*.dylib
+
+# Environments (if you ever use local non-tracked envs)
+# Note: Manifest.toml and Project.toml SHOULD be tracked (which you are doing)
+# We only ignore temporary build directories if they exist
+deps/build.log
+
+# ==============================================================================
+# Data and Output (Customized for your repository)
+# ==============================================================================
+# Typically, you do not want to track large simulation output files or raw data.
+# If you WANT to track the specific SVGs and PNGs you currently have, 
+# keep these commented out. 
+# If you want to ignore ALL future JSONs and PNGs in the data folder, uncomment them.
+
+# Option 1: Ignore ALL JSON data files (except configs)
+# data/**/*.json
+
+# Option 2: Ignore ALL generated images (PNGs, GIFs, SVGs)
+# data/**/*.png
+# data/**/*.svg
+# data/**/*.gif
+
+# If you decide to ignore a whole folder but keep one specific file, you can do:
+# data/desertification/*
+# !data/desertification/important_file.txt
+
+# ==============================================================================
+# OS / Editor / IDE specific files
+# ==============================================================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDEs
+.vscode/
 .idea/
 *.swp
-
-# OS generated files
-.DS_Store
-Thumbs.db
+*.swo
+*~
