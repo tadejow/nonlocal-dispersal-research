@@ -27,7 +27,7 @@ def kernel_super_gaussian_2D(r_matrix):
     return C_SG_2D * np.exp(-B_SG_2D * r_matrix**4)
 
 # ==============================================================================
-# 2. DEFINITION OF 2D OPERATORS
+# 2. DEFINITION OF YOUR 2D OPERATORS (Adapted for the experiment)
 # ==============================================================================
 
 class IntegralOperator2D:
@@ -52,7 +52,6 @@ class IntegralOperator2D:
         else:
             raise ValueError("Only 'trapezoidal' method is implemented for 2D.")
 
-        # DISCRETE NORMALIZATION
         grid_inf = np.arange(-40*hx, 40*hx + hx/2, hx)
         X_inf, Y_inf = np.meshgrid(grid_inf, grid_inf)
         r_inf = np.sqrt(X_inf**2 + Y_inf**2)
@@ -90,13 +89,12 @@ class LaplacianOperator2D:
         Iy = identity(self.Ny)
         return (kron(D2x, Iy) + kron(Ix, D2y)).toarray()
 
-
 # ==============================================================================
 # 3. PARAMETERS AND INITIALIZATION
 # ==============================================================================
 B = 0.45
 A_max, A_min = 1.8, 0.1
-d_u, d_v = 1.0, 50.0   # d_u = plant dispersal (dv in paper), d_v = water diffusion (dw in paper)
+d_u, d_v = 1.0, 50.0   
 ht = 0.01
 tol = 1e-2
 max_iter_steady_state = 100000
@@ -187,15 +185,20 @@ for model in models_to_run:
         saved_branches[model["name"]].append((A, u_new.reshape((N, N)), v_new.reshape((N, N))))
 
 # ==============================================================================
-# 5. GENERATING AND SAVING 2x3 GALLERY PLOTS (Vegetation V and Water W)
+# 5. GENERATING AND SAVING 2x3 GALLERY PLOTS
 # ==============================================================================
 print("\nGenerating vegetation and water galleries...")
 
-# Specific output directory as requested
-output_dir = "/home/tadejow/Projects/spello-hackathon/data/desertification/galleries-2d"
+# DYNAMICZNA ŚCIEŻKA (Relatywna względem pliku skryptu)
+current_dir = os.path.dirname(os.path.abspath(__file__))
+# Założenie: skrypt leży w repo/pipeline/2d_simulations/
+project_root = os.path.abspath(os.path.join(current_dir, "..", "..")) 
+output_dir = os.path.join(project_root, "data", "2d_simulations")
 os.makedirs(output_dir, exist_ok=True)
 
-extent = [-L, L, -L, L]
+extent =[-L, L, -L, L]
+# Stały element nazwy pliku przechowujący wszystkie parametry
+params_str = f"B_{B}_L_{L}_N_{N}_du_{d_u}_dv_{d_v}"
 
 for model in models_to_run:
     model_name = model["name"]
@@ -206,7 +209,6 @@ for model in models_to_run:
         print(f"No data to plot for model {model_name}")
         continue
         
-    # Find global maximums for uniform colorbar scaling
     global_vmax_V = max([np.max(data[1]) for data in branch_data])
     if global_vmax_V <= 0: global_vmax_V = 0.1 
     
@@ -231,8 +233,9 @@ for model in models_to_run:
         if idx % 3 == 0: ax.set_ylabel("y")
             
     plt.tight_layout(rect=[0, 0.03, 1, 0.95])
-    # Filename matching parameters (d_u is mathematically dv, d_v is dw)
-    filename_V = f"gallery_V_kernel_{file_suffix}_B_{B}_L_{L}_dv_{d_u}_dw_{d_v}.png"
+    
+    # Zapis do poprawnego folderu z parametrami w nazwie
+    filename_V = f"gallery_V_{file_suffix}_{params_str}.png"
     file_path_V = os.path.join(output_dir, filename_V)
     plt.savefig(file_path_V, dpi=150)
     print(f"Successfully saved: {file_path_V}")
@@ -256,7 +259,8 @@ for model in models_to_run:
         if idx % 3 == 0: ax.set_ylabel("y")
             
     plt.tight_layout(rect=[0, 0.03, 1, 0.95])
-    filename_W = f"gallery_W_kernel_{file_suffix}_B_{B}_L_{L}_dv_{d_u}_dw_{d_v}.png"
+    
+    filename_W = f"gallery_W_{file_suffix}_{params_str}.png"
     file_path_W = os.path.join(output_dir, filename_W)
     plt.savefig(file_path_W, dpi=150)
     print(f"Successfully saved: {file_path_W}")
