@@ -109,12 +109,12 @@ println("Cell 2 executed: New 2D kernels defined.")
 # ==============================================================================
 
 # Simulation parameters
-B = 0.45; d_u, d_v = 0.1, 100.0
+B = 0.45; d_u, d_v = 0.1, 40.0
 A_min, A_max = 0.05, 1.8
 L = 30
 
 # W 2D grid ma rozmiar N^2. N=41 daje 1681 punktów (wystarczające do wzorów).
-N = 25
+N = 35
 Nxy = N^2
 domain = LinRange(-L, L, N)
 
