@@ -93,7 +93,7 @@ function run_simulation(L::Float64, N::Int, u_init::Vector{Float64}, v_init::Vec
     u_old[begin] = u_old[end] = 0.0
     v_old[begin] = v_old[end] = 0.0
     
-    for j in 1:300000 
+    for j in 1:100000
         
         if is_local
             u_spatial_term = (d_u / 2.0) * compute(laplacian_fd, u_old)
@@ -127,13 +127,14 @@ end
 # 4. MAIN EXPERIMENTS & FILE CHECKING
 # ==============================================================================
 
+# --- Change to false if you're not sure ---
 const OVERWRITE_DATA = true 
 
 # --- Global Ecosystem Parameters ---
 const A, B = 1.8, 0.45
 const d_u, d_v = 2.0, 0.1
 const ht = 0.0001
-const tol = 1e-5
+const tol = 1e-6
 const zero_threshold = 0.1
 
 uniform_u = (A + sqrt(A^2 - 4*B^2)) / (2 * B)
@@ -164,7 +165,7 @@ end
 println("\nStarting Experiment 1: Boundary Gap vs Domain Size (L)...")
 
 L_vals = 10 .^ range(0.0, 2.0, length=20)
-p_tests = [1.0, 2.0, 4.0]
+p_tests = [0.5, 1.0, 2.0]
 gap_vs_L_all = zeros(length(L_vals), length(p_tests))
 
 # Pre-allocate a dictionary to store profiles for the 3x3 gallery
@@ -178,15 +179,14 @@ for p in p_tests
 end
 
 @showprogress "Scanning 'L' domains: " for (i, L) in enumerate(L_vals)
-    N_exp1 = Int(round(20 + 5 * L  ))
+    N_exp1 = Int(round(50 + 5 * L ))
     u_init = ones(N_exp1) .* uniform_u
     v_init = ones(N_exp1) .* uniform_v
     
     for (idx_p, p) in enumerate(p_tests)
         u_res = run_simulation(L, N_exp1, u_init, v_init, p, A, B, d_u, d_v, ht, tol, false)
-        if u_res !== nothing && (sum(u_res) / N_exp1) > zero_threshold
+        if u_res !== nothing
             gap_vs_L_all[i, idx_p] = (u_res[2] + u_res[end-1]) / 2.0
-            
             # Save profile if it's one of the 9 gallery points
             if i in idx_gallery
                 profiles_gallery[p][L] = copy(u_res)
@@ -205,21 +205,20 @@ end
 # ------------------------------------------------------------------------------
 println("\nStarting Experiment 2: Boundary Gap Heatmap (p vs L)...")
 
-p_vals_hm = 2 .^ range(log2(0.25), log2(4.0), length=20)
-L_vals_hm = 10 .^ range(0.0, 2.0, length=20)
+p_vals_hm = 2 .^ range(log2(0.25), log2(4.0), length=40)
+L_vals_hm = 10 .^ range(0.0, 2.0, length=100)
 gap_heatmap = zeros(length(p_vals_hm), length(L_vals_hm))
 
 total_iters = length(p_vals_hm) * length(L_vals_hm)
 prog_hm = Progress(total_iters, desc="Computing Heatmap: ")
 
 for (j, L) in enumerate(L_vals_hm)
-    N_hm = Int(round(20 + 5 * L  )) 
+    N_hm = Int(round(50 + 5 * L)) 
     u_init = ones(N_hm) .* uniform_u
     v_init = ones(N_hm) .* uniform_v
     
     for (i, p) in enumerate(p_vals_hm)
         u_hm = run_simulation(L, N_hm, u_init, v_init, p, A, B, d_u, d_v, ht, tol, false)
-        
         if u_hm !== nothing
             gap_heatmap[i, j] = (u_hm[2] + u_hm[end-1]) / 2.0
         else
@@ -268,12 +267,12 @@ default(
     markerstrokewidth=0,
     guidefontsize=global_font_size,
     tickfontsize=global_font_size,
-    legendfontsize=global_font_size - 2,
-    titlefontsize=global_font_size + 2
+    legendfontsize=global_font_size,
+    titlefontsize=global_font_size
 )
 
 # --- Plot 1: Gap vs L ---
-# Nowe kolory: orange dla p=1, limegreen dla p=2, cyan dla p=4
+# Colors: orange for p=1, limegreen for p=2, cyan for p=4
 styles = [:solid, :dash, :dot]
 markers = [:circle, :square, :utriangle]
 colors = [:orange, :limegreen, :cyan]
@@ -283,12 +282,12 @@ plot_L = plot(
     xticks=([1, 10, 100], ["1", "10", "100"]),
     xlabel=L"Patch Half-Width $L$",
     ylabel=L"Boundary Drop-off Value $V(-L^+)$",
-    title="Boundary Gap Size vs Patch Size",
+    title="Boundary Drop-off vs Patch Size",
     legend=:bottomright
 )
 
-hline!(plot_L, [uniform_u], color=:red, ls=:dash, lw=1.5, label=false)
-annotate!(plot_L, L_vals[2], uniform_u + 0.05, text("Uniform state", :red, :left, global_font_size - 2))
+hline!(plot_L, [uniform_u], color=:red, ls=:dash, lw=2.0, label=false)
+annotate!(plot_L, L_vals[2], uniform_u - 0.2, text(L"Uniform state $V_*$", :red, :left, global_font_size))
 
 for (idx_p, p) in enumerate(p_tests)
     plot!(plot_L, L_vals, gap_vs_L_all[:, idx_p], 
@@ -320,10 +319,18 @@ plot_hm = heatmap(
     title="Boundary Gap Size Heatmap",
     color=custom_grad, 
     colorbar_title=L"Boundary Drop-off Value $V(-L^+)$",
-    right_margin=5Plots.mm
+    right_margin=5Plots.mm,
+    nan_color=:gray # Ensures gray color for NaN values
 )
 
-# --- Combine into a 1x2 subplot ---
+# --- Annotations for specific regions ---
+# 1. Critical Boundary Drop-Off regime (Small L, gap ~ 0)
+annotate!(plot_hm, 1.5, 2.0, text("Critical\nPatch\nSize\nregime", :black, :center, global_font_size))
+
+# 2. Numerical scheme diverged (Large L, small p, where NaN appears)
+annotate!(plot_hm, 50.0, 0.35, text("Critical Boundary Drop-off regime", :black, :center, global_font_size))
+
+# --- Combine and Save Plot 1 & 2 ---
 final_plot = plot(
     plot_L, plot_hm, 
     layout = (1, 2),
@@ -343,7 +350,7 @@ println("Generating a single 3x3 gallery comparing all p values...")
 plot_array = []
 
 for (idx, L) in enumerate(L_gallery)
-    N_curr = Int(round(10 + 5 * L))
+    N_curr = Int(round(50 + 5 * L ))
     dom = range(-L, L, length=N_curr)
     
     L_str = string(round(L, digits=1))
@@ -352,17 +359,17 @@ for (idx, L) in enumerate(L_gallery)
         title=L"L = %$L_str",
         titlefontsize=global_font_size,
         legend=(idx == 1 ? :topright : false),
-        legendfontsize=global_font_size - 4
+        legendfontsize=global_font_size
     )
     
-    hline!(pl, [uniform_u], color=:red, ls=:dash, lw=1.5, label=false)
-    annotate!(pl, 0.0, uniform_u + 0.03, text("Uniform state", :red, :center, global_font_size - 4))
+    hline!(pl, [uniform_u], color=:red, ls=:dash, lw=2.0, label=false)
+    annotate!(pl, 0.0, uniform_u - 0.2, text(L"Uniform state $V_*$", :red, :center, global_font_size - 4))
     
     for (idx_p, p) in enumerate(p_tests)
         profile = profiles_gallery[p][L]
         plot!(pl, dom, profile, 
             color=colors[idx_p], 
-            linewidth=1.5, 
+            linewidth=2.0, 
             label=(idx == 1 ? "p = $p" : false)
         )
         
@@ -382,7 +389,10 @@ for (idx, L) in enumerate(L_gallery)
         xlabel!(pl, L"Space $x$")
     end
     
+    # Correct limits to perfectly snap to domain edges and slightly pad top
     ylims!(pl, 0.0, uniform_u * 1.1)
+    xlims!(pl, -L, L) 
+    
     push!(plot_array, pl)
 end
 
