@@ -72,7 +72,36 @@ function compute(op::LaplacianFD, u::AbstractVector)
 end
 
 # ==============================================================================
-# 3. SIMULATION LOGIC
+# 3. Gauss-Seidel Solver
+# ==============================================================================
+function gauss_seidel!(x::Vector{Float64}, M::Matrix{Float64}, b::Vector{Float64})
+    N = length(x)
+    max_iter = 5
+    gs_tol = 1e-2
+    for iter in 1:max_iter
+        max_diff = 0.0
+        @inbounds for i in 1:N
+            s = b[i]
+            for j in 1:N
+                s -= M[i, j] * x[j]
+            end
+            # Restore the diagonal subtraction and divide by the diagonal element
+            new_xi = x[i] + s / M[i, i]
+            
+            diff = abs(new_xi - x[i])
+            if diff > max_diff
+                max_diff = diff
+            end
+            x[i] = new_xi
+        end
+        if max_diff < gs_tol
+            break
+        end
+    end
+end
+
+# ==============================================================================
+# 3. SIMULATION LOGIC (IMEX Scheme with Gauss-Seidel Solver)
 # ==============================================================================
 
 function run_simulation(L::Float64, N::Int, u_init::Vector{Float64}, v_init::Vector{Float64}, 
@@ -81,34 +110,65 @@ function run_simulation(L::Float64, N::Int, u_init::Vector{Float64}, v_init::Vec
     domain_omega = range(-L, L, length=N)
     laplacian_fd = LaplacianFD(domain_omega)
     
-    local integral_operator
-    if !is_local
+    # --- 1. Build Evolution Matrices for Implicit Step ---
+    I_mat = Matrix{Float64}(I, N, N)
+    D2 = laplacian_fd.D2
+    
+    # Implicit matrix for v (diffusion)
+    # (I - ht * d_v * D2) * v_new = RHS
+    M_v = I_mat .- ht .* d_v .* D2
+    
+    # Implicit matrix for u (local diffusion or non-local dispersion)
+    if is_local
+        M_u = I_mat .- ht .* (d_u / 2.0) .* D2
+    else
         integral_operator = IntegralOperator(domain_omega, p)
+        # Construct the dense matrix for the integral operator
+        # L_nl = d_u * K * diag(W) - d_u * I
+        W_row = integral_operator.weights'
+        L_nl = d_u .* (integral_operator.kernel .* W_row) .- d_u .* I_mat
+        M_u = I_mat .- ht .* L_nl
     end
 
+    # --- 2. Enforce Dirichlet Boundary Conditions on Matrices ---
+    # We replace the first and last rows with the identity row to enforce exact BCs
+    M_u[begin, :] .= 0.0; M_u[begin, begin] = 1.0
+    M_u[end, :]   .= 0.0; M_u[end, end]     = 1.0
+    
+    M_v[begin, :] .= 0.0; M_v[begin, begin] = 1.0
+    M_v[end, :]   .= 0.0; M_v[end, end]     = 1.0
+
+    # --- 3. Initialize Vectors ---
     u_old = copy(u_init)
     v_old = copy(v_init)
 
-    # Strictly enforce Dirichlet boundary conditions
+    # Make sure initial conditions strictly follow BCs
     u_old[begin] = u_old[end] = 0.0
     v_old[begin] = v_old[end] = 0.0
+
+    u_new = copy(u_old)
+    v_new = copy(v_old)
     
-    for j in 1:100000
+    b_u = zeros(N)
+    b_v = zeros(N)
+
+    # --- 4. Time Evolution Loop ---
+    for j in 1:300000 
         
-        if is_local
-            u_spatial_term = (d_u / 2.0) * compute(laplacian_fd, u_old)
-        else
-            u_spatial_term = d_u * compute(integral_operator, u_old) - d_u * u_old
-        end
-        
-        v_spatial_term = d_v * compute(laplacian_fd, v_old)
+        # Explicit construction of the Right Hand Side (RHS)
+        @. b_u = u_old + ht * (u_old^2 * v_old - B * u_old)
+        @. b_v = v_old + ht * (A - u_old^2 * v_old - v_old)
 
-        u_new = u_old .+ ht .* (u_spatial_term .+ u_old.^2 .* v_old .- B .* u_old)
-        v_new = v_old .+ ht .* (v_spatial_term .- u_old.^2 .* v_old .- v_old .+ A)
+        # Enforce Dirichlet Boundary Conditions on the RHS
+        b_u[begin] = b_u[end] = 0.0
+        b_v[begin] = b_v[end] = 0.0
 
-        u_new[begin] = u_new[end] = 0.0
-        v_new[begin] = v_new[end] = 0.0
+        # Implicit Step: Solve the linear systems
+        # u_new and v_new act as initial guesses for GS (using previous step values speeds up convergence)
+        gauss_seidel!(u_new, M_u, b_u)
+        gauss_seidel!(v_new, M_v, b_v)
 
+        # --- 5. Convergence & Stability Checks ---
         if norm(u_new - u_old) < tol
             return u_new # Return the full profile upon convergence
         end
@@ -117,7 +177,9 @@ function run_simulation(L::Float64, N::Int, u_init::Vector{Float64}, v_init::Vec
             return nothing
         end
 
-        u_old, v_old = copy(u_new), copy(v_new)
+        # Update vectors for the next time step
+        u_old .= u_new
+        v_old .= v_new
     end
     
     return nothing # Max iterations reached
@@ -134,7 +196,7 @@ const OVERWRITE_DATA = true
 const A, B = 1.8, 0.45
 const d_u, d_v = 2.0, 0.1
 const ht = 0.0001
-const tol = 1e-6
+const tol = 1e-2
 const zero_threshold = 0.1
 
 uniform_u = (A + sqrt(A^2 - 4*B^2)) / (2 * B)
@@ -179,7 +241,7 @@ for p in p_tests
 end
 
 @showprogress "Scanning 'L' domains: " for (i, L) in enumerate(L_vals)
-    N_exp1 = Int(round(50 + 5 * L ))
+    N_exp1 = Int(round(20 + 2 * L))
     u_init = ones(N_exp1) .* uniform_u
     v_init = ones(N_exp1) .* uniform_v
     
@@ -213,7 +275,7 @@ total_iters = length(p_vals_hm) * length(L_vals_hm)
 prog_hm = Progress(total_iters, desc="Computing Heatmap: ")
 
 for (j, L) in enumerate(L_vals_hm)
-    N_hm = Int(round(50 + 5 * L)) 
+    N_hm = Int(round(20 + 2 * L )) 
     u_init = ones(N_hm) .* uniform_u
     v_init = ones(N_hm) .* uniform_v
     
@@ -328,15 +390,15 @@ plot_hm = heatmap(
 annotate!(plot_hm, 1.5, 2.0, text("Critical\nPatch\nSize\nregime", :black, :center, global_font_size))
 
 # 2. Numerical scheme diverged (Large L, small p, where NaN appears)
-annotate!(plot_hm, 50.0, 0.35, text("Critical Boundary Drop-off regime", :black, :center, global_font_size))
+annotate!(plot_hm, 35.0, 0.35, text("Critical Boundary Drop-off\nregime", :black, :center, global_font_size))
 
 # --- Combine and Save Plot 1 & 2 ---
 final_plot = plot(
     plot_L, plot_hm, 
     layout = (1, 2),
-    size = (1200, 500),
-    bottom_margin = 8Plots.mm,
-    left_margin = 8Plots.mm
+    size = (1500, 800),
+    bottom_margin = 10Plots.mm,
+    left_margin = 12Plots.mm
 )
 
 file_combined_png = joinpath(output_dir, "$(file_prefix)_plot_combined.png")
@@ -350,7 +412,7 @@ println("Generating a single 3x3 gallery comparing all p values...")
 plot_array = []
 
 for (idx, L) in enumerate(L_gallery)
-    N_curr = Int(round(50 + 5 * L ))
+    N_curr = Int(round(20 + 2 * L ))
     dom = range(-L, L, length=N_curr)
     
     L_str = string(round(L, digits=1))
