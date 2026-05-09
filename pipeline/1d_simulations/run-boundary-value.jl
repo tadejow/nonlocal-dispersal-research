@@ -196,7 +196,7 @@ const OVERWRITE_DATA = true
 const A, B = 1.8, 0.45
 const d_u, d_v = 2.0, 0.1
 const ht = 0.0001
-const tol = 1e-2
+const tol = 1e-5
 const zero_threshold = 0.1
 
 uniform_u = (A + sqrt(A^2 - 4*B^2)) / (2 * B)
