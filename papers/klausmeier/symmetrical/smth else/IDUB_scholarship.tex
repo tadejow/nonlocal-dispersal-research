@@ -1,0 +1,38 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{cases}
+\onehalfspacing
+
+\begin{document}
+
+\section*{Opis projektu}
+
+Projekt dotyczy opracowania nielokalnych modeli matematycznych opisujących dynamikę ekosystemów w warunkach niedoboru wody. Głównym celem jest analiza stabilności jednorodnych i niejednorodnych rozkładów gęstości roślinności oraz warunków przetrwania ekosystemu, co ma istotne znaczenie w kontekście zmian klimatycznych i pustynnienia.
+\begin{numcases}{}
+    u_t = d_u\mathcal{L} u + u^2 v - B u & \hspace{2mm} $(x, t) \in \Omega \times [0, T],$ \label{eq:u} \\
+    v_t = d_v\Delta v - u^2v - v + A & \hspace{2mm} $(x, t) \in \Omega \times [0, T],$ \label{eq:v} \\
+    u = 0 & \hspace{2mm} $(x,t) \in \mathbb{R}^n \setminus \Omega  \times [0,T], $ \label{eq:u_bound} \\
+    v = 0 & \hspace{2mm} $(x,t) \in \partial\Omega \times [0,T],$ \label{eq:v_bound} \\
+    u(0) = u_0 & \hspace{2mm} $x \in \Omega ,$ \label{eq:Unit} \\
+    v(0) = v_0 & \hspace{2mm} $x \in \Omega.$ \label{eq:v_init}
+\end{numcases}
+zmienna $u$ oznacza gęstość roślin, a $v$ – ilość wody. Parametry $d_u>0$ i $d_v>0$ to odpowiednio prędkość dyspersji roślin i dyfuzja wody, $A>0$ – intensywność opadów, $B>0$ – tempo śmiertelności roślin, $\mathcal{L}$ reprezentuje nielokalny operator dyspersji, a $\Delta$ standardowy Laplasjan z warunkami brzegowymi Dirichleta.
+
+Współpracując z zespołem CASUS, badamy warunki, w których roślinność może przetrwać przy określonym poziomie opadów. W naszych dotychczasowych badaniach wykazaliśmy, że dedesertyfikacja jest możliwa, gdy:
+\begin{align*}
+    d_u \beta_1(\Omega) + C_1(A,B) + C_2(A,B) + C_3(A,B) &< 0, \\
+    d_v \lambda_1(\Omega) + D_1(A,B) + D_2(A,B) + D_3(A,b) &< 0,
+\end{align*}
+
+dla pewnych, jawnie danych, stałych $C_1, C_2, C_3, D_1, D_2, D_3$ zależnych od parametrów $A, B$ oraz, niekoniecznie jawnie zadanych, stałych $\beta_1, \lambda_1$ zależnych od geometrii i rozmiaru obszaru $\Omega$. Oczywiście, jest to wysoce uwikłana relacja, prawdodobne że niemożliwa do pełnego analitycznego zrozumienia. Aby umożliwić praktyczną interpretację wyników, planujemy zastosowanie metod uczenia maszynowego do redukcji wymiaru, wybrania i wizualizacji kluczowych parametrów modelu Klausmeiera. Pozwoli to na efektywne identyfikowanie czynników decydujących o stabilności ekosystemów.
+
+Metodologia projektu opiera się na modelowaniu teoretycznym, symulacjach numerycznych (wspomaganych akceleracją GPU) oraz analizie danych z wykorzystaniem algorytmów uczenia maszynowego. Liczymy na to, że wyniki badań przyczynią się do lepszego zarządzania zasobami wodnymi i opracowania strategii przeciwdziałania pustynnieniu.
+
+\end{document}

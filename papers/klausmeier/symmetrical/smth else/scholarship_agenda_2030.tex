@@ -1,0 +1,46 @@
+\documentclass[a4paper,12pt]{letter}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[polish]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage[T1]{fontenc}
+\geometry{left=2.5cm, right=2.5cm, top=2cm, bottom=2cm}
+
+\begin{document}
+
+\begin{letter}{}
+
+\opening{Szanowni Państwo,}
+
+Nazywam się Maciej Tadej i jestem doktorantem w Szkole Doktorskiej Matematyki Uniwersytetu Wrocławskiego. Moje badania koncentrują się na zastosowaniach równań różniczkowych cząstkowych w ekologii, a w szczególności na modelach opisujących dyspersję roślin w środowiskach pustynnych. Obecnie zajmuję się analizą modelu Klausmeiera, który bada zachowanie roślinności na obszarach ograniczonych. Pragnę zgłosić swoją kandydaturę do stypendium, wierząc, że moje badania przyczyniają się do realizacji Celów Zrównoważonego Rozwoju określonych w rezolucji Zgromadzenia Ogólnego ONZ „Przekształcamy nasz świat: Agenda na rzecz zrównoważonego rozwoju 2030” z dnia 25 września 2015 r.
+
+W mojej pracy badam system równań całkowo-różniczkowych, opisujący dyspersję i interakcje roślin i wody:
+\begin{align}
+    \begin{cases}
+        u_t(x,t) = \mathcal{L} u(x, t) + f(u(x,t), v(x,t)) &(x, t) \in \Omega \times [0, \infty), \\
+        v_t(x,t) = d_v\Delta v(x,t) + \mathbf{\nu} \cdot \nabla v(x,t) + g(u(x,t), v(x,t)) &(x, t) \in \Omega \times [0, \infty), \\
+        \nabla v(x,t) \cdot \overrightarrow{n} = 0 &(x, t) \in \partial\Omega \times [0, \infty), \\
+        u(x,0) = u_0(x), v(x,0) = v_0(x) &x \in \Omega.
+    \end{cases}
+\end{align}
+gdzie $u$ oznacza gęstość roślin, a $v$ gęstość wody. Operator dyspersji $\mathcal{L}$ jest zdefiniowany jako:
+\begin{equation}
+    \mathcal{L}u(x, t) = \int_\Omega J(x-y)\left(u(y, t) - u(x, t)\right)\:dy,
+\end{equation}
+przy czym $J$ jest jądrem całkowym spełniającym założenia regularności. Modele $f$ i $g$ dla tego problemu przyjmują formy:
+\begin{align*}
+    f(u, v) = u^2 v - B u, \quad\quad g(u, v) = A - v - u^2 v,
+\end{align*}
+gdzie $A$ i $B$ to parametry opisujące odpowiednio opady i śmiertelność roślin.
+
+Większość dotychczasowych analiz koncentruje się na nieskończonych lub okresowych obszarach, co ułatwia badania matematyczne, ale nie odzwierciedla w pełni rzeczywistych warunków ekologicznych. Moje badania są jednymi z pierwszych, które badają ten model w obszarach ograniczonych, co może wnieść nową jakość do ekologii i ochrony ekosystemów lądowych, zgodnie z **Celem 15 Zrównoważonego Rozwoju**, który dotyczy walki z pustynnieniem.
+
+Z wyrazami szacunku,\\[2ex]
+Maciej Tadej\\
+Uniwersytet Wrocławski
+
+\end{letter}
+
+\end{document}

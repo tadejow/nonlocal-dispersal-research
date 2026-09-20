@@ -1,0 +1,101 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage[margin=1in, top=1.5in, bottom=1.5in]{geometry}
+\usepackage{subcaption}
+\usepackage{graphicx}
+% \usepackage{subfigure}
+\usepackage{float}
+\usepackage{titlesec}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{cases}
+\usepackage[english]{babel}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{authblk}
+\usepackage{dsfont}
+\usepackage{sectsty}
+\usepackage{xcolor}
+
+\usepackage{todonotes}
+\providecommand{\MH}[1]{\todo[inline,author={MH},color=red!20!white]{#1}}
+\providecommand{\MT}[1]{\todo[inline,author={MT},color=blue!20!white]{#1}}
+\providecommand{\RM}[1]{\todo[inline,author={RM},color=green!20!white]{#1}}
+
+% THEOREM / PROPOSITIONS / LEMMAS etc...
+
+\theoremstyle{break}
+	\newtheorem{thm}{Theorem}[section]
+\theoremstyle{break}
+    \newtheorem{prp}{Proposition}[section]
+\theoremstyle{break}
+	\newtheorem{asm}{Assumption}[section]
+\theoremstyle{break}
+	\newtheorem{rem}{Remark}[section]
+\theoremstyle{break}
+	\newtheorem{lem}{Lemma}[section]
+\theoremstyle{break}
+	\newtheorem{cor}{Corollary}[section]
+    \theoremstyle{break}
+	\newtheorem{con}{Conclusion}[section]
+\theoremstyle{break}
+	\newtheorem{defi}{Definition}[section]
+\theoremstyle{break}
+	\newtheorem{example}{Example}[section]
+
+% USEFUL COMMANDS
+
+% writing - labels
+\makeatletter
+\newcommand{\mylabel}[2]{#2\def\@currentlabel{#2}\label{#1}}
+\makeatother
+
+\providecommand{\keywords}[1]
+{
+  \small	
+  \textbf{\textit{Keywords}} #1
+}
+
+% objects
+\newcommand{\Leo}{\mathcal{L}_{\varepsilon}}
+\newcommand{\Seq}[2]{\left\{#1_#2\right\}_{#2 = 0}^\infty}
+
+% spaces
+\newcommand{\Leb}{L^2\left(\Omega\right)}
+\newcommand{\Lei}{L^\infty\left(\Omega\right)}
+\newcommand{\CDR}{C^1\left(\mathbb{R}\right)}
+\newcommand{\CCSRn}{C_c\left(\mathbb{R}^n\right)}
+
+% operators
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\Ima}{Im}
+\DeclareMathOperator{\divergence}{div}
+
+\DeclareMathOperator{\Tr}{Tr}
+
+\counterwithin{equation}{section}
+
+\title{Eigenvalues and eigenfunctions of the non-local dispersal operator with symmetric kernel and Neumann-type boundary condition}
+
+
+
+\author[1]{Maciej Tadej \thanks{maciej.tadej@math.uni.wroc.pl}}
+
+\affil[1]{\textit{Mathematical Institute, University of Wrocław, pl. Grunwaldzki 2, 50-384 Wrocław, Poland}}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\hspace{20pt}
+
+\begin{abstract}
+    We investigate the eigenvalue problem for a non-local dispersal operator on bounded domains with Neumann-type boundary conditions. Lacking compactness, this operator possesses an essential spectrum, complicating the study of discrete eigenvalues. Our main contribution is a rigorous variational construction of non-trivial eigenfunctions corresponding to isolated eigenvalues strictly above the continuous spectrum. Because these eigenvalues may not exist due to spectral gap collapse, we establish explicit geometric conditions linking domain size and shape to the kernel's variance that guarantee the principal eigenvalue's emergence. Subsequent eigenpairs are constructed iteratively via finite-dimensional Galerkin approximations. By decomposing the operator into compact and multiplicative parts, we prove the strong convergence of the minimizing sequences.
+\end{abstract}
+
+\end{document}

@@ -1,0 +1,114 @@
+\NeedsTeXFormat{LaTeX2e}
+ 
+\ProcessOptions\relax
+
+% Text and Font Settings
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{setspace}
+\setstretch{1.2}
+
+% AMS (Mathematical Features)
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+% TikZ (Graphics and Diagrams)
+\usepackage{tikz}
+\usepackage{tikz-cd}
+\usepackage{tikz-3dplot}
+\usetikzlibrary{patterns}
+
+% Extended Mathematical Features
+\usepackage{bm}
+\usepackage{bbm}
+\usepackage{nicefrac}
+\usepackage{mathtools}
+
+% Lists and Formatting
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{microtype}
+\usepackage{multirow}
+
+% Algorithms
+\usepackage[linesnumbered, ruled, vlined]{algorithm2e}
+
+% Hyperlinks and URLs
+\usepackage{hyperref}
+\usepackage{url}
+
+% Figures and Captions
+\usepackage{float}
+\usepackage{caption}
+\usepackage{graphicx}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{subcaption}
+
+% Spacing
+\captionsetup{aboveskip=10pt, belowskip=0pt}
+\setlength\intextsep{0pt}
+
+% set page geometry
+\usepackage[verbose=true,letterpaper]{geometry}
+\AtBeginDocument{
+  \newgeometry{
+    textheight=9in,
+    textwidth=6.5in,
+    top=1in,
+    headheight=14pt,
+    headsep=25pt,
+    footskip=30pt
+  }
+}
+
+% abstract styling
+\renewenvironment{abstract}
+{
+  \centerline
+  {\large \bfseries \scshape Abstract}
+  \begin{quote}
+}
+{
+  \end{quote}
+}
+
+% Handling Keywords
+\def\keywordname{{\bfseries \emph Keywords}}%
+\def\keywords#1{\par\addvspace\medskipamount{\rightskip=0pt plus1cm
+\def\and{\ifhmode\unskip\nobreak\fi\ $\cdot$
+}\noindent\keywordname\enspace\ignorespaces#1\par}}
+
+% footnote formatting
+\setlength{\footnotesep }{6.65\p@}
+\setlength{\skip\footins}{9\p@ \@plus 4\p@ \@minus 2\p@}
+\renewcommand{\footnoterule}{\kern-3\p@ \hrule width 12pc \kern 2.6\p@}
+\setcounter{footnote}{0}
+
+% Define a theorem style
+\usepackage{amsthm}
+\newtheoremstyle{mytheoremstyle}    % Name of the style
+  {}                                % Space above, empty = `usual value`
+  {}                                % Space below
+  {\itshape}                     % Body font
+  {}                                % Indent amount (empty = no indent, \parindent = para indent)
+  {\bfseries\scshape}               % Thm head font
+  {.}                               % Punctuation after thm head
+  { }                               % Space after thm head: " " = normal interword space; \newline = linebreak
+  {}                                % Thm head spec
+
+% Apply the theorem style
+\theoremstyle{mytheoremstyle}
+\newtheorem{definition}{Definition}
+\newtheorem{remark}{Remark}
+\newtheorem{example}{Example}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newcommand{\RNum}[1]{\uppercase\expandafter{\romannumeral #1\relax}}
+
+\usepackage[sort&compress]{natbib}

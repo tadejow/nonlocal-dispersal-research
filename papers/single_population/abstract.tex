@@ -1,0 +1,88 @@
+\pdfoutput=1
+
+\documentclass[12pt, a4paper]{article}
+\usepackage[margin=1.5in, top=1.5in, bottom=1.5in]{geometry}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{cases}
+\usepackage[english]{babel}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{authblk}
+\usepackage{dsfont}
+\usepackage{sectsty}
+\usepackage{xcolor}
+
+\sectionfont{\centering}
+% THEOREM / PROPOSITIONS / LEMMAS etc...
+
+\theoremstyle{break}
+	\newtheorem{thm}{Theorem}[section]
+\theoremstyle{break}
+	\newtheorem{asm}{Assumption}[section]
+\theoremstyle{break}
+	\newtheorem{rem}{Remark}[section]
+\theoremstyle{break}
+	\newtheorem{lem}{Lemma}[section]
+\theoremstyle{break}
+	\newtheorem{defi}{Definition}[section]
+
+% USEFUL COMMANDS
+
+% writing - labels
+\makeatletter
+\newcommand{\mylabel}[2]{#2\def\@currentlabel{#2}\label{#1}}
+\makeatother
+
+\providecommand{\keywords}[1]
+{
+  \small	
+  \textbf{\textit{Keywords}} #1
+}
+
+% objects
+\newcommand{\Leo}{\mathcal{L}_{\varepsilon}}
+\newcommand{\Seq}[2]{\left\{#1_#2\right\}_{#2 = 0}^\infty}
+
+% spaces
+\newcommand{\Leb}{L^2\left(\Omega\right)}
+\newcommand{\Lei}{L^\infty\left(\Omega\right)}
+\newcommand{\CDR}{C^1\left(\mathbb{R}\right)}
+\newcommand{\CCSRn}{C_c\left(\mathbb{R}^n\right)}
+
+% operators
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\Ima}{Im}
+\DeclareMathOperator{\divergence}{div}
+
+\setlength{\parindent}{0pt}
+\counterwithin{equation}{section}
+
+\title{Long time behaviour of solutions to non-local and non-linear dispersion problems}
+
+\author{Maciej Tadej \\ \href{mailto:maciej.tadej@math.uni.wroc.pl}{maciej.tadej@math.uni.wroc.pl}}
+
+\affil{\textit{Insitute of Mathematics, University of Wrocław, pl. Grunwaldzki 2, 50-384 Wrocław}}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\hspace{20pt}
+
+\begin{abstract}
+This paper explores a non-linear, non-local model describing the evolution of a single species. We investigate scenarios where the spatial domain is either an arbitrary bounded and open subset of the $n$-dimensional Euclidean space or a periodic environment modeled by $n$-dimensional torus. The analysis includes the study of spectrum of the linear, bounded operator in the considered equation, which is a scaled, non-local analogue of classical Laplacian with Neumann boundaries. In particular we show the explicit formulas for eigenvalues and eigenfunctions. Moreover we show the asymptotic behaviour of eigenvalues. Within the context of the non-linear evolution problem, we establish the existence of an invariant region, give a criterion for convergence to the mean mass, and construct spatially heterogeneous steady states.
+\end{abstract}
+
+\begin{keywords} :non-local dispersion, spectral analysis, asymptotics, equilibria, stability
+\end{keywords}
+
+\end{document}

@@ -1,0 +1,205 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{geometry}
+\geometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+\usepackage{amsfonts, amsmath, amssymb, amsthm}
+\usepackage{cases}
+\usepackage{xcolor}
+\usepackage{xurl} % Pozwala na łamanie linków w dowolnym miejscu
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Response to Reviewers},
+    bookmarks=true
+}
+
+% --- Custom Colors ---
+\definecolor{authorcolor}{rgb}{0.1, 0.1, 0.6} % Dark blue for author responses
+\definecolor{revcolor}{rgb}{0.2, 0.2, 0.2}    % Dark gray for reviewer comments
+
+% --- Formatting Commands ---
+\newcommand{\reviewer}[1]{\vspace{1em}\noindent\textbf{\textcolor{black}{#1}}}
+\newcommand{\comment}[1]{\vspace{0.5em}\noindent\textit{\textcolor{revcolor}{#1}}}
+\newcommand{\response}[1]{\vspace{0.5em}\noindent\textbf{\textcolor{authorcolor}{Response:}} \textcolor{authorcolor}{#1}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+
+\begin{document}
+
+% --- Header ---
+\begin{center}
+    \Large\textbf{Response to Reviewers} \\[1em]
+    \large\textit{Extinction and persistence criteria in non-local Klausmeier model of vegetation dynamics on flat landscapes} \\[0.5em]
+    \normalsize Manuscript Number: CNSNS-D-26-01999 \\[1em]
+\end{center}
+
+\vspace{1em}
+\noindent\textbf{Maciej Tadej} \\
+Corresponding author, \\
+Mathematical Institute, University of Wrocław \\
+pl. Grunwaldzki 2, 50-384 Wrocław, Poland \\
+\textit{Email: maciej.tadej@math.uni.wroc.pl}
+\vspace{2em}
+
+% --- General Statement ---
+\noindent Dear Prof.\ Roberto Barrio, Ph.D., \\ Editor of \textit{Communications in Nonlinear Science and Numerical Simulation},
+
+\vspace{0.5em}
+\noindent We sincerely thank you and the reviewers for the time and effort dedicated to evaluating our manuscript. We are highly appreciative of the positive feedback and the constructive comments, which have undoubtedly helped us to improve the clarity and quality of our work. 
+
+Below, we provide a detailed, point-by-point response to each comment raised by the reviewers. The reviewers' original comments are shown in \textit{\textcolor{revcolor}{gray italics}}, and our responses, along with indications of the changes made to the manuscript, are presented in \textbf{\textcolor{authorcolor}{blue}}.
+
+\vspace{2em}
+\hrule
+\vspace{2em}
+
+% ==============================================================================
+% REVIEWER 2
+% ==============================================================================
+\reviewer{Reviewer \#2}
+
+\comment{This paper extends the classical Klausmeier vegetation-water model by incorporating non-local seed dispersal in finite habitats. Through a combination of rigorous mathematical analysis and numerical simulations, the authors investigate extinction thresholds, persistence criteria, and the emergence of spatial vegetation patterns. The results provide valuable theoretical insights into the role of long-range dispersal in shaping ecosystem resilience and reducing critical habitat-size requirements. Overall, the manuscript is well written, mathematically sound, and addresses an important question in the study of vegetation dynamics and spatial ecology. The combination of analytical results and numerical investigations makes a significant contribution to the understanding of non-local ecological processes. Therefore, I believe that the manuscript is suitable for publication in Communications in Nonlinear Science and Numerical Simulation, provided that the authors address the following minor comments.}
+
+\response{We thank Reviewer \#2 for this very positive and encouraging assessment of our work. We address the specific minor comments below.}
+
+% --- Comment 2.1 ---
+\comment{1) The ecological motivation for the selected dispersal kernels should be expanded. Providing examples from empirical studies of wind- or animal-mediated seed dispersal would strengthen the biological relevance of the model.}
+
+\response{We have expanded the ecological motivation in Section 1.1 to better motivate the use of a non-local dispersal operator and the comparison between sub-Gaussian (fat-tailed) and super-Gaussian (thin-tailed) kernels.\\
+Specifically, we now discuss how empirical studies demonstrate that local diffusion is not sufficient to capture the realities of seed dispersal. We motivate this conclusion using Morales and Carlo (2006) [now Ref [31] in the revised version of the manuscript], who showed how frugivore movement patterns and seed gut passage times lead to leptokurtic (fat-tailed) dispersal kernels. We also cite Snell et al. (2019) [Ref [40 in the revised manuscript], who used empirical data from toucan-mediated seed dispersal to show that natural variations in animal movement generate fat-tailed population-level kernels. In both cases, fat-tailed dispersal kernels significantly increase the frequency of long-distance dispersal events compared to standard random-walk approximations. \\
+The revised text has been added to Section 1.1 (The non-local Klausmeier model).}
+
+% --- Comment 2.2 ---
+\comment{2) The results emphasize the role of boundary losses and critical patch size. However, it is unclear how sensitive the conclusions are to the specific boundary conditions adopted in the model. The authors may wish to discuss whether the extinction and persistence thresholds remain qualitatively unchanged under alternative boundary conditions, such as periodic or reflective boundaries.}
+
+\response{
+This is a very interesting extension of our work. Mathematically, incorporating inhomogeneous boundary conditions into a non-local framework is typically done following the approach of Molino and Rossi (2016) [Now Ref [30] in the revised manuscript], e.g.
+\begin{equation*}
+    \begin{cases}
+        \mathcal{L}v(x) = \int_{\mathbb{R}^n} J(x-y)\left( v(y) - v(x) \right) \:dy & \hspace{2mm} x \in \Omega, \\
+        v(x) = g(x) & \hspace{2mm} x \in \mathbb{R}^n \setminus \Omega.
+    \end{cases}
+\end{equation*}
+This formulation allows us to re-write the operator $\mathcal{L}$ for $x \in \Omega$ as
+\begin{align*}
+    \mathcal{L}v(x) 
+    &=
+    \int_{\Omega} J(x-y)v(y)\:dy + \int_{\mathbb{R}^n \setminus \Omega} J(x-y) v(y)\:dy - \int_{\mathbb{R}^n} J(x-y)\:dy\:v(x)\\
+    &=
+    \int_{\Omega} J(x-y)v(y)\:dy + \underbrace{\int_{\mathbb{R}^n \setminus \Omega} J(x-y)g(y)\:dy}_{\text{external influx } I_g(x) > 0} - v(x).
+\end{align*}
+The presence of the strictly positive, non-local source term $I_g(x)$ fundamentally alters the analysis. It breaks the trivial steady state ($v \equiv v_*$), shifting the focus from "persistence vs. extinction within an isolated patch" to "invasion and recovery driven by external sources". As this is an interesting research idea, we provide a brief discussion in the Introduction of the revised manuscript, with reference to the literature mentioned here.
+}
+
+% --- Comment 2.3 ---
+\comment{3) For precipitation levels A=0.8 and A=0.49, the system exhibits a self-replication phenomenon. Since this process has been documented in previous works [Scientific Reports 6, 33703 (2016): \url{https://www.nature.com/articles/srep33703}, Ecological Indicators, 94, 334 (2018): \url{https://www.sciencedirect.com/science/article/pii/S1470160X18300864}, and Communications in Nonlinear Science and Numerical Simulation 29, 482 (2015): \url{https://www.sciencedirect.com/science/article/pii/S1007570415002014}]. The authors may elaborate further on Fig. 7 by explaining the underlying self-replication mechanism and how it contributes to biomass growth. Such a discussion would help clarify the connection between self-replication dynamics and the emergence of anti-desertification spatial modes.}
+
+\response{We agree that spots observed at $A = 0.80$ and $A = 0.49$ in the fat-tailed model (Fig 7) form due to a self-replication phenomenon. We added a new Conclusion (Conclusion 5.12) in Section 5.2 explaining how spots spread through a self-replication process. Specifically, as the environment gets drier, plants compete strongly for water. Because of this lack of water, the centers of large plant patches dry out and die, causing them to split into smaller spots. By splitting and spreading out, the vegetation can reach new water sources. This process acts as a natural survival strategy against desertification, keeping more plants alive even when rainfall is very low.
+We also cite the two references above to contextualize these self-replication process [Refs. 3, 4 and 44 in the main text].}
+
+\vspace{2em}
+\hrule
+\vspace{2em}
+
+% ==============================================================================
+% REVIEWER 3
+% ==============================================================================
+\reviewer{Reviewer \#3}
+
+\comment{This paper systematically analyzes the dynamical behavior of the Klausmeier model with nonlocal plant dispersal. First, the authors establish the well-posedness of the non-local Klausmeier model by proving the local-in-time existence, uniqueness of solutions and the existence of an invariant region. Second, the existence of nontrivial steady-state solutions is analyzed in terms of the magnitude of the diffusion coefficient. In particular, a critical patch size threshold for vegetation survival is studied. Third, through comparative analysis and energy estimates, the authors prove the stability of the vegetation extinction state and the vegetation persistence state under different conditions, respectively. Finally, two conclusions are drawn based on numerical simulations: (1) fat-tailed kernels enhance resilience, allowing survival in smaller habitats; (2) non-local interactions support stable patterns with sharp biomass gradients. This paper is excellent from both theoretical and numerical simulation perspectives. Therefore, I recommend its acceptance for publication in Communications in Nonlinear Science and Numerical Simulation after minor revision.}
+
+\response{We thank Reviewer \#3 for the thorough reading and positive summary of our work. We appreciate the recommendation for publication.}
+
+% --- Comment 3.1 ---
+\comment{1) Here are my concern: from the paper, it is evident that result ``a critical patch size threshold for vegetation survival" is quite important. However, it is currently characterized only in Lemma 3.4 and Remark 3.1. I suggest presenting this part as a Theorem, which would be more appropriate.}
+
+\response{We thank the reviewer for this excellent suggestion.  Following your advice, we have restructured this part of Section 3.2. We merged the mathematical bound from the former Lemma 3.4 and the ecological implications from the former Remark 3.1 into a new, formal Theorem (now Theorem 3.1 in the revised manuscript, titled "Critical patch size and extinction condition"). The proof has also been updated to encompass both the extinction threshold and the domain size dependence.}
+
+\vspace{2em}
+\hrule
+\vspace{2em}
+
+% ==============================================================================
+% REVIEWER 4
+% ==============================================================================
+\reviewer{Reviewer \#4}
+
+\comment{This paper studies the effects of persistence and extinction due to non-local plant dispersal in the Klausmeier model for vegetation in finite-size flat environments. The manuscript appears well organized, scientifically-sound, it is of interest for a wide community, and deserves publication in CNSNS. I've some minor remarks I'd like authors to address.}
+
+\response{We thank Reviewer \#4 for the positive evaluation of our manuscript and for the helpful suggestions, which we address point-by-point below.}
+
+% --- Comment 4.1 ---
+\comment{1) page 2, it is better to explain the meaning of the acronym KISS}
+
+\response{We have explicitly added this explanation to the revised Introduction. The acronym KISS stands for Kierstead--Slobodkin--Skellam, referring to the original works of Kierstead and Slobodkin (1953) and Skellam (1951), who started the mathematical study of critical patch size in population dynamics.}
+
+% --- Comment 4.2 ---
+\comment{2) page 2, in small domains, are long-range processes so relevant?}
+
+\response{While it might seem counterintuitive to emphasize long-range processes in small domains, they are in fact highly relevant precisely because the domain is small. Note that, with fixed dispersal kernel, smaller and smaller patch sizes easily translate into boundary losses. This boundary losses are directly connected with the principle eigenvalue driving the critical patch size criterion, see Theorem 3.1 and equation (3.17). We acknowledge that for animal movement in small habitat, this might be irrelevant, as animals adapt movement patterns to habitat availability, but one can find other examples driven by other modes of dispersal, such as wind. We have added a sentence in the Introduction to explicitly clarify why modeling long-range dispersal is still reasonable in small, fragmented domains.}
+
+% --- Comment 4.3 ---
+\comment{3) Authors mention sibling dispersal as a possible mechanism responsible for long-range dispersal. In small domains, may one identify sibling dispersal with secondary seed dispersal (see, for instance, \url{https://doi.org/10.1016/j.ecolmodel.2019.02.009}; \url{https://doi.org/10.1016/j.ecolmodel.2022.110171})? Authors can add some comments on this in the introduction.}
+
+\response{We thank the reviewer for this suggestion. Secondary seed dispersal processes are key physical drivers that shape the long-range tails of the dispersal kernel. Thus, in confined or small habitats, these physical processes are particularly crucial, as they govern both the potential for colonization and the magnitude of boundary losses. We found out that this kind of processes often coincide with anisotropic dispersal kernels, for example due to consecutive animal movement. We added a short sentence on that topic in the Introduction together with justification of the assumptions on the kernel.}
+
+% --- Comment 4.4 ---
+\comment{4) page 2, authors refer to the "classic" Klausmeier model, which mimics patterns over sloped terrains, not flat ones. Typically, the model for flat arid environment is called "modified Klausmeier model" (see \url{https://doi.org/10.1098/rsta.2012.0358}).}
+
+\response{We have corrected this terminology throughout the entire manuscript.}
+
+% --- Comment 4.5 ---
+\comment{5) page 2, authors mention that they aim at studying the case in which a finite (vegetated) region is surrounded by a hostile environment. Is it similar to the case discussed in \url{https://doi.org/10.1073/pnas.1420171112} and \url{https://doi.org/10.1016/j.ecolmodel.2019.02.009}, where people refer to the "colonization of bare ground"?}
+
+\response{
+Our study and previous work on \textit{colonization of bare ground} [Sherratt (2015) and Consolo and Valenti (2019)] differ in the boundary conditions. Authors of the latter one consider the infinite domain, where initial patch is expanding throughout remaining empty space. In our case it is a bounded patch that is defending against bare ground surrounding it. In this sense this is opposite case.}
+
+% --- Comment 4.6 ---
+\comment{6) page 4, the condition for the existence of non-deserted states is A>2B. This is a well-known conclusion for the classic and modified Klausmeier model. Can authors comment on the novelty discussed in the contribution \#3?}
+
+\response{It is indeed true that the algebraic condition $A > 2B$ is well-known as the local kinetic saddle-node bifurcation (tipping point) for the classical Klausmeier model in infinite domains. 
+The novelty of our Contribution 3 lies in providing a rigorous mathematical proof for the existence of these states in a finite domain bounded by a hostile environment ($v \equiv 0$). In the context of nonlinear spatial dynamics, a vegetated patch surrounded by bare soil is understood as a \textit{localized structure} bounded by vegetation-desert interfaces, or fronts (see Pinto-Ramos \& Martinez-Garcia 2025, Ref [35] in our revised manuscript). In typical unbounded macroscopic systems, a stationary front connecting these two stable states exists only at a specific parameter value known as the \textit{Maxwell point}. 
+However, in our bounded non-local setting, the finite domain effectively pins these fronts. Our mathematical novelty is rigorously proving (via fixed-point theorems, without relying on heuristic front approximations) that stable, stationary localized structures can persist over a wide parameter range ($A \geq 2B)$, precisely surviving all the way down to the kinetic tipping point $A = 2B$, provided the dispersal rates are sufficiently small. We have thoroughly rewritten the text in Section 1.2 (Contribution 3) using this nonlinear dynamics framework to explicitly clarify our mathematical novelty and connect it to the relevant literature.}
+
+% --- Comment 4.7 / 4.8 ---
+\comment{7) page 15. Since the paper contains too many symbols and assumptions, it becomes quite hard to remember all the definitions. Therefore, can the authors explain the meaning of $\nu(0)$ in the proof of Theorem 4.1? Is it initial vegetation at a given location? Also, why $B-m*\nu(0) >0$ ?}
+
+\response{
+The function $\nu(t)$ was introduced earlier in the manuscript (in the proof of Theorem 2.2) to track the spatial maximum of the vegetation density at any given time, defined as
+\begin{equation*}
+    \nu(t) = \max_{x \in \overline{\Omega}} v(x,t).
+\end{equation*}
+Therefore, $\nu(0)$ represents the maximal initial vegetation density across the entire domain, $\nu(0) = \|v_0\|_\infty$. We have included what $\nu(0)$ means in Theorem 4.1.}
+
+\comment{8) page 16, strictly connected with my previous doubts, can authors please clarify the statement starting with "Roughly speaking…"? Which is the condition that provides the instability of too-small initial vegetation?}
+
+\response{
+%Regarding the inequality (note that we use uppercase $M$ in the text, where $M = \max\{\|v_0\|_\infty, A\}$):
+Since Theorem 4.1 assumes that the initial vegetation $v_0(x)$ belongs to the interval $\Gamma = [0, B/M]$ for all $x\in\Omega$, then the maximum initial density $\nu(0)$ is bounded by $B/M$. Rearranging $\nu(0) \leq B/M$, we get $B - M\nu(0) \geq 0$, which is equivalent to the inequality
+\begin{equation*}
+    \max_{x \in \overline{\Omega}} v(x, 0) < \frac{B}{m},
+\end{equation*}
+Ecologically, this result implies the existence of a vegetation biomass threshold for survival such that if the highest initial concentration of vegetation anywhere in the patch is too small ($\max_{x \in \Omega} v(x,0) < B/M$), the system inevitably collapses to the desert state.
+}
+
+% --- Comment 4.9 ---
+\comment{9) page 18 and 25, I believe that providing pictures showing the spatial distributions of the kernel would help in better understanding their role.}
+
+\response{We have added two new figures (Figure 1 and 6) to the manuscript. The first one, in Section 5.1, shows the 1D spatial distributions of the kernels. The second one, in Section 5.2, shows their 2D spatial profiles. These visualizations illustrate how the sub-Gaussian (fat-tailed) kernel exhibits a much sharper central peak and a fatter, longer tail compared to the super-Gaussian (thin-tailed) kernel, despite both being calibrated to have an identical unit variance.}
+
+% --- Comment 4.10 ---
+\comment{10) slow/fast diffusion. From the ecological viewpoint, it is well-known that water diffuses much faster than vegetation, i.e. $d_w >> d_u$. So, what's a possible ecological scenario in which $d_v=2$ and $d_w=0.1$?}
+
+\response{This is a very good point. Indeed, usually the rate of water diffusion is greatly larger than the rate of vegetation dispersal, particularly on slopes where surface runoff dominates. However, for the works of Bai et al. (2007, \url{https://doi.org/10.1134/S1064229307060075}) and Zhang et al. (2023, \url{https://doi.org/10.1186/s40462-023-00424-y}), it follows that there are examples of plants (highly mobile, mostly dispersed by wind) that indeed disperse much faster than water does on flat terrains. 
+In particular, we have roughly estimated that in the natural semi-arid wetlands studied by Bai et al., depending on soil depth and moisture, the lateral water diffusion coefficient ranges from $1-8 \text{ cm}^2/\text{min}$. This translates to approximately $50-420 \text{ m}^2/\text{year}$. 
+In contrast, the Supplementary Material of Zhang et al. provides empirical dispersal rates for various plants. For example, \textit{Euphorbia} species measured across several European countries (such as Bulgaria, France, Hungary, Italy, Romania, Russia, Switzerland, and Ukraine, where latitudes roughly correspond to the Chinese wetlands from the first study) exhibit dispersal rates ranging from $16.9$ up to $109.2$ km/year. 
+Thus in some cases, mostly when plant's seeds are transported by the means of the wind dispersal on the flat terrain where water is not accelerated by the gravity, it is possible to have smaller water coefficient than the dispersal rate.}
+
+\end{document}

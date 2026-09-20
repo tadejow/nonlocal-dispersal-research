@@ -1,0 +1,973 @@
+\pdfoutput=1
+
+\documentclass[12pt, a4paper]{article}
+\usepackage[margin=1in, top=1.5in, bottom=1.5in]{geometry}
+\usepackage{subcaption}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{float}
+\usepackage{titlesec}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{cases}
+\usepackage[english]{babel}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{authblk}
+\usepackage{dsfont}
+\usepackage{sectsty}
+\usepackage{xcolor}
+
+\sectionfont{\centering}
+% THEOREM / PROPOSITIONS / LEMMAS etc...
+
+\theoremstyle{break}
+	\newtheorem{thm}{Theorem}[section]
+\theoremstyle{break}
+    \newtheorem{prp}{Proposition}[section]
+\theoremstyle{break}
+	\newtheorem{asm}{Assumption}[section]
+\theoremstyle{break}
+	\newtheorem{rem}{Remark}[section]
+\theoremstyle{break}
+	\newtheorem{lem}{Lemma}[section]
+\theoremstyle{break}
+	\newtheorem{cor}{Corollary}[section]
+\theoremstyle{break}
+	\newtheorem{defi}{Definition}[section]
+
+% USEFUL COMMANDS
+
+% writing - labels
+\makeatletter
+\newcommand{\mylabel}[2]{#2\def\@currentlabel{#2}\label{#1}}
+\makeatother
+
+\providecommand{\keywords}[1]
+{
+  \small	
+  \textbf{\textit{Keywords}} #1
+}
+
+% objects
+\newcommand{\Leo}{\mathcal{L}_{\varepsilon}}
+\newcommand{\Seq}[2]{\left\{#1_#2\right\}_{#2 = 0}^\infty}
+
+% spaces
+\newcommand{\Leb}{L^2\left(\Omega\right)}
+\newcommand{\Lei}{L^\infty\left(\Omega\right)}
+\newcommand{\CDR}{C^1\left(\mathbb{R}\right)}
+\newcommand{\CCSRn}{C_c\left(\mathbb{R}^n\right)}
+
+% operators
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\Ima}{Im}
+\DeclareMathOperator{\divergence}{div}
+
+\DeclareMathOperator{\Tr}{Tr}
+
+\setlength{\parindent}{0pt}
+\counterwithin{equation}{section}
+
+\title{Critical patch size and biomass level in the Klausmeier vegetation model with non-local dispersal on flat landscapes.}
+
+\author[1,2]{Ricardo Martinez-Garcia \thanks{r.martinez-garcia@hzdr.de}}
+\author[1,3]{Michael Hecht \thanks{m.hecht@hzdr.de}}
+\author[1,3]{Maciej Tadej \thanks{maciej.tadej@math.uni.wroc.pl}}
+
+\affil[1]{\textit{Center for Advanced Systems Understanding (CASUS) – Helmholtz-Zentrum
+    Dresden-Rossendorf (HZDR), Untermarkt 20, G\"orlitz 02826, Germany}}
+\affil[2]{\textit{ICTP South American Institute for Fundamental Research \& Instituto de F\'isica Te\'orica, Universidade
+Estadual Paulista - UNESP, São Paulo SP, Brazil}}
+\affil[3]{\textit{Insitute of Mathematics, University of Wrocław, pl. Grunwaldzki 2, 50-384 Wrocław, Poland}}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\hspace{20pt}
+
+\begin{abstract}
+
+\end{abstract}
+
+\begin{keywords}
+\end{keywords}
+
+\newpage
+
+\section{Introduction}
+
+Water-limited ecosystems often exhibit a variety of regular vegetation patterns \cite{Rietkerk2008,Tarnita2024,Martinez-Garcia2022} resulting from the interplay between various water-vegetation feedbacks acting at different scales \cite{Borgogno2009,Martinez-Garcia2014,Meron2018}. Importantly, these patterns often form in response to increasingly harsh conditions and could hence be important for ecosystem survival and persistence \cite{Meron2016}. Due to the long time scales at which vegetation patterns form and change, mathematical modeling has been an essential tool to better understand how patterns form and how they could impact ecosystem dynamics \cite{Meron2016,Martinez-Garcia2023}. 
+
+Different modeling efforts have, for example, suggested that pattern shapes could be used as early indicators of impending desertification processes as water-stressed vegetation consistently forms hexagonally distributed spots in hyper-arid conditions \cite{Lefever1997,VonHardenberg2001,Meron2004,Rietkerk2002}. More recent results indicate that patterns could alternatively enhance ecosystem resilience by allowing ecosystems to avoid sudden collapses by spatially reshaping the vegetation cover \cite{Rietkerk2021}. Mathematical modeling has thus made key contributions to our understanding of self-organization in water-limited ecosystems. However, most of these models are formulated in ideal conditions, assuming infinite domains, and thusneglecting how more realistic boundary conditions could change both spatial patterns and vegetation survival (but see e.g., \cite{Clerc2021,PintoRamos2023,PintoRamos2025}).
+
+In less applied scenarios, researchers have studied population dynamics in bounded domains, mainly using extensions of the Fisher–KPP equation \cite{Cantrell1999,Fagan2009,Colombo2018,Dornelas2024} known as KISS models in the mathematical biology literature \cite{Skellam1951, Kierstead1953}. KISS models show that population survival in confined domains---or habitats in ecological terms--- requires that the domain is large enough so reproduction within the domain balances population loss due to density fluxes through the domain edges \cite{Cantrell2004}. For domains smaller than this critical size, population extinction is the only stable solution. A key difference between these studies and vegetation pattern models is that the latter often present non-local terms that account for long-range processes responsible for vegetation growth (e.g., resource intake via roots or sibling dispersal \cite{Martinez-Garcia2014,Eigentler2018}). Therefore, models for vegetation pattern formation provide an ideal scenario to extend KISS models to cases in which population dynamics is spatially non-local. 
+
+We investigate this relationship between non-local population dynamics in finite habitats and population survival. To establish this connection, we use a generalized formulation of Klausmeier's model for vegetation pattern formation in flat landscapes that accounts for non-local plant dispersal \cite{Eigentler2018,Klausmeier1999}. We extend this formulation to consider the more realistic case in which vegetation can only grow in a finite region that is always surrounded by desert. Using this model, we first obtain the minimum habitat size ensuring vegetation persistence at different rainfall levels (Theorems \ref{thm:Stationary-Solutions-Existence}, \ref{thm:Stationary-Solutions-Stability}). Then, we show that there exists a critical level of maximal concentration of biomass, under which the vegetation will become extinct (Theorem \ref{thm:Exinction-Of-Vegetation}).
+
+\section{Model formulation} The Klausmeier model for vegetation pattern formation consists of a reaction-diffusion system describing the coupled dynamics of vegetation biomass, $u$, and water concentration, $v$. We consider the dimensionless form (see, \cite{Eigentler2018}), extended to the finite habitat case. The model is
+\begin{numcases}{}
+    u_t = d_u\mathcal{L} u + u^2 v - B u & \hspace{2mm} $(x, t) \in \Omega \times [0, T],$ \label{eq:u} \\
+    v_t = d_v\Delta v - u^2v - v + A & \hspace{2mm} $(x, t) \in \Omega \times [0, T],$ \label{eq:v} \\
+    u = 0 & \hspace{2mm} $(x,t) \in \mathbb{R}^n \setminus \Omega  \times [0,T], $ \label{eq:u_bound} \\
+    v = 0 & \hspace{2mm} $(x,t) \in \partial\Omega \times [0,T],$ \label{eq:v_bound} \\
+    u(0) = u_0 & \hspace{2mm} $x \in \Omega ,$ \label{eq:Unit} \\
+    v(0) = v_0 & \hspace{2mm} $x \in \Omega.$ \label{eq:v_init}
+\end{numcases}
+where we are already accounting for non-local dispersal via the operator $\mathcal{L}$, the evolution time $T > 0$, and $\Omega \subset \mathbb{R}^n$ is an open and bounded region. The variables $(u, v) := (u(x,t), v(x,t))$ denote the density of a plant and water. All the parameters are dimensionless, $d_u > 0$ modulates plant dispersal, $d_v > 0$ water diffusion, $A > 0$ average rainfall, and $B > 0$ mortality. The dispersal operator is given by
+\begin{equation}
+    \label{eq:DispersalOperatorDefinition_1}
+    \mathcal{L}u(x) = \mathds{1}_{\Omega}(x)\int_{\mathbb{R}^n} J(x-y)\left(u(y) - u(x)\right)\:dy,
+\end{equation}
+where $\mathds{1}_\Omega$ is an indicator of a domain $\Omega$ and $J : \mathbb{R}^n \rightarrow \mathbb{R}_{\geq 0}$ is an integral kernel falling under the following assumptions.
+\begin{asm}
+    \label{assumptions_general_kernel}
+    We consider the integral kernels $J \in C(\mathbb{R}^n)$ satisfying the following properties
+    \begin{enumerate}[label=\textnormal{(\arabic*)}]
+        \item [\mylabel{J1}{(J1)}] $J(z) \geq 0$ for $z \in \mathbb{R}^n$ and $J(0) > 0$, 
+        \item [\mylabel{J2}{(J2)}] $J(z) = J(-z)$ for $z \in \mathbb{R}^n$,
+        \item [\mylabel{J3}{(J3)}] $J(z) \rightarrow 0$ as $|z| \rightarrow \infty$,
+        \item [\mylabel{J4}{(J4)}] $\int_{\mathbb{R}^n} J(z)|z|^2dz < \infty$.
+        \item [\mylabel{J5}{(J5)}] $\int_{\mathbb{R}^n} J(z) dz = 1$.
+    \end{enumerate}
+\end{asm}
+Assumption \ref{J5} and non-local Dirichlet boundary condition \eqref{eq:u_bound}, when combined, allow us to re-write \eqref{eq:DispersalOperatorDefinition_1} as
+\begin{equation}
+    \label{EQ:DispersalOperatorDefinition_2}
+    \mathcal{L}u(x) = \mathds{1}_{\Omega}(x) \left(\int_{\Omega} J(x-y) u(y)\:dy - u(x)\right).
+\end{equation}
+
+\subsection{Main results}
+
+\section{Preliminaries}
+\subsection{Local in-time solutions} 
+Here, we construct solutions of the Klausmeier system \eqref{eq:u}-\eqref{eq:v_init}. First, let us consider the space
+\begin{equation}
+    \label{EQ:C_0_OMEGA}
+    C_{0, \Omega}(\mathbb{R}^n) = \left\{ u \in L^\infty(\mathbb{R}^n): u \in C(\Omega), \: u = 0 \text{ in } \mathbb{R}^n \setminus \Omega \right\},
+\end{equation}
+equipped with usual supremum norm $\|\cdot\|_\infty$.
+\begin{lem}
+    \label{lem:C_0_OMEGA_BANACH_SPACE}
+    $\left(C_{0, \Omega}(\mathbb{R}^n), \|\cdot\|_\infty\right)$ is a Banach space.
+\end{lem}
+
+We skip the standard proof of the Lemma \ref{lem:C_0_OMEGA_BANACH_SPACE}. Now, we extract the linear part in the vegetation equation \eqref{eq:u} and define the corresponding operator $\mathcal{A}: C_{0, \Omega}(\mathbb{R}^n) \mapsto C_{0, \Omega}(\mathbb{R}^n)$ by the formula
+\begin{align}
+    \label{EQ:A_OPERATOR_DEFINITION}
+    \mathcal{A}[u](x) =
+    \begin{cases}
+        d_u\mathcal{L}u - Bu &x \in \Omega, \\
+        0 &x \in \mathbb{R}^n \setminus \Omega.
+    \end{cases}
+\end{align}
+\begin{lem}
+    \label{lem:A_SEMIGROUP_GENERATOR}
+    The operator $\mathcal{A}$ given by formula \eqref{EQ:A_OPERATOR_DEFINITION} generates a uniformly continuous semigroup $\{\mathcal{T}_u(t)\}_{t \geq 0}$ of contractions on $C_{0, \Omega}(\mathbb{R}^n)$.
+\end{lem}
+\begin{proof}
+    Observe that $\mathcal{A}$ is a bounded, linear operator. Thus, it generates a uniformly continuous semigroup $\{\mathcal{T}_u(t)\}_{t \geq 0}$. Moreover, the spectrum of operator $\mathcal{L}$ is a discrete subset of the left real, semi-axis, see \cite[Proposition 3.2]{ChasseigneChavesRossi2006} and \cite[Theorem 2.1]{Tadej2025} for details. 
+\end{proof}
+Now, we move our attention to the water equation \eqref{eq:v}. Denote by $C_0(\overline{\Omega})$ the Banach space of functions continuous in $\overline{\Omega}$ and vanishing in $\partial\Omega$. Next, define the operator $\mathcal{B}: D(\mathcal{B}) \mapsto C_0(\overline{\Omega})$ by the formula
+\begin{align}
+    \label{EQ:B_OPERATOR_DEFINITION}
+    \mathcal{B}[v](x) = 
+    \begin{cases}
+        d_v \Delta v - v &x \in \Omega, \\
+        0 &x \in \partial \Omega.
+    \end{cases}
+\end{align}
+To ensure that $\mathcal{B}$ is a closed operator we choose $D(\mathcal{B})$ to be given by
+\begin{equation}
+    \label{EQ:B_DOMAIN_DEFINITION}
+    D(\mathcal{B}) = \left\{ u \in C_0(\overline{\Omega}): \Delta u \in C_0(\overline{\Omega}) \right\}
+\end{equation}
+\begin{lem}
+    \label{lem:B_SEMIGROUP_GENERATOR}
+    The operator $\mathcal{B}$ given by formulas \eqref{EQ:B_OPERATOR_DEFINITION} and \eqref{EQ:B_DOMAIN_DEFINITION} generates a strongly continuous semigroup $\{\mathcal{T}_v(t)\}_{t \geq 0}$ of contractions on $C_0(\overline{\Omega})$.
+\end{lem}
+\begin{proof}
+    The proof can be found in the monograph \cite[Theorem 6.1.8]{Arendt2001}.
+\end{proof}
+Now, we are ready to construct solutions of Klausmeier system \eqref{eq:u}-\eqref{eq:v_init}.
+\begin{thm}[Local existence]
+    \label{thm:Well-Posedness}
+    Let $(u_0, v_0) \in C_{0, \Omega}(\mathbb{R}^n) \times C_0(\overline{\Omega})$. Then there exists $T > 0$ and a unique solution $(u, v)$ to the problem \eqref{eq:u}-\eqref{eq:v_init}, such that
+    \begin{equation}
+        u \in C\left([0, T], C_{0, \Omega}(\mathbb{R}^n)\right) \cap C^1\left([0, T), C_{0, \Omega}(\mathbb{R}^n)\right),
+    \end{equation}
+    and
+    \begin{equation}
+        v \in C\left([0, T], C_0(\overline{\Omega})\right) \cap C^1\left([0, T), C_0(\overline{\Omega})\right).
+    \end{equation}
+\end{thm}
+\begin{proof}
+    Given $\mathcal{A}, \mathcal{B}$ by the formulas \eqref{EQ:A_OPERATOR_DEFINITION} and \eqref{EQ:B_OPERATOR_DEFINITION}-\eqref{EQ:B_DOMAIN_DEFINITION} respectively, let us define the operator $\mathcal{C}: C_{0, \Omega}(\mathbb{R}^n) \times D(\mathcal{B}) \mapsto C_{0, \Omega}(\mathbb{R}^n) \times C_0(\overline{\Omega})$ by the formula
+    \begin{equation}
+        \mathcal{C} = 
+        \begin{bmatrix}
+            \mathcal{A} & 0\\ 0 & \mathcal{B}
+        \end{bmatrix}.
+    \end{equation}
+    Next, denote the vectors $w = (u, v)$ and $w_0 = (u_0, v_0)$. Using this notation we re-write the Klausmeier system \eqref{eq:u}-\eqref{eq:v_init} into
+    \begin{equation}
+        \label{eq:ClassicalSemigroupFormulation}
+         w'(t) = \mathcal{C} w(t) + F(w(t)), \quad w(0) = w_0.
+    \end{equation}
+    where nonlinearity $F: C_{0, \Omega}(\mathbb{R}^n) \times C_0(\overline{\Omega}) \mapsto C_{0, \Omega}(\mathbb{R}^n) \times C_0(\overline{\Omega})$ is given by
+    \begin{align}
+        F(w) = F(u, v) = 
+        \begin{cases}
+            (u^2 v, -u^2 v + A) &x \in \Omega, \\
+            (0, 0) &x \notin \Omega
+        \end{cases}.
+    \end{align}
+    Lemma \ref{lem:A_SEMIGROUP_GENERATOR} and Lemma \ref{lem:B_SEMIGROUP_GENERATOR} give that $\mathcal{C}$ generates a semigroup $\{\mathcal{T}(t)\}_{t \geq 0}$ of contractions on $C_{0, \Omega}(\mathbb{R}^n) \times C_0(\overline{\Omega})$. Thus, we construct the solution $w$ from the integral equation
+    \begin{equation}
+        \label{eq:MildSemigroupFormulation}
+         w(t) = \mathcal{T}(t) w_0 + \int_0^t \mathcal{T}(t-s) F(w(s)) \:ds.
+    \end{equation}
+    Since $w_0 \in C_{0, \Omega}(\mathbb{R}^n) \times C_0(\overline{\Omega})$ and $F$ is a locally Lipschitz function, we proceed with a standard fixed point argument to obtain that there exists positive number $T := T(w_0)$ such that \eqref{eq:MildSemigroupFormulation} admits a unique solution $w \in C\left([0, T], C_{0, \Omega}(\mathbb{R}^n) \times C_0(\overline{\Omega})\right)$. To show differentiability in time one needs to integrate equations \eqref{eq:u}, \eqref{eq:v} to find that $w$ satisfies
+    \begin{equation}
+        \label{eq:IntegralFormula}
+        w(t) = w_0 + \int_0^t \mathcal{C}w(s) + F(w(s)) \:ds.
+    \end{equation}
+    It is an immediate consequence of the continuity of $w$, that the formula \eqref{eq:IntegralFormula} yields differentiability of $w$ over time interval $[0, T)$.
+\end{proof}
+\subsection{Non-negativity and bounds} 
+Here, we are interested in non-negativity of solutions obtained with Theorem~\ref{thm:Well-Posedness} and existence of an invariant region $\Gamma$ for the system \eqref{eq:u}-\eqref{eq:v_init}.
+\begin{thm}[Non-negativity and invariant region]
+    \label{thm:Non-negativity}
+     If the initial datum $(u_0, v_0) \in C_{0, \Omega}(\mathbb{R}^n) \times C_0(\overline{\Omega})$ is non-negative then the solution $(u, v)$ constructed in Theorem \ref{thm:Well-Posedness} is non-negative and for all $(x, t) \in \Omega \times [0, T]$ it is true that
+     \begin{equation}
+         v(x,t) \leq \max\{\|v_0\|_\infty, A\} =: R_1.
+     \end{equation}
+     Moreover, denote the set $\Gamma = [0, B/R_1]$. If $u_0 \in \Gamma$ for $x \in \Omega$ then $u \in \Gamma$ for all $(x, t) \in \Omega \times [0, T]$.
+\end{thm}
+\begin{proof}
+    It follows from the parabolic maximum principle that for all $(x, t) \in \Omega \times [0, T)$ we have the estimate of the form
+    \begin{equation}
+        \label{EQ:AprioriEstimate_V}
+        0 \leq v(x, t) \leq \max\{\|v_0\|_\infty, A\} =: R_1.
+    \end{equation}
+    Next, we define the point $\xi := \xi(t) \in \Omega$ and evaluation $\mu := \mu(t)$ such that 
+    \begin{equation*}
+        \mu(t) := u(\xi(t), t) = \min_{x \in \Omega} u(x, t).
+    \end{equation*}
+    Without loss of generality, we take arbitrary $0 < s < t < T$ and estimate
+    \begin{equation*}
+        \left|\mu(t) - \mu(s)\right| \leq \left|u(\xi(s), t) - u(\xi(s), s)\right| \leq \max_{(x, r) \in \Omega \times [0, T)} |u(x, r)| |t-s|.
+    \end{equation*}
+    This is Lipschitz continuity of $\mu$. It follows from the Radamacher Theorem that $\mu$ is differentiable almost everywhere in $[0, T]$. Next, we estimate the difference quotients applying Mean Value Theorem
+    \begin{align*}
+        \frac{\mu(t+h) - \mu(t)}{h} &\leq \frac{u(\xi(t+h), t+h) - u(\xi(t + h), t)}{h} = u_t(\xi(t + h), c(t, h)), \\
+        \frac{\mu(t+h) - \mu(t)}{h} &\geq \frac{u(\xi(t), t+h) - u(\xi(t), t)}{h} = u_t(\xi(t), c(t, h)),
+    \end{align*}
+    where $c(t,h) \in [t, t+h]$ is an intermediate point. Passing with $h \rightarrow 0$ and estimating $\mathcal{L}$ in a minimum point, we obtain the differential inequality
+    \begin{align}
+        \label{eq:differential_inequality_min}
+        \begin{split}
+            \mu'(t) &= \mathcal{L} u(\xi(t), t) + \mu^2(t) v(\xi(t), t) - B \mu(t) \geq - B \mu(t), \\
+            \mu(0) &= \min_{x \in \Omega} u_0(x) \geq 0.
+        \end{split}
+    \end{align}
+    When solved, inequality \eqref{eq:differential_inequality_min} yields the following lower bound 
+    \begin{equation*}
+        u(x,t) \geq \mu(t) \geq \mu(0) e^{-B t} \geq 0.
+    \end{equation*}
+    Now, we define the point $\zeta := \zeta(t) \in \Omega$ and evaluation $\nu := \nu(t)$ such that
+    \begin{equation*}
+        \nu(t) := u(\zeta(t), t) = \max_{x \in \Omega} u(x,t).
+    \end{equation*}
+    Proceeding as previously, we arrive at the following differential inequality
+    \begin{align}
+        \label{eq:differential_inequality_max}
+        \begin{split}
+            \nu'(t) &= \mathcal{L} u(\zeta(t), t) + \nu^2(t) v(\zeta(t), t) - B \nu(t) \leq R_1 \nu^2(t) - B \nu(t), \\
+            \nu(0) &= \max_{x \in \Omega} u_0(x) \leq B/R_1.
+        \end{split}
+    \end{align}
+    When solved, inequality \eqref{eq:differential_inequality_max} yields the following upper bound
+    \begin{equation}
+        \label{EQ:AprioriEsitmate_Unvariant_Region}
+        u(x,t) \leq \nu(t) \leq \frac{B\nu(0)}{R_1 \nu(0) + 
+        (B - R_1 \nu(0)) e^{B t}} < B / R_1.
+    \end{equation}
+    Hence $\Gamma = [0, B/R_1]$ is an invariant region.
+\end{proof}
+
+\section{Stationary solutions}
+
+We consider the stationary solutions of \eqref{eq:u}-\eqref{eq:v_init} with a corresponding system of equations
+\begin{numcases}{}
+    0 = d_u\mathcal{L} u + u^2 v - B u & \hspace{2mm} $x \in \Omega,$ \label{eq:u_stationary} \\
+    0 = d_v\Delta v - u^2v - v + A & \hspace{2mm} $x \in \Omega,$ \label{eq:v_stationary} \\
+    u = 0 & \hspace{2mm} $x \in \mathbb{R}^n \setminus \Omega , $ \label{eq:u_bound_stationary} \\
+    v = 0 & \hspace{2mm} $x \in \partial\Omega.$ \label{eq:v_bound_stationary}
+\end{numcases}
+
+\subsection{Reduction of the problem} Our first goal is to reduce the number of equations in the system \eqref{eq:u_stationary}-\eqref{eq:v_bound_stationary}.
+\begin{lem}
+    \label{lem:existence_of_inhomogeneous_elliptic_v}
+    Let $u \in L^\infty(\Omega)$ be a given function. Then, there exists a unique, weak solution $V \in W^{1,2}_0(\Omega) \cap W^{2,2}_{loc}(\Omega)$ of equations \eqref{eq:v_stationary} and \eqref{eq:v_bound_stationary}. Moreover, we have that $\|V \|_\infty \leq A$.
+\end{lem}
+\begin{proof}
+    The proof of the existence and uniqueness is well known, for instance see \cite[Theorem 8.9]{gilbarg2001elliptic}. On the other hand, estimate $\|V\|_\infty \leq A$ follows directly from the elliptic maximum principle.
+\end{proof}
+
+\begin{lem}
+    \label{lem:stationary_v_lipschitz_constant}
+    Let $B_R \subset L^\infty(\mathbb{R}^n)$ be a ball of radius $R > 0$.
+    Define a mapping $V : B_R \rightarrow W^{1,2}_0(\Omega)$, by $V(u) = v$, where $v$ is a weak solution of the problem \eqref{eq:v_stationary}, \eqref{eq:v_bound_stationary} obtained by Lemma \ref{lem:existence_of_inhomogeneous_elliptic_v}. Then $V: B_R \rightarrow L^\infty(\mathbb{R}^n)$ and for arbitrary $u_1, u_2 \in B_R$ we have that
+    \begin{equation}
+        \|V(u_1) - V(u_2)\|_\infty \leq 2 A R \|u_1 - u_2\|_\infty
+    \end{equation}
+\end{lem}
+
+\begin{proof}
+    For arbitrary $u_1, u_2 \in B_R \subset L^\infty(\Omega)$ we define the difference $w = V(u_1) - V(u_2)$, which satisfies
+    \begin{align}
+        \label{eq:Difference_ELLIPTIC_DEF}
+        \begin{cases}
+            d_v\Delta w + (u_1^2 + 1) V(u_1) - (u_2^2 + 1) V(u_2) = 0, &\quad x \in \Omega, \\
+            w = 0, &\quad x \in \partial\Omega.
+        \end{cases}
+    \end{align}
+    Since $V(u_1) = w + V(u_2)$, we can equivalently express problem \eqref{eq:Difference_ELLIPTIC_DEF} by
+    \begin{align}
+        \label{eq:lipschitz_continuity_formulation_difference}
+        \begin{cases}
+            d_v\Delta w + (u_1^2 + 1) w  = V(u_2) (u_1^2 - u_2^2), &\quad x \in \Omega, \\
+            w = 0, &\quad x \in \partial\Omega.
+        \end{cases}
+    \end{align}
+    We estimate the $L^\infty$ norm of the right hand side of first equation in  \eqref{eq:lipschitz_continuity_formulation_difference}
+    \begin{equation}
+        \label{eq:Lq_norm_rhs_difference_estimate}
+        \|V(u_2) (u_1^2-u_2^2)\|_\infty \leq 2AR\|u_1-u_2\|_\infty < \infty.
+    \end{equation}
+    Now, it suffices to notice that by Lemma \ref{lem:existence_of_inhomogeneous_elliptic_v} $w \in W^{1,2}(\Omega)$. Thus, using the regularity theory \cite[Theorem 8.34]{gilbarg2001elliptic} and bound \eqref{eq:Lq_norm_rhs_difference_estimate}, we obtain that solution $w$ of the problem \eqref{eq:lipschitz_continuity_formulation_difference} satisfies
+    \begin{equation}
+        \|w\|_{C^{1, \alpha}(\Omega)}  \leq 2AR\|u_1-u_2\|_\infty
+    \end{equation}
+    From the definition of the norm $\|\cdot\|_{C^{1,\alpha}(\Omega)}$ we get that
+    \begin{equation}
+        \|V(u_1) - V(u_2)\|_\infty = \|w\|_\infty \leq \|w\|_{C^{1, \alpha}(\Omega)}  \leq 2AR\|u_1-u_2\|_\infty
+    \end{equation}
+\end{proof}
+\subsection{Existence of solutions} 
+We reduce the system \eqref{eq:u_stationary}-\eqref{eq:v_bound_stationary} to the following boundary-value problem
+\begin{numcases}{}
+    0 = d_u\mathcal{L} u + u^2 V(u) - B u & \hspace{2mm} $x \in \Omega,$ \label{eq:u_stationary_reduced} \\
+    u = 0 & \hspace{2mm} $x \in \mathbb{R}^n \setminus \Omega , $ \label{eq:u_bound_stationary_reduced}
+\end{numcases}
+where we denoted by $V := V(u)$ the solution obtained in Lemma \ref{lem:existence_of_inhomogeneous_elliptic_v}. We will construct solution $(u, V(u))$ of the reduced system \eqref{eq:u_stationary_reduced}-\eqref{eq:u_bound_stationary_reduced} in the neighborhood of constant solutions of the following system of equations.
+\begin{align}
+    \label{EQ:ConstantSteadyStates}
+    \begin{cases}
+        0 = u^2v - Bu,\\
+        0 = -u^2v - v + A.
+    \end{cases}
+\end{align}
+In particular these are the constant solutions of equations \eqref{eq:u_stationary} and \eqref{eq:v_stationary}.
+\begin{lem}
+    \label{lem:stationary_v_estimate_v_star}
+    Let $(u_*, v_*)$ be a real solution of the system \eqref{EQ:ConstantSteadyStates}. Denote by $V(u_*)$ the solution of equations \eqref{eq:v_stationary} and \eqref{eq:v_bound_stationary}. For all $\epsilon > 0$ there exists diffusion rate $d_v > 0$, sufficiently small, such that
+    \begin{equation*}
+        \| V(u_*) - v_*\|_2 \leq \epsilon.
+    \end{equation*}
+\end{lem}
+
+\begin{proof}
+    First, we denote the orthonormal set $\{\phi_i\}_{i \in \mathbb{N}}$ in $L^2(\Omega)$. We choose it to be the set of the eigenfunctions of $\Delta$ with Dirichlet boundary condition. Next, 
+    we expand a constant function $A = \sum_{j=1}^\infty a_j \phi_j$. Since $V \in L^2(\Omega)$ we can expand it in the eigenfunction basis as well. Namely $V(u_*) = \sum_{j=1}^\infty c_j \phi_j$. Plugging this into equation \eqref{eq:v_stationary} we get that
+    \begin{equation*}
+        d_v\sum_{i=1}^\infty c_j \lambda_j \phi_j - (u_*^2 + 1) \sum_{j=1}^\infty c_j \phi_j + \sum_{j=1}^\infty a_j \phi_j = 0.
+    \end{equation*}
+    From the orthogonality, we get that the following equation holds for $j \in \mathbb{N}$
+    \begin{equation*}
+        d_v c_j\lambda_j - (u_*^2+1) c_j + a_j = 0,
+    \end{equation*}
+    solving for coefficients $c_j$, we obtain the formula
+    \begin{equation*}
+        c_j = \frac{a_j}{u_*^2 + 1 - d_v\lambda_j}
+    \end{equation*}
+    It follows that
+    \begin{equation*}
+        V(u_*) = \sum_{j=1}^\infty \frac{a_j}{u_*^2 + 1 - d_v\lambda_j} \phi_j.
+    \end{equation*}
+    Next, we plug the eigenfunction expansion of a constant function $A$ to the definition of steady state $v_* = \frac{A}{u_*^2 + 1}$ to obtain the following estimate
+    \begin{align*}
+        \|V(u_*) - v_*\|_2 
+        &=
+        \|\sum_{j=1}^\infty \frac{a_j}{u_*^2 + 1 - d_v\lambda_j} \phi_j - \sum_{j=1}^\infty \frac{a_j}{u_*^2 + 1}\phi_j\|_2  \\
+        &=
+        \|\sum_{j=1}^\infty\left(\frac{1}{u_*^2+1} - \frac{1}{u_*^2+1-d_v\lambda_j} \right) a_j\phi_j\|_2  \\
+        &\leq
+        \sum_{j=1}^\infty\left| \frac{d_v \lambda_j a_j}{(u_*^2+1)(d_v\lambda_j - (u_*^2+1))} \right| \\
+        &=
+        \sum_{j=1}^\infty\left| \frac{a_j}{(u_*^2+1)(1 - (u_*^2+1) / d_v \lambda_j)} \right|.
+    \end{align*}
+    For any $\epsilon > 0$ there exists $N \in \mathbb{N}$ such that $\sum_{j=N+1}^\infty |a_j| < \epsilon$. Next, we take $d_v < \frac{C_N}{N \lambda_N} \epsilon$ where constant $C_N >0$ will be specified later on. We estimate as follows
+    \begin{align*}
+        \|V(u_*) - v_*\|_2
+        &\leq
+        \sum_{j=1}^N\left| \frac{d_v \lambda_j a_j}{(u_*^2+1)(d_v\lambda_j - (u_*^2+1))} \right| \\
+        &+
+        \sum_{j=N+1}^\infty\left| \frac{a_j}{(u_*^2+1)(1 - (u_*^2+1) / d_v \lambda_j)} \right| \\
+        &\leq
+        C_N \epsilon \left| \frac{a_{j'}}{(u_*^2+1)(d_v\lambda_{j'} - (u_*^2+1))} \right| \\
+        &+
+        \frac{C_N}{N} \epsilon \left| \frac{1}{(u_*^2+1)(1 - u_*^2+1) / d_v \lambda_{N+1})} \right| \\
+        &= \epsilon.
+    \end{align*}
+    where $j' \in \{1, \ldots, N\}$ is such that $\|\{a_j\}_{j \in \mathbb{N}}\|_\infty = a_{j'}$. Note that in order to have that $j' \in \{1, \ldots, N\}$, we need to take $\epsilon$ sufficiently small. Constant $C_N > 0$ is given explictly by
+    \begin{equation*}
+        C_N = \left( \left| \frac{a_{j'}(u_*^2+1)^{-1}}{((d_v\lambda_{j'} - (u_*^2+1))} \right| + \left| \frac{(u_*^2+1)^{-1}}{N((1 - u_*^2+1) / d_v \lambda_{N+1})} \right| \right)^{-1}.
+    \end{equation*}
+\end{proof}
+
+\begin{thm}
+    \label{thm:Stationary-Solutions-Existence}
+    Let $A \geq 2B$. Denote by $(u_*, v_*)$ a non-zero solution of the system \eqref{EQ:ConstantSteadyStates}. Assume that the kernel $J$ satisfying assumptions \ref{J1}-\ref{J5} and patch $\Omega$ fulfill the following inequality
+    \begin{equation}
+        |\Omega| > \frac{\int_\Omega\left|\int_{\mathbb{R}^n\setminus\Omega} J(x-y)\:dy \right|^2\:dx}{\left(1 - \int_\Omega J(x)\:dx\right)^2}.
+    \end{equation}
+    Then there exists $D_u := D_u(\Omega, A, B) > 0$ such that for all dispersal rates $d_u > D_u$ there exists a unique solution $(U, V)$ of equations \eqref{eq:u_stationary}-\eqref{eq:v_bound_stationary} satisfying
+    \begin{equation}
+        \|U - u_*\|_\infty \leq R_\infty, \quad \|U - u_*\|_2 \leq R_2, \quad \|V - v_*\|_2 \leq 2A(u_* + R_\infty) R_2 + \epsilon,
+    \end{equation}
+    where $R_\infty := R_\infty(\Omega, A, B) > 0$ might be large, $R_2 := R_2(\Omega, A, B) < u_* |\Omega|^{1/2}$ and $\epsilon := \epsilon(d_v) > 0$ can be made arbitrary small.
+\end{thm}
+
+\begin{proof}
+    Let $U:= U(x)$ be a function defined by the following formula
+    \begin{align}
+        \label{eq:stationary_u_definition}
+        U(x) 
+        = 
+        u_* \mathds{1}_{\Omega}(x) + \varphi(x)
+    \end{align}
+    where $\varphi \in C_{0, \Omega}(\mathbb{R}^n)$. We plug that function into equation \eqref{eq:u_stationary} to get the equation
+    \begin{equation}
+        \label{eq:stationary_u_plugged}
+        0 = d_u \mathcal{L} U + U^2 V(U) - B U.
+    \end{equation}
+    We take $x \in \Omega$ and re-write the non-local term in \eqref{eq:stationary_u_plugged} using property \ref{J5} and equivalence of definitions \eqref{eq:DispersalOperatorDefinition_1}, \eqref{EQ:DispersalOperatorDefinition_2} of the dispersal operator.
+    \begin{align}
+        \label{eq:non-local-part-u-reformulation}
+        \begin{split}
+        \mathcal{L}U 
+        &=
+            \mathcal{L}\varphi + u_*  \int_{\mathbb{R}^n} J(x-y)\left(\mathds{1}_{\Omega}(y) - \mathds{1}_{\Omega}(x)\right)\:dy  \\
+            &= \mathcal{L}\varphi + u_* \left( \int_\Omega J(x-y)\:dy - 1 \right) \\
+            &= \mathcal{L}\varphi - u_*  \int_{\mathbb{R}^n \setminus \Omega} J(x-y)\:dy =: \mathcal{L}\varphi - u_* j_\Omega(x)
+        \end{split}
+    \end{align}
+    Finally, applying formula \eqref{EQ:DispersalOperatorDefinition_2} and assumption $\varphi \in C_{0, \Omega}(\mathbb{R}^n)$ to the first term, we obtain that
+    \begin{equation}
+        \label{eq:non-local-part-u-stationary-plugged}
+        \mathcal{L}\varphi =  \int_{\Omega} J(x-y) \varphi(y)\:dy - \varphi(x) =: J *\varphi(x) - \varphi(x)
+    \end{equation}
+    Since $-u_*^2v_* + Bu_*=0$, we re-write the non-linear part of equation \eqref{eq:stationary_u_plugged}
+    \begin{align}
+        \label{eq:non-linear-part-u-stationary-plugged}
+        \begin{split}
+            U^2 V(U) - B U 
+            &= U^2 V(U) - u_*^2 v_* - B (U - u_*) \\
+            &= U^2 V(U) - u_*^2 V(U) + u_*^2 V(U) - u_*^2 v_* - B \varphi  \\
+            &= (U^2 - u_*^2)V(U) - u_*^2(V(U) - v_*) - B \varphi \\
+            &= (2 u_* \varphi + \varphi^2) V(U) - u_*^2(V(U) - v_*) - B \varphi.
+        \end{split}
+    \end{align}
+    Combining formulas \eqref{eq:non-local-part-u-reformulation}, \eqref{eq:non-local-part-u-stationary-plugged} and \eqref{eq:non-linear-part-u-stationary-plugged}, we re-formulate the stationary problem \eqref{eq:stationary_u_plugged} into the following fixed point problem.
+    \begin{equation}
+        \label{eq:u-stationary-fixed-point}
+        \varphi = \frac{1}{d_u + B}\Big(d_u J *\varphi - d_u u_* j_\Omega + (2 u_* \varphi + \varphi^2) V(U) - u_*^2(V(U) - v_*)\Big)
+    \end{equation}
+    Denote the Banach space $X$ given by
+    \begin{equation}
+        X = \left\{ \varphi \in C_{0,\Omega}(\mathbb{R}^n): \|\varphi\|_\infty \leq R_\infty \right\} \:\cap\: \left\{ \varphi \in L^2(\Omega): \|\varphi\|_2 \leq R_2 \right\}
+    \end{equation}
+    Then, we define an operator $\mathcal{F}$, corresponding to the equation \eqref{eq:u-stationary-fixed-point}, by the formula
+    \begin{align}
+        \label{eq:operator-f-def}
+        \begin{split}
+            \mathcal{F}(\varphi) 
+            &= 
+            \frac{d_u \mathds{1}_{\Omega}}{d_u + B}\left( J *\varphi - u_* j_\Omega\right) + \frac{\mathds{1}_{\Omega}}{d_u + B}(2 u_* \varphi + \varphi^2) V (u_* + \varphi)\\
+            &- \frac{u_*^2\mathds{1}_{\Omega}}{d_u + B}(V(u_* + \varphi) - v_*)        
+        \end{split}
+    \end{align}
+    We verify that $\mathcal{F}: X \rightarrow X$. Let $\varphi \in X$, we show that $\mathcal{F}$ maps $X$ onto a ball in $C_{0, \Omega}(\mathbb{R}^n)$.
+    \begin{align}
+        \label{eq:f_ball_to_ball_infty_1}
+        \begin{split}
+            \|\mathcal{F}(\varphi)\|_{\infty}
+            &\leq
+            \frac{d_u }{d_u + B} \left( \|1 -j_\Omega\|_\infty R_\infty + u_*\|j_\Omega\|_\infty\right) \\
+            &+
+            \frac{A}{d_u + B}\left( 2 u_* R_\infty + R^2_\infty \right) 
+            + \frac{u_*^2 (A + v_*)}{d_u + B} \leq R_\infty.
+        \end{split}
+    \end{align}
+    Observe, that the condition \eqref{eq:f_ball_to_ball_infty_1} is just a quadratic equation. Hence, in order to have positive solutions we need to assume that the discriminant is strictly positive. This yields the following criterion
+    \begin{equation}
+        \label{eq:f_ball_to_ball_infty_2}
+        \left( \frac{d_u \|1-j_\Omega\|_\infty  + 2 A u_* - 1}{d_u + B}\right)^2
+        >
+        \frac{4A \left( d_u u_* \|j_\Omega\|_\infty + u_*^2(A + v_* )\right)}{(d_u + B)^2}
+    \end{equation}
+    Observe that inequality \eqref{eq:f_ball_to_ball_infty_2} can be re-written using the fact that $u_*v_* = 1$ as
+    \begin{equation}
+        \label{eq:f_ball_to_ball_infty_3}
+        d_u^2\|1-j_\Omega\|_\infty^2 +
+        d_u\left( 2\|1-j_\Omega\|_\infty(2Au_* - 1) - 4A u_*\|j_\Omega\|_\infty\right)  +
+        1 - 8Au_*
+        >
+        0.
+    \end{equation}
+    Note that the coefficient of the quadratic term in \eqref{eq:f_ball_to_ball_infty_3} is positive for all $\Omega \subset \mathbb{R}^n$. Hence, the inequality \eqref{eq:f_ball_to_ball_infty_3} holds either for all $d_u > 0$ or there exists a positive lower bound for dispersal rate. We can write this condition as
+    \begin{align}
+        d_u > 
+        \begin{cases}
+            0 &\text{ if } b^2(\Omega, A, B) - 4 a(\Omega)c(A, B) < 0, \\
+            \max\left\{0, \frac{-b(\Omega, A, B) + \sqrt{b^2(\Omega, A, B) - 4 a(\Omega)c(A, B)}}{2 a(\Omega)}\right\} &\text{ if } b^2(\Omega, A, B) - 4 a(\Omega)c(A, B) \geq 0.
+        \end{cases}
+    \end{align}
+    where the coefficients are given by
+    \begin{align*}
+        a(\Omega) = \|1-j_\Omega\|^2, \quad
+        b(\Omega, A, B) &= 4Au_*(\|1-j_\Omega\|_\infty - \|j_\Omega\|_\infty)- 2\|1-j_\Omega\|_\infty, \\
+        c(A, B) &= 1 - 8Au_*.
+    \end{align*}
+    Next, we check that $\mathcal{F}$ maps $X$ onto the ball in $L^2(\Omega)$. Indeed, using the Young's inequality we arrive at the following criterion
+    \begin{align}
+        \label{eq:f_ball_to_ball_l2_1}
+        \begin{split}
+            \|\mathcal{F}(\varphi)\|_2
+            &\leq
+            \frac{d_u }{d_u + B} \left( \|J\|_1 R_2 + u_*\|j_\Omega\|_2\right) \\
+            &+
+            \frac{A}{d_u + B}\left( 2 u_* R_2 + R_\infty R_2 \right) 
+            + \frac{u_*^2}{d_u + B} \|V(u_* + \varphi) - v_*\|_2 \leq R_2.
+        \end{split}
+    \end{align}
+    Observe that, by the triangle inequality and Lemma \ref{lem:stationary_v_estimate_v_star} we obtain the following bound
+    \begin{equation}
+        \|V(u_* + \varphi) - v_*\|_2 \leq \|V(u_* + \varphi) - V(u_*)\|_2 + \|V(u_*) - v_*\|_2 \leq 2A(u_* + R_\infty) \|\varphi\|_2 + \epsilon,
+    \end{equation}
+    where $\epsilon := \epsilon(d_v)$ can be made sufficiently small, by taking $d_v$ sufficiently small. Plugging that into inequality \eqref{eq:f_ball_to_ball_l2_1}, moving terms involving radius $R_2$ to the right hand side and multiplying by the factor of $d_u + B$ we obtain
+    \begin{equation}
+        \label{eq:f_ball_to_ball_l2_2}
+        u_*(d_u\|j_\Omega\|_2 + \epsilon u_*)
+        \leq
+        \left(d_u + B - d_u \|J\|_1 - A(2u_* + R_\infty) - 2Au_*^2(u_* + R_\infty)\right) R_2
+    \end{equation}
+    Since the left hand side of inequality \eqref{eq:f_ball_to_ball_l2_2} is positive and we want to find radius $R_2 > 0$, we need to guarantee that the dispersal rate satisfies
+    \begin{equation}
+        d_u > \frac{A(2u_* + R_\infty) + 2Au_*^2(u_* + R_\infty) - B}{1 - \|J\|_1}
+    \end{equation}
+    We furthermore demand $R_2 < \left(\int_\Omega u_*^2 \:dx\right)^{1/2} = u_* |\Omega|^{1/2}$, to assure that the case when $U(x) = 0$ is excluded. Consequently, an inequality \eqref{eq:f_ball_to_ball_l2_2} yields the following condition
+    \begin{equation}
+        \label{eq:f_ball_to_ball_condition_2_final}
+        \left( 1 - \frac{\|j_\Omega\|_2}{|\Omega|^{1/2}(1-\|J\|_1)} \right)d_u \geq \frac{ \epsilon u_*}{|\Omega|^{1/2} (1 - \|J\|_1)} + \frac{A(2u_* + R_\infty) + 2Au_*^2(u_* + R_\infty) - B}{1 - \|J\|_1}
+    \end{equation} 
+    From positivity of $d_u$ we must have that the domain $\Omega$ and kernel $J$ satisfies
+    \begin{equation}
+        \label{eq:critical_patch_size_condition}
+        |\Omega|^{1/2} > \frac{\|j_\Omega\|_2}{1 - \|J\|_1}
+    \end{equation}
+    When the condition \eqref{eq:critical_patch_size_condition} holds true we easily obtain the lower bound for dispersal rate $d_u$ from the inequality \eqref{eq:f_ball_to_ball_condition_2_final}.
+    Next, we show the contractivity of $\mathcal{F}$. Suppose that $\varphi, \psi \in X$, then
+    \begin{align}
+        \label{eq:contraactivity-first-inequality}
+        \begin{split}
+            \|\mathcal{F}(\varphi) - \mathcal{F}(\psi)\|_\infty
+            &\leq
+            \frac{d_u}{d_u + B} \|1 - j_\Omega\|_\infty \|\varphi - \psi\|_\infty \\
+            &+ \frac{1}{d_u + B} \left\|(2u_* \varphi + \varphi^2) V(u_* + \varphi)
+            - (2u_* \psi + \psi^2) V(u_* + \psi) \right\|_\infty \\
+            &+ \frac{u_*^2}{d_u + B}\left\| V(u_* + \varphi) - V(u_* + \psi) \right\|_\infty.
+        \end{split}
+    \end{align}
+    Consider the function $g(\varphi) = (2u_*\varphi + \varphi^2)V(u_* + \varphi)$. Applying Lemmas \ref{lem:existence_of_inhomogeneous_elliptic_v}, \ref{lem:stationary_v_lipschitz_constant} and the Mean Value Theorem, we obtain the following estimate 
+    \begin{equation}
+        \label{eq:contractivity-second-term}
+        \|g(\varphi) - g(\psi)\|_\infty \leq 
+        2A(u_* + R_\infty)
+        \left( 1 + 2u_*R_\infty + R^2_\infty \right) \|\varphi - \psi\|_\infty.
+    \end{equation}
+    The last term in inequality \eqref{eq:contraactivity-first-inequality} is again estimated using Lemmas \ref{lem:existence_of_inhomogeneous_elliptic_v}, \ref{lem:stationary_v_lipschitz_constant} together with Mean Value Theorem. 
+    \begin{equation}
+        \label{eq:contracitivity-third-term}
+        \left\| V(u_* + \varphi) - V(u_* + \psi) \right\|_\infty
+        \leq
+        2AR_\infty\|\varphi - \psi\|_\infty
+    \end{equation}
+    Now, combining inequality \eqref{eq:contraactivity-first-inequality} with \eqref{eq:contractivity-second-term} and \eqref{eq:contracitivity-third-term} we obtain that
+    \begin{align}
+        \label{eq:contractivity-final-inequality}
+        \begin{split}
+            \|\mathcal{F}(\varphi) - \mathcal{F}(\psi)\|_\infty
+            &\leq
+            \frac{d_u}{d_u + B} \|1 - j_\Omega\|_\infty \|\varphi - \psi\|_\infty\\
+            &+
+            \frac{2A(u_* + R_\infty)
+        \left( 1 + 2u_*R_\infty + R^2_\infty \right)}{d_u + B} \|\varphi - \psi\|_\infty \\
+            &+ \frac{2u_*^2A(u_* + R_\infty)}{d_u + B}\|\varphi - \psi\|_\infty.
+        \end{split}
+    \end{align}
+    Therefore, the contractivity follows provided that the following inequality holds true.
+    \begin{equation}
+        \label{eq:contracitivity-final2-inequality}
+        \frac{d_u}{d_u + B} \|1 - j_\Omega\|_\infty + 
+        \frac{2A(u_* + R_\infty)
+        \left( 1 + 2u_*R_\infty + R^2_\infty \right)}{d_u + B} +
+        \frac{2A u_*^2(u_* + R_\infty)}{d_u + B} <
+        1.
+    \end{equation}
+    Multiplying inequality \eqref{eq:contracitivity-final2-inequality} by $d_u + B$ and moving all terms involving $d_u$ to the right hand side, we obtain the criterion
+    \begin{equation}
+        \label{eq:contractivity_final3_inequality}
+        d_u
+        >
+        \frac{2A(u_* + R_\infty)
+        \left( 1 + u_*^2 + 2u_*R_\infty + R^2_\infty \right)}{1 - \|1-j_\Omega\|_\infty}
+    \end{equation}
+    Finally, proceeding as previously, we estimate the $L^2$ norm to get
+    \begin{align}
+        \label{eq:contraactivity-l2-1}
+        \begin{split}
+            \|\mathcal{F}(\varphi) - \mathcal{F}(\psi)\|_2
+            &\leq
+            \frac{d_u}{d_u + B} \|J\|_1 \|\varphi - \psi\|_2 \\
+            &+ \frac{1}{d_u + B} \left\|(2u_* \varphi + \varphi^2) V(u_* + \varphi)
+            - (2u_* \psi + \psi^2) V(u_* + \psi) \right\|_2 \\
+            &+ \frac{u_*^2}{d_u + B}\left\| V(u_* + \varphi) - V(u_* + \psi) \right\|_2.
+        \end{split}
+    \end{align}
+    Again, applying Lemmas \ref{lem:existence_of_inhomogeneous_elliptic_v}, \ref{lem:stationary_v_lipschitz_constant} and the Mean Value Theorem we obtain condition
+    \begin{align}
+        \label{eq:contraactivity-l2-1}
+        \begin{split}
+            \|\mathcal{F}(\varphi) - \mathcal{F}(\psi)\|_2
+            &\leq
+            \frac{d_u}{d_u + B} \|J\|_1 \|\varphi - \psi\|_2 \\
+            &+ \frac{2A(u_* + R_\infty)
+        \left( 1 + 2u_*R_\infty + R^2_\infty \right)}{d_u + B} \|\varphi - \psi\|_2 \\
+            &+ \frac{2u_*^2A(u_* + R_\infty)}{d_u + B} \|\varphi - \psi\|_2.
+        \end{split}
+    \end{align}
+    Consequently, we get that the contractivity property holds provided that
+    \begin{equation}
+        \frac{d_u}{d_u + B} \|J\|_1 + 
+        \frac{2A(u_* + R_\infty)
+        \left( 1 + 2u_*R_\infty + R^2_\infty \right)}{d_u + B} +
+        \frac{2A u_*^2(u_* + R_\infty)}{d_u + B} <
+        1.
+    \end{equation}
+    Corresponding lower bound for dispersal rate $d_u$ is given by
+    \begin{equation}
+        d_u > \frac{2A(u_* + R_\infty)
+        \left( 1 + u_*^2 + 2u_*R_\infty + R^2_\infty \right)}{1 - \|J\|_1}
+    \end{equation}
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    From Banach Fixed Point Theorem we obtain existence of a unique solution $(U, V)$. 
+    Next, from the construction of solution it is clear that 
+    \begin{equation}
+        \|U - u_*\|_2 = \|\varphi\|_2 \leq R_2.
+    \end{equation}
+    Moreover, from the Lemma \ref{lem:stationary_v_estimate_v_star} and Cauchy-Schwarz inequality, it immediately follows that
+    \begin{align}
+        \begin{split}
+            \|V(U) - v_*\|_2 
+            &\leq \|V(U) - V(u_*)\|_2 + \|V(u_*) - v_*\|_2 \\
+            &\leq 2A(u_* + R)\|U-u_*\|_2 + \epsilon \\
+            &\leq 2A(u_* + R)|\Omega|^{1/2} R + \epsilon.     
+        \end{split}
+    \end{align}
+\end{proof}
+
+\begin{rem}
+    Combining Lemma \ref{lem:stationary_v_estimate_v_star} with Theorem \ref{thm:Stationary-Solutions-Existence}, it follows that small diffusion rate $d_v$ yields existence of the water profile $V$, which is a small perturbation of the constant number $v_*$. However, we highlight that if $d_v$ is large then the conclusion of Theorem \ref{thm:Stationary-Solutions-Existence} still holds true.
+\end{rem}
+
+\section{Extinction and survival of vegetation}
+
+\subsection{Insufficient initial biomass} Here, we investigate how the assumption of small initial density leads to vegetation extinction.
+
+\begin{thm}
+    \label{thm:Exinction-Of-Vegetation}
+    Let $R_1 = \max\{\|v_0\|_\infty, A\}$. Denote an interval $\Gamma  = \left[0, \frac{B}{R_1}\right]$. Suppose that $u_0(x) \in \Gamma$ for all $x \in \Omega$. Then the solution $(u, v)$ of the problem \eqref{eq:u}-\eqref{eq:v_init} satisfies
+    \begin{equation}
+        u(x,t) \xrightarrow{t \rightarrow \infty} 0, \quad v(x,t) \xrightarrow{t \rightarrow \infty} V_0(x),
+    \end{equation}
+    where we denoted the stationary water profile $V_0 := V(0)$, obtained in Lemma \ref{lem:existence_of_inhomogeneous_elliptic_v}.
+\end{thm}
+\begin{proof}
+    The first limit is the consequence of the bound \eqref{EQ:AprioriEsitmate_Unvariant_Region}. Since $(B - R_1\nu(0)) \geq 0$ we get that for all $x \in \Omega$
+    \begin{equation*}
+        u(x,t) \leq \frac{B\nu(0)}{R_1 \nu(0) + 
+        (B - R_1 \nu(0)) e^{B t}} \rightarrow 0 \quad \text{as} \quad t \rightarrow \infty.
+    \end{equation*}
+    Now, let us replace the quadratic term in equation \eqref{eq:v_stationary} with zero to get
+    \begin{equation}
+        \label{eq:v_elliptic_linear_part}
+        d_v \Delta V - V + A = 0, \quad x \in \Omega, \quad V = 0, \quad x \in \partial \Omega.
+    \end{equation}
+    Recall that Lemma \ref{lem:existence_of_inhomogeneous_elliptic_v} yields existence of non-constant solution $V_0$ of the problem \eqref{eq:v_elliptic_linear_part}. Denote $w = v - V_0$. One can easily verify that it satisfies the following partial differential equation.
+    \begin{equation}
+        \label{eq:w_parabolic}
+        w_t = d_v\Delta w - w - u^2v \quad x \in \Omega, \quad w = 0 \quad x \in \partial\Omega
+    \end{equation}
+    Denote by $e^{t(\Delta - Id)}$ the well known heat semigroup. We then apply a Duhamel principle to the equation \eqref{eq:w_parabolic} to obtain
+    \begin{equation}
+        \label{eq:w_duhmel_principle}
+        w(t) = e^{t(d_v\Delta - Id)} w(0) - \int_0^t e^{(t-s)(d_v\Delta - Id)} u^2(s) v(s)\:ds
+    \end{equation}
+    Equation \eqref{eq:w_duhmel_principle} allows us to estimate the $L^\infty$ norm of $w$ as follows
+    \begin{align}
+        \label{eq:w_infty_estimate}
+        \begin{split}
+            \|w(t)\|_\infty 
+            &\leq e^{-t}\|w(0)\|_\infty + \int_0^t e^{-(t-s)} \|u^2(s)\|_\infty \|v(s)\|_\infty\:ds \\
+            &\leq e^{-t}\|w(0)\|_\infty + R_1\int_0^t e^{-(t-s)} \|u^2(s)\|_\infty \:ds.
+        \end{split}
+    \end{align}
+    Now, we use inequality \eqref{EQ:AprioriEsitmate_Unvariant_Region} to estimate the integrated term as follows
+    \begin{align}
+        \label{eq:w_infty_estimate_integral}
+        \begin{split}
+            R_1 \int_0^t e^{-(t-s)} \|u^2(s)\|_\infty \:ds 
+            &\leq
+            \frac{R_1 B \nu(0)}{B-R_1 \nu(0)} \int_0^t e^{-(t-s)} e^{-Bs}\:ds \\
+            &= 
+            \frac{R_1 B \nu(0)}{(B-R_1\nu(0))(B-1)} e^{-t} \\
+            &- 
+            \frac{R_1 B \nu(0)}{(B-R_1\nu(0))(B-1)} e^{-Bt}.
+        \end{split}
+    \end{align}
+    Now, combining inequalities \eqref{eq:w_infty_estimate} and \eqref{eq:w_infty_estimate_integral} we get that
+    \begin{align*}
+        \|w(t)\|_\infty 
+        &\leq \left( \|w(0)\|_\infty + \frac{R_1 B \nu(0)}{(B-R_1\nu(0))(B-1)} \right) e^{-t} \\
+        &- \frac{R_1 B \nu(0)}{(B-R_1\nu(0))(B-1)} e^{-Bt}.
+    \end{align*}
+    It is an immediate consequence that $\|w(t)\|_\infty \rightarrow 0$ as $t \rightarrow \infty$.
+\end{proof}
+
+\subsection{Linearized stability}
+
+Now, we closely investigate the linearized stability of stationary solutions obtained in Theorem \ref{thm:Stationary-Solutions-Existence}. We start by computing the constant solutions of equations \eqref{eq:u_stationary} and \eqref{eq:v_stationary}. We search for the numbers $(u_*, v_*)$ satisfying
+\begin{align}
+    \label{EQ:KineticSystem}
+    \begin{cases}
+        0 = u^2v - Bu,\\
+        0 = -u^2v - v + A.
+    \end{cases}
+\end{align}
+\begin{prp}
+    \label{prp:ExistenceOfConstantSSKineticSystem}
+    Consider parameters $A > 0$ and $B > 0$ of the Klausmeier system \eqref{eq:u}-\eqref{eq:v_init}. The following statements hold true.
+    \begin{itemize}
+        \item If $A > 2B$ then there are three real solutions of \eqref{EQ:KineticSystem}.
+        \item If $A = 2B$ then there are two real solutions of \eqref{EQ:KineticSystem}.
+        \item If $A < 2B$ then there is one real solution of \eqref{EQ:KineticSystem}.
+    \end{itemize}
+\end{prp}
+
+\begin{proof}
+    From the second equation we get $v = \frac{A}{u^2 + 1}$. Thus the first equation becomes
+    \begin{equation}
+        \label{EQ:StationaryPolynomial}
+        -B u^3 + A u^2 - B u = 0
+    \end{equation}
+    For all parameters $A > 0, B > 0$ we can find the solution of following form
+    \begin{align}
+        \label{EQ:FirstSS}
+        \left(u_{*,1}, v_{*,1}\right) &= \left(0, A\right),
+    \end{align}
+    Provided that $A > 2B$, the equation \eqref{EQ:StationaryPolynomial} admits two more solutions
+    \begin{align}
+        \left(u_{*,2}, v_{*,2}\right) &= \left(\frac{A - \sqrt{A^2 - 4B^2}}{2B}, \frac{2 B^2}{A - \sqrt{A^2 - 4B^2}}\right), \label{EQ:SecondSS}\\
+        \left(u_{*,3}, v_{*,3}\right) &= \left(\frac{A + \sqrt{A^2 - 4B^2}}{2B}, \frac{2 B^2}{A + \sqrt{A^2 - 4B^2}}\right) \label{EQ:ThirdSS}.
+    \end{align}
+    Finally, if $A = 2B$, then the solutions \eqref{EQ:SecondSS} and \eqref{EQ:ThirdSS} merge into 
+    \begin{align}
+        \label{EQ:FourthSS}
+        \left( u_{*,4}, v_{*,4} \right) &= \left(1, B\right).
+    \end{align}
+    For $A < 2B$ there are no other, real solutions of \eqref{EQ:StationaryPolynomial} then \eqref{EQ:FirstSS}.
+\end{proof}
+
+\begin{rem}
+    \label{rem:classification_steady_states}
+    The stationary solution $(u_{*,1},v_{*,1})$ corresponds to the desert state, particularly the vegetation density satisfies $u_{*,1} = 0$. On the other hand, solutions $(u_{*,2},v_{*,2})$ and $(u_{*,3},v_{*,3})$ are ecologically more interesting as they correspond to the equilibria with a non-zero biomass $u_{*,i} \neq 0$.
+\end{rem}
+
+\begin{thm}
+    \label{thm:Stationary-Solutions-Stability}
+    Let the parameters $A > 0$, $B > 0$ and $d_v > 0$ be arbitrary. Assume that dispersal speed $d_u > 0$ is large and a domain $\Omega \subset \mathbb{R}^n$ has a sufficiently small measure $|\Omega|$. Then, each of the stationary solutions $(U, V)$ constructed in Theorem \ref{thm:Stationary-Solutions-Existence} is linearly, asymptotically stable in the sense of the norm of $L^2(\Omega)$.
+\end{thm}
+
+\begin{proof}
+    It is convenient to introduce the following notation
+    \begin{equation}
+        \label{eq:non_linearities}
+        f(u, v) = u^2v - Bu, \quad g(u,v) = -u^2v - v + A
+    \end{equation}
+    Let $(U, V)$ be a solution constructed in Theorem \ref{thm:Stationary-Solutions-Existence}, around any constant numbers $(u_*, v_*)$ obtained by Proposition \ref{prp:ExistenceOfConstantSSKineticSystem}. We linearize problem \eqref{eq:u}-\eqref{eq:v_bound} around $(U, V)$ and introduce the new functions $\varphi = u - U$ and $\psi = v - V$. This functions satisfy the following system of PDEs.
+    \begin{align*}
+        \frac{\partial}{\partial t}
+        \begin{pmatrix}
+            \varphi \\ \psi
+        \end{pmatrix}
+        =
+        \begin{pmatrix}
+            d_u \mathcal{L} & 0 \\ 0 & d_v \Delta
+        \end{pmatrix}
+        \begin{pmatrix}
+            \varphi \\ \psi
+        \end{pmatrix}
+        +
+        \begin{pmatrix}
+            f_u(U,V) & f_v(U,V) \\ g_u(U,V) & g_v(U,V)
+        \end{pmatrix}
+        \begin{pmatrix}
+            \varphi \\ \psi
+        \end{pmatrix}.
+    \end{align*}
+    From that, we write the energy equation for $\varphi$ as follows
+    \begin{align}
+        \label{eq:energy_varphi}
+        \frac{\partial}{\partial t} \int_\Omega \varphi^2\:dx 
+        &=
+        d_u \langle \mathcal{L}\varphi, \varphi \rangle_{L^2(\Omega)} +  \int_\Omega f_u(U,V) \varphi^2 \:dx + \int_\Omega f_v(U,V) \varphi \psi \:dx.
+    \end{align}
+    Next, we estimate the first term in \eqref{eq:energy_varphi} from above
+    \begin{equation}
+        \label{eq:energy_varphi_1st_term}
+        \langle \mathcal{L}\varphi, \varphi \rangle_{L^2(\Omega)} 
+        =
+        \frac{\langle \mathcal{L}\varphi, \varphi \rangle_{L^2(\Omega)}}{\|\varphi\|_2^2}\|\varphi\|_2^2
+        \leq
+        \sup_{\varphi \in L^2(\Omega)}\left( \frac{\langle \mathcal{L}\varphi, \varphi \rangle_{L^2(\Omega)}}{\|\varphi\|^2_2} \right) \|\varphi\|_2^2 =: \beta_1 \|\varphi\|_2^2,
+    \end{equation}
+    where we denoted by $\beta_1 < 0$ a principle eigenvalue of $\mathcal{L}$ with non-local Dirichlet boundary condition, for details see \cite{GarciaMelianRossi2009}. Furthermore, we deal with the third term in equation \eqref{eq:energy_varphi}, using the well known Cauchy inequality $ab \leq \frac{a^2}{2} + \frac{b^2}{2}$ for arbitrary numbers $a, b \in \mathbb{R}$.
+    \begin{equation}
+        \label{eq:energy_varphi_2nd_term}
+        \int_\Omega f_v(U,V) \varphi \psi \:dx \leq \|f_v(U,V)\|_\infty \left( \frac{\|\varphi\|_2^2}{2} + \frac{\|\psi\|_2^2}{2} \right)
+    \end{equation}
+    Next, we plug estimates \eqref{eq:energy_varphi_1st_term} and \eqref{eq:energy_varphi_2nd_term} into equation \eqref{eq:energy_varphi} to get that
+    \begin{align}
+        \label{eq:energy_varphi_odi}
+        \begin{split}
+            \frac{\partial}{\partial t} \int_\Omega \varphi^2\:dx
+            &\leq
+            \left(d_u \beta_1 + \frac{\|f_v(U,V)\|_\infty}{2}\right) \|\varphi\|_2^2 \\
+            &+
+            \int_\Omega f_u(U,V) \varphi^2\:dx + 
+            \frac{\|f_v(U,V)\|_\infty}{2}\|\psi\|_2^2.
+        \end{split}
+    \end{align}
+    Analogously, for the energy of $\psi$ we obtain the differential inequality
+    \begin{align}
+        \label{eq:energy_psi_odi}
+        \begin{split}
+            \frac{\partial}{\partial t} \int_\Omega \psi^2\:dx
+            &\leq
+            \left(d_v \lambda_1 + \frac{\|g_u(U,V)\|_\infty}{2} \right) \|\psi\|_2^2 \\
+            &+
+            \int_\Omega g_v(U,V) \psi^2 \:dx + \frac{\|g_u(U,V)\|_\infty}{2} \|\varphi\|_2^2,
+        \end{split}
+    \end{align}
+    where we denoted by $\lambda_1 < 0$ a principle eigenvalue of $\Delta$ with Dirichlet boundary condition. Combining inequalities \eqref{eq:energy_varphi_odi} and \eqref{eq:energy_psi_odi} we obtain
+    \begin{align}
+        \label{eq:energy_combined}
+        \begin{split}
+            \frac{\partial}{\partial t} \int_\Omega \varphi^2 + \psi^2\:dx
+            &\leq
+            \left(d_u \beta_1 + \frac{\|f_v(U,V)\|_\infty}{2} + \frac{\|g_u(U,V)\|_\infty}{2}\right) \|\varphi\|_2^2 \\
+            &+
+            \left(d_v \lambda_1 + \frac{\|f_v(U,V)\|_\infty}{2} + \frac{\|g_u(U,V)\|_\infty}{2} \right) \|\psi\|_2^2 \\
+            &+ 
+            \int_\Omega f_u(U,V) \varphi^2\:dx
+            +
+            \int_\Omega g_v(U,V) \psi^2 \:dx \\
+            &\leq
+            \max\left\{\left(d_u \beta_1 + C_1
+            \right), \left(d_v \lambda_1 + C_2\right)\right\}\int_\Omega \varphi^2 + \psi^2\:dx,
+        \end{split}
+    \end{align}
+    where we denoted the real numbers $C_1:=C_1(A,B,R,d_v)$ and $C_2:=C_2(A,B, R, d_v)$, related to the parameters $A, B, d_v$ of the Klausmeier model and parameter $R$ which corresponds to the magnitude of the perturbation. Now, suppose that
+    \begin{equation}
+        \label{eq:linearized_stability_condition}
+        \max\left\{\left(d_u \beta_1 + C_1
+            \right), \left(d_v \lambda_1 + C_2\right)\right\} < 0.
+    \end{equation}
+    Solving differential inequality \eqref{eq:energy_combined}, one obtains linear, asymptotic stability of $(U, V)$. In particular
+    \begin{equation}
+        \int_\Omega \varphi^2\:dx + \int_\Omega \psi^2\:dx \rightarrow 0, \quad \text{ as } \quad t \rightarrow \infty.
+    \end{equation}
+\end{proof}
+
+\section{Numerical experiments}
+
+Here, we numerically confirm the main theoretical results of this work, obtained in Theorems \ref{thm:Stationary-Solutions-Existence}, \ref{thm:Exinction-Of-Vegetation} and Theorem \ref{thm:Stationary-Solutions-Stability}. First, let use recall that the non-zero, constant solutions $(u_*, v_*)$, computed in Proposition \ref{prp:ExistenceOfConstantSSKineticSystem} can be perturbed in such a way that the stationary problem \eqref{eq:u}-\eqref{eq:v_init} admits a non-zero, linearly, asymptotically stable stationary solution $(U, V)$, if the following condition holds true
+\begin{itemize}
+    \item[(A1)] The dispersal speed $d_u >$ is sufficiently large.
+    \item[(A2)] Given parameters $A > 0$, $B > 0$, $d_v >0$ and $R > 0$ the measure of the domain $|\Omega|$ is sufficiently large.
+\end{itemize}
+In the one-dimensional case, we consider intervals $\Omega = (-L, L)$ with some $L > 0$. For the dispersal kernel $J$, we choose the 1-d Gaussian probability density function
+\begin{equation}
+    \label{eq:1dGaussian_PDF}
+    J(x) = \frac{1}{\sqrt{\pi}}e^{-x^2}, \quad x \in \mathbb{R}.
+\end{equation}
+Observe that kernel $J$ defined by \eqref{eq:1dGaussian_PDF} satisfies the assumptions \ref{J1}-\ref{J5}.
+
+
+\subsection{Critical patch size}
+
+By Proposition \ref{prp:ExistenceOfConstantSSKineticSystem}, we assume that $A \geq 2B$ to guarantee the existence of non-zero, spatially uniform equilibrium. We investigate existence of a critical patch size $|\Omega| = 2L$, which assures the long-term survival of the vegetation. As shown in the proofs of Theorems \ref{thm:Stationary-Solutions-Existence}, \ref{thm:Stationary-Solutions-Stability}, the existence of a stable steady state is directly linked to the patch size and kernels geometry, see inequalities \eqref{eq:critical_radius_inequality_limit}, \eqref{eq:linearized_stability_condition}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/critical_patch_size_figure.png}
+    \caption{In the left panel, we show an average stationary biomass (green dots) and non-spatial steady-state solution (orange line) as a function of the patch half-width $L$. The steady state solution asymptotically approaches the non-spatial solution for large patch sizes. As $L$ decreases, the stationary biomass decreases, eventually undergoing an extinction transition at critical patch size with $L\gtrsim 1$. In the right panel, we present stationary biomass profiles for different patch half-widths $L$, corresponding to the results shown in the left panel.}
+    \label{fig:critical_patch_size}
+\end{figure}
+
+
+\subsection{Critical biomass level}
+
+To validate our theoretical predictions presented in Theorem \ref{thm:Exinction-Of-Vegetation}, we constructed a bifurcation diagram by solving the full evolution problem \eqref{eq:u}-\eqref{eq:v_init} for decreasing rainfall $A \in (0.1,1.0)$ and fixed mortality $B = 0.45$. Here we consider the dispersal rate $d_u = 2.0$ and diffusion coefficient $d_v = 100.0$. We take $\Omega = (-30, 30)$. The process was initiated using the constant steady state solution $(u_{*, 3}, v_{*, 3})$ obtained by Proposition \ref{prp:ExistenceOfConstantSSKineticSystem}. For each value of $A$, the stationary solution that is obtained, serves as an initial condition for subsequent iteration.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{figures/bifurcation_diagram_figure.png}
+    \caption{In the left panel, we show an average stationary biomass (green dots), maximal biomass (yellow dots) and a critical level (red line, $\frac{B}{A}$). The rightmost gallery presents profiles of biomass densities (green lines) for various choices of rainfall $A$.}
+    \label{fig:bifurcation_diagram}
+\end{figure}
+
+The results shown in Figure \ref{fig:bifurcation_diagram}, align with our theoretical results from Theorem \ref{thm:Exinction-Of-Vegetation}. Our simulation confirms existence of a stable, spatially perturbed steady state from Theorem \ref{thm:Stationary-Solutions-Existence} up to the point when the rainfall approaches $A = 2B$. When $A < 2B$, then the spatially uniform solutions $(u_{*, 3}, v_{*, 3})$ stops to exists and bifurcation occurs. In particular, as the water availability decreases, the vegetation aggregates into patches (note the decreasing average biomass and varying maximal biomass density), to compete for shrinking resources more effectively. Moreover, we have numerically confirmed existence of a critical level for maximal biomass density. In particular, once the vegetation patch (even sufficiently large one) has insufficiently aggregated density (e.g. maximal biomass density is less then $\frac{B}{A}$) then it must go extinct.
+
+% The results, shown in Figure \ref{fig:bifurcation_diagram}, align with our theoretical analysis. The simulations demonstrate that as water availability decreases, the vegetation aggregates into patches (decreasing average biomass with varying maximal biomass level) to compete more effectively for resources. This supports the conclusions of Theorem \ref{thm:Exinction-Of-Vegetation}. Furthermore, we observe that if the maximum concentration of biomass falls below a certain threshold—a scenario linked to the critical patch size limitations discussed in our work—the vegetation cannot be sustained and collapses towards extinction.
+
+\newpage
+
+\bibliographystyle{siam}
+\bibliography{bibliography}
+
+% \begin{thebibliography}{100}
+
+% \end{thebibliography}
+
+\end{document}

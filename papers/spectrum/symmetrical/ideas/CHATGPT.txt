@@ -1,0 +1,589 @@
+Hej Maciej, przeczytałem uważnie całą pracę. Poniżej daję możliwie szczerą ocenę: najpierw diagnozę desk rejectionów, potem najważniejsze problemy matematyczne, propozycję głębokiej przebudowy oraz ocenę, czy Discrete and Continuous Dynamical Systems jest dobrym kolejnym wyborem.
+
+Ocena w skrócie
+
+Temat jest sensowny i publikowalny, ale w obecnej wersji widzę kilka luk technicznych, z których co najmniej dwie dotyczą centralnej konstrukcji kolejnych wartości własnych. To może tłumaczyć desk rejectiony bardziej niż sam dobór czasopisma.
+
+Najważniejszy problem strategiczny jest następujący:
+
+Artykuł przedstawia jako główne narzędzie konstrukcję Galerkina, podczas gdy istnienie izolowanych wartości własnych ponad brzegiem spektrum istotnego można uzyskać znacznie krócej ze standardowej zasady min-max dla ograniczonych operatorów samosprzężonych.
+
+Przez to redaktor może mieć jednocześnie dwa wrażenia:
+
+wynik wygląda na konsekwencję standardowej teorii spektralnej,
+a jednocześnie długi argument Galerkina zawiera miejsca wymagające naprawy.
+
+Moja rekomendacja to nie wysyłać obecnej wersji od razu do DCDS. Najpierw przebudowałbym rdzeń dowodu.
+
+1. Najpoważniejsze problemy matematyczne
+1.1. Assumption 1.2 nie wystarcza do dowodu Proposition 2.1
+
+W Assumption 1.2 zakładasz jedynie:
+
+Ω1∩Ω2=∅,Ω1∪Ω2=Ω.\Omega_1\cap\Omega_2=\varnothing, \qquad \Omega_1\cup\Omega_2=\Omega.
+
+Następnie wybierasz
+
+v=1∣Ω∣1Ω1−1∣Ω∣1Ω2v=\frac{1}{\sqrt{|\Omega|}}\mathbf 1_{\Omega_1} -\frac{1}{\sqrt{|\Omega|}}\mathbf 1_{\Omega_2}
+
+i piszesz:
+
+Since ∣Ω1∣=∣Ω2∣|\Omega_1|=|\Omega_2|, we have ∫Ωv=0\int_\Omega v=0.
+
+Ale warunku
+
+∣Ω1∣=∣Ω2∣|\Omega_1|=|\Omega_2|
+
+nie ma w Assumption 1.2. To jest formalna luka dokładnie w pierwszym kryterium istnienia luki spektralnej.
+
+Najprostsza naprawa
+
+Dodać do Assumption 1.2:
+
+∣Ω1∣=∣Ω2∣=∣Ω∣2.|\Omega_1|=|\Omega_2|=\frac{|\Omega|}{2}.
+
+Alternatywnie można użyć funkcji dwupoziomowej z różnymi amplitudami:
+
+v=a1Ω1−b1Ω2,v=a\mathbf 1_{\Omega_1}-b\mathbf 1_{\Omega_2},
+
+gdzie
+
+a∣Ω1∣=b∣Ω2∣,a2∣Ω1∣+b2∣Ω2∣=1.a|\Omega_1|=b|\Omega_2|, \qquad a^2|\Omega_1|+b^2|\Omega_2|=1.
+
+Wtedy jednak współczynnik 4/∣Ω∣4/|\Omega| w warunku trzeba zastąpić odpowiednią funkcją ∣Ω1∣|\Omega_1| i ∣Ω2∣|\Omega_2|.
+
+1.2. Konstrukcja kolejnych eigenpairów w Lemma 3.4 jest obecnie niepoprawna
+
+To jest moim zdaniem najważniejszy problem całego manuskryptu.
+
+W Lemma 3.4 definiujesz skończenie wymiarowy zbiór współczynników jako
+
+C={c∈RN+1:c0=⋯=ck=0, ∥c∥=1}.C=\{c\in\mathbb R^{N+1}:c_0=\cdots=c_k=0,\ \|c\|=1\}.
+
+Jednak warunek
+
+c0=⋯=ck=0c_0=\cdots=c_k=0
+
+oznacza ortogonalność względem funkcji bazowych
+
+ϕ0,…,ϕk,\phi_0,\ldots,\phi_k,
+
+a nie względem wcześniej skonstruowanych funkcji własnych
+
+v0,…,vk.v_0,\ldots,v_k.
+
+Chyba że jawnie wybierzesz bazę zależną od NN, zaczynającą się od odpowiednich przybliżeń vjNv_j^N. Ale obecny tekst tego nie robi, a taka zależna od NN konstrukcja komplikuje argument gęstości.
+
+Poprawny warunek w przestrzeni współczynników powinien mieć postać
+
+c⊥c0N,…,ckN,c\perp c_0^{N},\ldots,c_k^{N},
+
+gdzie cjNc_j^N są wektorami reprezentującymi dyskretne eigenfunkcje vjNv_j^N.
+
+To nie jest kosmetyczny błąd. Na tym opiera się cała indukcja prowadząca do Theorem 1.4.
+
+Jeszcze poważniejszy problem w formule (3.39)
+
+Piszesz dla ψ∈Ak+1\psi\in A_{k+1}:
+
+⟨Lvk+1N,ψ⟩=βk+1N⟨vk+1N,ψ⟩.\langle Lv_{k+1}^N,\psi\rangle = \beta_{k+1}^N\langle v_{k+1}^N,\psi\rangle.
+
+Ale równanie Galerkina obowiązuje tylko dla funkcji testowych należących do odpowiedniej przestrzeni skończenie wymiarowej, zasadniczo ψ∈VN\psi\in V_N, a nie dla dowolnego ψ∈Ak+1\psi\in A_{k+1}.
+
+Należałoby testować projekcjami PNψP_N\psi, a następnie kontrolować:
+
+PNψ→ψP_N\psi\to\psi,
+ewentualną utratę ortogonalności względem vjNv_j^N,
+korektę projekcji do dyskretnej przestrzeni ograniczeń.
+
+Da się to zrobić, ale dowód będzie wyraźnie dłuższy i bardziej techniczny.
+
+Moja rekomendacja
+
+Usunąć całą indukcyjną konstrukcję Galerkina jako narzędzie do dowodu istnienia i zastąpić ją standardowym twierdzeniem min-max dla operatorów samosprzężonych.
+
+Galerkin można zostawić później jako:
+
+metodę aproksymacji numerycznej,
+osobny proposition o zbieżności Ritz values,
+dodatek obliczeniowy.
+1.3. Ścisła nierówność między kolejnymi eigenvalues nie wynika z inkluzji zbiorów
+
+W Theorem 1.3 deklarujesz:
+
+sup⁡σc<βk<⋯<β0.\sup\sigma_c<\beta_k<\cdots<\beta_0.
+
+W dowodzie stosujesz inkluzje
+
+Ak⊂Ak−1⊂⋯⊂A1,A_k\subset A_{k-1}\subset\cdots\subset A_1,
+
+ale wynika z nich jedynie
+
+βk≤βk−1≤⋯≤β1.\beta_k\leq\beta_{k-1}\leq\cdots\leq\beta_1.
+
+Nie wynika ścisłość.
+
+W rzeczywistości dla symetrycznych domen i radialnych jąder wartości własne mogą mieć krotność większą niż jeden. Przykładami naturalnie prowadzącymi do degeneracji są kule, dyski, sześciany i domeny z grupą symetrii.
+
+Konieczna poprawka
+
+Wszędzie zastąpić:
+
+βk<⋯<β1<β0\beta_k<\cdots<\beta_1<\beta_0
+
+przez
+
+βk≤⋯≤β1<β0.\beta_k\leq\cdots\leq\beta_1<\beta_0.
+
+Jeśli chcesz uzyskać ścisłość, potrzebujesz dodatkowego założenia o prostocie kolejnych wartości własnych. Dla wartości nieprincipalnych takie założenie na ogół nie będzie naturalne.
+
+1.4. „Continuous spectrum” i „essential spectrum” nie powinny być utożsamiane
+
+W pracy używasz oznaczenia σc\sigma_c i opisujesz je jednocześnie jako continuous spectrum oraz essential spectrum.
+
+To nie są automatycznie te same pojęcia.
+
+Dla
+
+L=K−Mb,L=K-M_b,
+
+gdzie KK jest zwarty, twierdzenie Weyla daje
+
+σess(L)=σess(−Mb)=ess ran⁡(−b).\sigma_{\mathrm{ess}}(L)=\sigma_{\mathrm{ess}}(-M_b) = \operatorname{ess\,ran}(-b).
+
+Jeżeli bb jest ciągła, a Ω\Omega ma odpowiednią strukturę, można to utożsamić z domknięciem obrazu −b(Ω)-b(\Omega). Jednak zapis
+
+σc={−b(x):x∈Ω}\sigma_c=\{-b(x):x\in\Omega\}
+
+może być problematyczny, ponieważ:
+
+Ω\Omega jest otwarta, więc obraz nie musi być domknięty;
+widmo operatora jest domknięte;
+część spektrum istotnego może mieć inną klasyfikację niż czysto ciągła;
+jeśli bb jest stała na zbiorze dodatniej miary, operator mnożenia może mieć eigenvalue o nieskończonej krotności.
+
+Bezpieczny zapis to:
+
+σess(L)=ess ran⁡(−b)=−b(Ω)‾\sigma_{\mathrm{ess}}(L) = \operatorname{ess\,ran}(-b) = \overline{-b(\Omega)}
+
+przy odpowiednich założeniach.
+
+Potem definiujesz
+
+sess(L):=sup⁡σess(L)=−ess inf⁡x∈Ωb(x).s_{\mathrm{ess}}(L):=\sup\sigma_{\mathrm{ess}}(L) =-\operatorname*{ess\,inf}_{x\in\Omega}b(x).
+
+To będzie dużo bardziej precyzyjne.
+
+1.5. Proposition 2.2 wymaga nowego, znacznie bardziej rygorystycznego dowodu
+
+W dowodzie wybierasz punkt xλ∈Ωλx_\lambda\in\Omega_\lambda, w którym osiągane jest minimum:
+
+min⁡x∈Ωλ∫ΩλJ(x−y) dy.\min_{x\in\Omega_\lambda} \int_{\Omega_\lambda}J(x-y)\,dy.
+
+Ale Ωλ\Omega_\lambda jest otwarta. Funkcja bλb_\lambda jest ciągła, lecz minimum na otwartym zbiorze nie musi być osiągane. Powinno pojawić się raczej inf⁡\inf, albo trzeba przejść na Ω‾λ\overline\Omega_\lambda.
+
+Potem piszesz:
+
+Since Ω0\Omega_0 is compact...
+
+podczas gdy założenie mówi, że Ω0\Omega_0 jest otwarta i ograniczona. Kompaktowe jest Ω0‾\overline{\Omega_0}, nie Ω0\Omega_0.
+
+Najważniejsza trudność pojawia się dalej. Z
+
+x~k→x∗\widetilde x_k\to x^\ast
+
+nie wynika bezpośrednio, że
+
+Dλk=λk(x~k−Ω0)D_{\lambda_k} = \lambda_k(\widetilde x_k-\Omega_0)
+
+asymptotycznie zawiera
+
+B(λkp,λkr),B(\lambda_kp,\lambda_kr),
+
+ponieważ błąd położenia jest mnożony przez λk\lambda_k:
+
+λk(x~k−x∗),\lambda_k(\widetilde x_k-x^\ast),
+
+a ten iloczyn nie musi dążyć do zera.
+
+Jak to naprawić
+
+Trzeba użyć uniform interior sphere condition bezpośrednio w punkcie zależnym odkk, a nie przechodzić najpierw do jednego granicznego x∗x^\ast.
+
+Możliwy schemat:
+
+zastąpić minimum przez ciąg prawie minimalizujący;
+dla każdego xkx_k znaleźć kulę wewnętrzną o ustalonym promieniu rr;
+wykorzystać kierunek środka tej kuli;
+wybrać podciąg kierunków zbieżny na sferze;
+udowodnić punktową dolną granicę indykatorów odpowiednich rozszerzających się kul;
+zastosować symetrię JJ i lemat Fatou.
+
+Należy również sprawdzić, czy masz dość regularności domeny, gdy xkx_k pozostaje we wnętrzu, a nie dokładnie na brzegu.
+
+1.6. Stała momentu bezwładności powinna być translacyjnie niezmiennicza
+
+W Assumption 1.3 definiujesz
+
+Imax⁡=max⁡i∫Ω0xi2 dx.I_{\max} = \max_i\int_{\Omega_0}x_i^2\,dx.
+
+Natomiast w Lemma 2.1 używasz momentu względem barycentrum:
+
+∫Ω0(yi−xˉi)2 dy.\int_{\Omega_0}(y_i-\bar x_i)^2\,dy.
+
+To są różne wielkości. Pierwsza zależy od położenia domeny względem początku układu współrzędnych, druga nie.
+
+Kryterium geometryczne istnienia eigenvalue nie powinno zmieniać się po translacji domeny. Dlatego właściwa definicja to raczej
+
+Imax⁡(Ω0)=max⁡1≤i≤n∫Ω0(xi−xˉi)2 dx.I_{\max}(\Omega_0) = \max_{1\leq i\leq n} \int_{\Omega_0}(x_i-\bar x_i)^2\,dx.
+
+Jeszcze lepiej sformułować to za pomocą macierzy kowariancji domeny:
+
+QΩ0=∫Ω0(x−xˉ)⊗(x−xˉ) dxQ_{\Omega_0} = \int_{\Omega_0} (x-\bar x)\otimes(x-\bar x)\,dx
+
+i jej największej wartości własnej:
+
+Imax⁡=λmax⁡(QΩ0).I_{\max}=\lambda_{\max}(Q_{\Omega_0}).
+
+To usuwa również zależność od wyboru osi współrzędnych.
+
+1.7. Theorem 1.4 jest jednocześnie za szerokie i mało precyzyjne
+
+Sformułowanie:
+
+there exists a finite or infinite sequence
+
+jest niemal tautologiczne, jeśli wykazałeś tylko jedną nietrywialną wartość własną. Jedna wartość własna też tworzy skończony ciąg.
+
+Ponadto Assumptions 1.2 i 1.3 gwarantują zasadniczo pierwszy gap, natomiast Assumption 1.4 jest indeksowana przez kk. Warto więc rozdzielić wynik na dwa twierdzenia:
+
+Twierdzenie A: pierwszy eigenvalue
+
+Jeśli istnieje u⊥1u\perp 1, ∥u∥2=1\|u\|_2=1, taki że
+
+⟨Lu,u⟩>sess(L),\langle Lu,u\rangle>s_{\mathrm{ess}}(L),
+
+to istnieje eigenvalue
+
+β1>sess(L).\beta_1>s_{\mathrm{ess}}(L).
+Twierdzenie B: co najmniej kk eigenvalues
+
+Jeśli istnieje (k+1)(k+1)-wymiarowa przestrzeń W⊂L2(Ω)W\subset L^2(\Omega), zawierająca funkcję stałą, taka że
+
+inf⁡u∈W∥u∥2=1⟨Lu,u⟩>sess(L),\inf_{\substack{u\in W\\ \|u\|_2=1}} \langle Lu,u\rangle > s_{\mathrm{ess}}(L),
+
+to LL ma co najmniej k+1k+1 wartości własnych, liczonych z krotnościami, powyżej brzegu spektrum istotnego.
+
+To sformułowanie idealnie pasuje do Twojego argumentu ze skończenie wymiarową przestrzenią Lipschitzowską.
+
+2. Jak znacząco uprościć centralny dowód
+
+Operator
+
+Lu(x)=∫ΩJ(x−y)u(y) dy−b(x)u(x),b(x)=∫ΩJ(x−y) dy,Lu(x) = \int_\Omega J(x-y)u(y)\,dy-b(x)u(x), \qquad b(x)=\int_\Omega J(x-y)\,dy,
+
+jest ograniczony i samosprzężony na L2(Ω)L^2(\Omega). Część całkowa KK jest zwarta, ponieważ na ograniczonej domenie jej jądro należy do L2(Ω×Ω)L^2(\Omega\times\Omega). Zatem KK jest operatorem Hilberta-Schmidta.
+
+Wystarczy następnie użyć dwóch standardowych faktów:
+
+twierdzenie Weyla
+
+σess(L)=σess(−Mb);\sigma_{\mathrm{ess}}(L)=\sigma_{\mathrm{ess}}(-M_b);
+
+zasada min-max poziomy wariacyjne znajdujące się ściśle powyżej sup⁡σess(L)\sup\sigma_{\mathrm{ess}}(L) są dyskretnymi wartościami własnymi skończonej krotności.
+
+Możesz zdefiniować
+
+μj(L)=inf⁡S⊂L2(Ω)dim⁡S=jsup⁡u⊥S∥u∥=1⟨Lu,u⟩\mu_j(L) = \inf_{\substack{S\subset L^2(\Omega)\\\dim S=j}} \sup_{\substack{u\perp S\\\|u\|=1}} \langle Lu,u\rangle
+
+albo równoważną wersję Couranta-Fischera dostosowaną do wartości własnych uporządkowanych malejąco.
+
+Wtedy Twoja przestrzeń WλW_\lambda daje bezpośrednio lower bound na kolejny poziom min-max. Nie trzeba:
+
+konstruować macierzy Galerkina,
+wybierać podciągów,
+identyfikować słabych granic,
+udowadniać silnej zbieżności,
+prowadzić indukcji po eigenfunctions.
+Dlaczego to wzmocni pracę
+
+Obecnie streszczenie sugeruje, że głównym osiągnięciem technicznym jest Galerkin i strong convergence. Moim zdaniem lepsza narracja brzmi:
+
+Głównym wynikiem są jawne geometryczno-probabilistyczne warunki zapewniające, że określone poziomy min-max leżą ponad spektrum istotnym.
+
+To przesuwa nowość z techniki aproksymacyjnej na rzeczywiście interesujący element:
+
+zależność od wielkości i kształtu domeny,
+zależność od drugiego momentu jądra,
+ilościowe gwarancje istnienia kilku dyskretnych modów.
+3. Problem z opisem nowości
+
+Zdanie:
+
+To the author’s best knowledge, this is the first, rigorous result establishing existence of eigenfunctions corresponding to non-trivial eigenvalues on bounded domains in the Neumann-type case.
+
+jest bardzo szerokie i ryzykowne.
+
+Literatura o principal eigenvalues dla operatorów nielokalnych jest obszerna. Praca Jérôme Coville podaje kryteria istnienia principal eigenpair dla operatorów postaci compact integral operator plus multiplication operator, a więc strukturalnie bardzo bliskich Twojemu operatorowi. Istnieją też prace dotyczące principal spectrum points i warunków, pod którymi stają się principal eigenvalues dla problemów z nielokalną dyspersją typu Neumanna.
+
+Bezpieczniejsza deklaracja nowości:
+
+To the best of our knowledge, the present work provides new explicit geometric scaling criteria ensuring the existence of several discrete eigenvalues above the essential spectral edge for symmetric mass-conserving nonlocal dispersal operators on bounded domains.
+
+To jest:
+
+węższe,
+łatwiejsze do obrony,
+bliższe temu, co faktycznie jest charakterystyczne dla pracy.
+4. Co dodać, żeby zrobić wyraźnie lepszy research
+Priorytet A: jawne dolne oszacowanie liczby eigenvalues
+
+Obecnie pokazujesz:
+
+dla każdego ustalonego kk, odpowiednio duża domena ma co najmniej kk luk.
+
+To jest jakościowe. Znacznie mocniejszy wynik miałby postać:
+
+Ndisc(Ωλ)≥CλnN_{\mathrm{disc}}(\Omega_\lambda) \geq C\lambda^n
+
+albo przynajmniej słabsze jawne oszacowanie:
+
+Ndisc(Ωλ)≥cλα.N_{\mathrm{disc}}(\Omega_\lambda) \geq c\lambda^\alpha.
+
+Naturalny sposób to wybrać przestrzeń testową generowaną przez:
+
+niskie mody operatora Neumanna −Δ-\Delta,
+funkcje Fouriera dla sześcianu lub torusa,
+funkcje lokalnie stałe na rozłącznych komórkach.
+
+Jeśli udałoby się powiązać liczbę dyskretnych eigenvalues z liczbą lokalnych modów o energii poniżej określonego progu, dostałbyś rezultat o charakterze „nonlocal Weyl lower bound”.
+
+To byłby moim zdaniem najmocniejszy upgrade artykułu.
+
+Priorytet B: asymptotyczne przybliżenie przez Neumann Laplacian
+
+Dla wolno zmieniających się funkcji:
+
+∫J(z)(u(x−z)−u(x)) dz≈12∑i,j(∫J(z)zizj dz)∂iju(x).\int J(z)(u(x-z)-u(x))\,dz \approx \frac12 \sum_{i,j} \left(\int J(z)z_iz_j\,dz\right)\partial_{ij}u(x).
+
+Dla radialnego jądra prowadzi to do wielokrotności Laplasjanu.
+
+Można więc oczekiwać dla dużej skali domeny:
+
+βj(Ωλ)∼−cJλ2μjN(Ω0),\beta_j(\Omega_\lambda) \sim -\frac{c_J}{\lambda^2}\mu_j^{N}(\Omega_0),
+
+gdzie μjN\mu_j^{N} są wartościami własnymi klasycznego Laplasjanu z warunkiem Neumanna.
+
+Już jednostronne oszacowania byłyby bardzo wartościowe:
+
+−C2μjNλ2≤βj(Ωλ)≤−C1μjNλ2.-\frac{C_2\mu_j^N}{\lambda^2} \leq \beta_j(\Omega_\lambda) \leq -\frac{C_1\mu_j^N}{\lambda^2}.
+
+To nadałoby pracy wyraźniejszy kontekst analityczny i pokazałoby, dlaczego tempo λ−2\lambda^{-2} jest naturalne, a nie tylko wynika z wybranej funkcji testowej.
+
+Priorytet C: kompletny przykład obliczeniowy w jednym wymiarze
+
+Example 2.1 jest dobrym początkiem, ale kończy się stwierdzeniem, że istnieje pewien próg η0\eta_0, bez jego obliczenia.
+
+Warto dodać dla:
+
+jądra Gaussa,
+jądra Laplace’a e−∣z∣e^{-|z|},
+ewentualnie jądra zwartego,
+
+następujące elementy:
+
+jawne b(x)b(x);
+dokładny lub numeryczny próg;
+wykres β1(L)\beta_1(L) i brzegu spektrum istotnego;
+porównanie kryterium wystarczającego z faktycznym pojawieniem się eigenvalue;
+pierwsze 3 do 5 eigenfunctions.
+
+To nie zastąpi analizy, ale pokaże:
+
+ostrość kryteriów,
+wpływ ogona jądra,
+moment pojawiania się kolejnych wartości własnych.
+Priorytet D: przykład załamania luki
+
+Piszesz dużo o „spectral gap collapse”, ale w pracy nie ma naprawdę przekonującego przykładu dla dokładnie tego operatora.
+
+Dobrze byłoby podać:
+
+konkretną domenę,
+konkretne jądro,
+obliczenie albo ścisły argument pokazujący β1=sup⁡σess(L),\beta_1=\sup\sigma_{\mathrm{ess}}(L),
+i tym samym brak pierwszej nietrywialnej eigenfunction.
+
+To bardzo wzmocni motywację. Czytelnik zobaczy, że warunki geometryczne rozwiązują realny problem, a nie tylko techniczną możliwość.
+
+Priorytet E: dynamika semigrupy
+
+Jeżeli chcesz celować w DCDS, dołożenie konsekwencji dynamicznej byłoby szczególnie użyteczne.
+
+Operator generuje semigrupę związaną z równaniem:
+
+ut=Lu.u_t=Lu.
+
+Jeżeli β1\beta_1 jest izolowana ponad spektrum istotnym, można badać tempo relaksacji do średniej:
+
+u(t)−uˉu(t)-\bar u
+
+oraz udział projekcji na pierwsze mody.
+
+Możesz sformułować rozwinięcie:
+
+u(t)=uˉ+∑j=1MeβjtPju0+R(t)u0,u(t) = \bar u + \sum_{j=1}^{M} e^{\beta_jt}P_ju_0 + R(t)u_0,
+
+z oszacowaniem remainder przez brzeg spektrum istotnego.
+
+To bezpośrednio łączy teorię spektralną z:
+
+stabilizacją,
+długoczasowym zachowaniem,
+metastabilnością na dużych domenach.
+
+Ten kierunek dobrze łączy się również z Twoją pracą w Journal of Differential Equations z 2025 roku, którą cytujesz jako pozycję [13].
+
+5. Czy DCDS jest dobrym wyborem?
+Tematycznie: tak, ale nie idealnie w obecnej formie
+
+Discrete and Continuous Dynamical Systems publikuje prace z zakresu analizy, równań różniczkowych i układów dynamicznych, ze szczególnym naciskiem na istotne nowe metody i wyniki. W tym czasopiśmie ukazywały się już prace poświęcone principal spectrum points i principal eigenvalues dla nonlocal dispersal operators.
+
+Natomiast obecna wersja jest przede wszystkim pracą z:
+
+teorii spektralnej,
+operatorów całkowych,
+wariacyjnego min-max,
+geometrii domeny.
+
+Ma stosunkowo mało dynamiki. Dlatego DCDS może uznać ją za zbyt operatorową albo za zbyt bliską standardowej teorii spektralnej, jeśli nie wyostrzysz nowości.
+
+Moja ocena
+Obecna wersja: umiarkowane ryzyko kolejnego desk rejection.
+Po naprawieniu dowodów i zmianie narracji na min-max + geometryczne kryteria: rozsądny target.
+Po dodaniu dynamiki semigrupy albo asymptotyki Laplasjanu: dobry target.
+
+Ponieważ cytujesz dwa artykuły z DCDS bezpośrednio związane z nonlocal dispersal spectral theory, dopasowanie literaturowe jest. Sama obecność cytowań jednak nie wystarczy. Redaktor będzie pytał przede wszystkim, co nowego dostaje ponad istniejące kryteria principal eigenvalue i czy wynik dotyczy dynamiki, czy jedynie standardowego dyskretnego spektrum compact perturbation. Literatura już zawiera rozbudowane kryteria istnienia principal eigenvalues dla operatorów nielokalnych.
+
+6. Proponowana nowa struktura pracy
+1. Introduction
+operator i motywacja;
+precyzyjne odróżnienie spectrum, essential spectrum i discrete spectrum;
+luka w literaturze: quantitative geometric criteria for several eigenvalues;
+lista wyników;
+konsekwencja dynamiczna lub asymptotyka, jeśli ją dodasz.
+2. Operator-theoretic framework
+boundedness i self-adjointness;
+L=K−MbL=K-M_b;
+compactness KK;
+identyfikacja essential spectrum;
+min-max principle ponad essential spectral edge.
+3. Geometric criterion for the first nontrivial eigenvalue
+kryterium dwudzielne z poprawnym balansem miar;
+kryterium oparte na tensorze bezwładności;
+dokładne założenia na domenę.
+4. Higher discrete modes
+konstrukcja (k+1)(k+1)-wymiarowej przestrzeni testowej;
+jedno zastosowanie min-max;
+wartości własne liczone z krotnościami;
+bez indukcji po eigenfunctions.
+5. Large-domain limit
+poprawiony retained-mass lemma;
+liczba wartości własnych rośnie wraz ze skalą;
+jeśli możliwe, ilościowy lower bound.
+6. Explicit examples and numerics
+odcinek;
+Gaussian/Laplace/compact-support kernel;
+porównanie teorii z numeryką.
+7. Dynamical consequence
+rozkład semigrupy;
+tempo relaksacji;
+długoczasowe znaczenie dyskretnych modów.
+7. Drobniejsze, ale ważne poprawki
+Terminologia
+„minimizing sequences” w abstract powinno być raczej maximizing sequences, ponieważ definiujesz eigenvalues przez supremum.
+„principal non-trivial eigenvalue” może mylić się z principal eigenvalue 00. Rozważ:
+first nonzero eigenvalue,
+largest eigenvalue on the zero-mean subspace,
+first nonconstant eigenvalue.
+„positive spectral gap” niech oznacza konkretnie: βj−sess(L)>0.\beta_j-s_{\mathrm{ess}}(L)>0.
+Angielski i zapis
+
+W tekście jest sporo drobnych błędów:
+
+„variationaly” → variationally;
+„This end the proof” → This ends the proof;
+„seqence” → sequence;
+„bounded domains” w zdaniu „on a bounded domains” → on bounded domains;
+„multiplicative part” lepiej → multiplication part;
+„such a function does not exists” → such a function does not exist.
+Galerkin Lemma 3.1
+
+W Proposition 3.1 twierdzisz, że maksimum na podprzestrzeni c0=0c_0=0 daje rozwiązanie pełnego układu
+
+(A−B)c=βc.(A-B)c=\beta c.
+
+Sam fakt maksymalizacji po c0=0c_0=0 daje najpierw eigenvector operatora skompresowanego. Musisz jawnie wykazać, że przestrzeń ϕ0⊥\phi_0^\perp jest niezmiennicza. Jest to prawdziwe, ponieważ funkcja stała jest eigenfunction operatora samosprzężonego, ale należy to napisać.
+
+Generative AI declaration
+
+Masz:
+
+the author(s) used Google Gemini 3.1 Pro
+
+oraz dalej:
+
+the author reviewed ... and take full responsibility.
+
+Dla jednego autora:
+
+The author used ... The author reviewed and edited the output as needed and takes full responsibility for the content.
+
+Sprawdź też politykę konkretnego czasopisma. Nazwa modelu „Gemini 3.1 Pro” może wyglądać nietypowo i warto upewnić się, czy jest dokładna.
+
+8. Mój proponowany plan działania
+Przed kolejną wysyłką koniecznie
+Naprawić Assumption 1.2.
+Zastąpić „continuous spectrum” przez precyzyjne essential spectrum.
+Usunąć ścisłe nierówności między kolejnymi eigenvalues.
+Przepisać Proposition 2.2.
+Zrezygnować z obecnej wersji Lemma 3.4.
+Oprzeć główny dowód na min-max.
+Zawęzić claim „first rigorous result”.
+Przepisać abstract i introduction wokół geometrycznych kryteriów, nie Galerkina.
+Żeby istotnie zwiększyć poziom pracy
+
+Dodałbym co najmniej jeden z dwóch elementów:
+
+ilościowe oszacowanie liczby dyskretnych eigenvalues na dużej domenie, albo
+konsekwencje dla asymptotyki semigrupyetLe^{tL}.
+
+Bez tego praca może być widziana jako poprawna, ale dość krótka konsekwencja min-max. Z jednym z tych rozszerzeń staje się znacznie pełniejszym artykułem.
+
+Decyzja czasopismowa
+
+Moja kolejność byłaby taka:
+
+gruntowna rewizja matematyczna;
+dodanie mocniejszego wyniku lub sekcji dynamicznej;
+dopiero wtedy DCDS.
+
+Nie wysyłałbym obecnej wersji bez zmian, ponieważ kolejny desk rejection jest realny, a jeśli tekst trafi do recenzenta, Lemma 3.4 i Proposition 2.2 prawdopodobnie zostaną szybko zakwestionowane.
+
+Najważniejsza zmiana narracji
+
+Obecna narracja:
+
+Konstruujemy eigenfunctions metodą Galerkina i dowodzimy strong convergence.
+
+Lepsza narracja:
+
+Ustanawiamy ilościowe, geometryczne warunki zapewniające istnienie zadanej liczby dyskretnych wartości własnych ponad brzegiem spektrum istotnego. Warunki ujawniają zależność pomiędzy skalą domeny, jej tensorami geometrycznymi i drugim momentem jądra.
+
+To pozycjonuje wynik znacznie wyraźniej i lepiej odpowiada rzeczywistej wartości pracy.
+
+Co poprawia ta rekomendacja
+Poprawność: usuwa luki w indukcji Galerkina, twierdzeniu o ścisłości i opisie spektrum.
+Klarowność: oddziela standardową teorię operatorów od nowych kryteriów geometrycznych.
+Nowość: zawęża i wzmacnia claim, zamiast ryzykownego „first rigorous result”.
+Dopasowanie do DCDS: sugeruje dołożenie asymptotyki lub dynamiki, które lepiej odpowiadają profilowi czasopisma.

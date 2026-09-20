@@ -1,0 +1,43 @@
+\documentclass{letter}
+\usepackage{geometry}
+\usepackage{amsmath} % for mathematical symbols
+\usepackage{xcolor}
+
+\geometry{
+    a4paper,
+    left=25mm,
+    right=25mm,
+    top=30mm,
+    bottom=30mm
+}
+
+\begin{document}
+
+\begin{letter}{%
+    Editorial Board\\
+    Journal of Differential Equations\\
+}
+
+\date{\today}
+
+\opening{}
+
+Please, find enclosed the revised version of my manuscript. Author appreciates important comments and corrections of the Reviewer. Based on that, all the corrections that have been introduced to the paper are indicated by the \textcolor{blue}{blue} color. In particular
+
+\begin{itemize}
+    \item Type error before (1.7) was corrected.
+    \item In the proof of the Lemma 2.1, author have noticed that there was a misprint - lacking normalization constant $c_n$ due to the volume of $n$ dimensional ball and coefficient $R^{-n}$. After introducing this to the proof author have also pointed out the following inequality
+    $$\inf_{x \in B(x_\lambda, R)} |b_\varepsilon(x) - \lambda|^2 \leq \frac{c_n^{-1}}{R^n}\int_{B(x_\lambda, R)}\left(b_\varepsilon(x) - \lambda \right)^2 \:dx \leq \sup_{x \in B(x_\lambda, R)} |b_\varepsilon(x) - \lambda|^2,$$
+    where we use that $b_\varepsilon(x_\lambda) = \lambda$ to pass to the limit with $R \rightarrow 0$.
+    \item In the proof of the Lemma 2.2, author pointed out the argument why $D$ is open and connected.
+    \item From the proof of Theorem 2.1 it is clear that in the Dirichlet case ($b_\varepsilon \equiv 1$) the spectrum of dispersal operator $\mathcal{L}_\varepsilon$ is described by the formula (2.3) as well. However, since this work focuses on the non-local model analogous to the diffusion problems with Neumann boundaries, author has decided to not include this remark in the manuscript.
+    \item Since $\mathcal{L}_\varepsilon$ is bounded and $u_0 \in L^2(\Omega)$ there is no blow up of $L^2-$norm as $t \rightarrow 0$.
+    \item The term "force" has been replaced by "reproduction rate" to better align with ecological models, as this terminology more accurately reflects the processes modeled by the equation.
+    \item After reviewing the relevant literature, I have decided to use the term "dispersal" instead of "dispersion," as it is more commonly used in the context of spatial population dynamics and non-local diffusion models.
+\end{itemize}
+
+\closing{Sincerely, \\ Maciej Tadej, \\ Author of the manuscript JDEQ24-522R1}
+
+\end{letter}
+
+\end{document}

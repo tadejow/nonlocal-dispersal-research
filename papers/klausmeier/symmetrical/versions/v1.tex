@@ -1,0 +1,831 @@
+\pdfoutput=1
+
+\documentclass[12pt, a4paper]{article}
+\usepackage[margin=1.5in, top=1.5in, bottom=1.5in]{geometry}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{cases}
+\usepackage[english]{babel}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{authblk}
+\usepackage{dsfont}
+\usepackage{sectsty}
+\usepackage{xcolor}
+
+\sectionfont{\centering}
+% THEOREM / PROPOSITIONS / LEMMAS etc...
+
+\theoremstyle{break}
+	\newtheorem{thm}{Theorem}[section]
+\theoremstyle{break}
+    \newtheorem{prp}{Proposition}[section]
+\theoremstyle{break}
+	\newtheorem{asm}{Assumption}[section]
+\theoremstyle{break}
+	\newtheorem{rem}{Remark}[section]
+\theoremstyle{break}
+	\newtheorem{lem}{Lemma}[section]
+\theoremstyle{break}
+	\newtheorem{cor}{Corollary}[section]
+\theoremstyle{break}
+	\newtheorem{defi}{Definition}[section]
+
+% USEFUL COMMANDS
+
+% writing - labels
+\makeatletter
+\newcommand{\mylabel}[2]{#2\def\@currentlabel{#2}\label{#1}}
+\makeatother
+
+\providecommand{\keywords}[1]
+{
+  \small	
+  \textbf{\textit{Keywords}} #1
+}
+
+% objects
+\newcommand{\Leo}{\mathcal{L}_{\varepsilon}}
+\newcommand{\Seq}[2]{\left\{#1_#2\right\}_{#2 = 0}^\infty}
+
+% spaces
+\newcommand{\Leb}{L^2\left(\Omega\right)}
+\newcommand{\Lei}{L^\infty\left(\Omega\right)}
+\newcommand{\CDR}{C^1\left(\mathbb{R}\right)}
+\newcommand{\CCSRn}{C_c\left(\mathbb{R}^n\right)}
+
+% operators
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\Ima}{Im}
+\DeclareMathOperator{\divergence}{div}
+\DeclareMathOperator{\Tr}{Tr}
+
+\setlength{\parindent}{0pt}
+\counterwithin{equation}{section}
+
+\title{Non-local Klausmeier model of vegetation dynamics in drylands, modeled by finite, non-periodic regions}
+
+\author[1]{Ricardo Martinez Garcia \thanks{r.martinez-garcia@hzdr.de}}
+\author[2]{Michael Hecht \thanks{m.hecht@hzdr.de}}
+\author[3]{Maciej Tadej \thanks{maciej.tadej@math.uni.wroc.pl}}
+
+\affil[1,2]{\textit{Center for Advanced Systems Understanding (CASUS) – Helmholtz-Zentrum
+    Dresden-Rossendorf (HZDR), Untermarkt 20, G\"orlitz 02826, Germany}}
+\affil[3]{\textit{Insitute of Mathematics, University of Wrocław, pl. Grunwaldzki 2, 50-384 Wrocław, Poland}}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\hspace{20pt}
+
+\begin{abstract}
+
+\end{abstract}
+
+\begin{keywords}
+\end{keywords}
+
+\newpage
+
+\section{Introduction}
+
+\subsection{Statement of the problem}
+
+We study the following reaction-diffusion-dispersal system of equations
+\begin{align}
+    \label{EQ:KlausmeierSystem}
+    \begin{cases}
+        u_t(x,t) = d_u\mathcal{L} u(x, t) + f(u(x,t), v(x,t)) &(x, t) \in \Omega_T \\
+        v_t(x,t) = d_v\Delta v(x,t) + g(u(x,t), v(x,t)). &(x, t) \in \Omega_T \\
+        v(x,t) = \Bar{v} \in \mathbb{R}_{\geq 0} &(x, t) \in \partial\Omega_T. \\
+        u(x,0) = u_0(x), v(x,0) = v_0(x) &x \in \Omega,
+    \end{cases}
+\end{align}
+where $\Omega_T = \Omega \times [0, T]$ and $\partial\Omega_T = \partial\Omega \times [0, T]$ for some $T > 0$. We consider $\Omega \subset \mathbb{R}^n$ being open and bounded region. The variable $u$ denotes the density of a plant and $v$ is the density of a water. Parameters $d_u > 0, d_v > 0$ are dispersal speed, water diffusivity respectively. Here $f := f(u, v)$ is a reproduction rate of a species $u$ and $g := g(u, v)$ accounts processes occurring between the environment and water itself. For instance in [add ref] non-linearities $f, g$ corresponding to the so called non-local Klausmeier model are given by
+\begin{align}
+    \label{EQ:KlausmeierNonliniearities}
+    f(u, v) = u^2 v - B u, \quad\quad g(u, v) = A - v - u^2 v,
+\end{align}
+where the parameters $A, B$ satisfy $A > 0, B > 0$. The standard ecological motivation is following
+\begin{enumerate}
+    \item $u^2 v$ / $-u^2 v$ stands for plants growth rate / water consumption by plants respectively.
+    \item $-Bu$ stands for plants mortality rate.
+    \item $A$ is a rainfall parameter.
+    \item $- v$ stands for water evaporation.
+\end{enumerate}
+The dispersal operator $\mathcal{L} : L^2(\Omega) \rightarrow L^2(\Omega)$ is given by the formula
+\begin{equation}
+    \mathcal{L}u(x, t) = \int_\Omega J(x-y)\left(u(y, t) - u(x, t)\right)\:dy,
+\end{equation}
+where $J : \mathbb{R}^n \rightarrow \mathbb{R}_{\geq 0}$ is an integral kernel falling under the following assumptions.
+\begin{asm}
+    \label{assumptions_general_kernel}
+    Denote by $\Omega \subset \mathbb{R}^n$ an open and bounded region. We consider the integral kernels $J \in C(\mathbb{R}^n)$ satisfying the following properties
+    \begin{enumerate}[label=\textnormal{(\arabic*)}]
+        \item [\mylabel{J1}{(J1)}] $J(z) \geq 0$ for $z \in \mathbb{R}^n$ and $J(0) > 0$, 
+        \item [\mylabel{J2}{(J2)}] $J(z) = J(-z)$ for $z \in \mathbb{R}^n$,
+        \item [\mylabel{J3}{(J3)}] $J(z) \rightarrow 0$ as $|z| \rightarrow \infty$,
+        \item [\mylabel{J4}{(J4)}] $\int_{\mathbb{R}^n} J(z)|z|^2dz < \infty$.
+        \item [\mylabel{J5}{(J5)}] $\int_{\mathbb{R}^n} J(z) dz = 1$.
+    \end{enumerate}
+\end{asm}
+For ecological reasons, it is also valuable to study the non-local Klausmeier system \eqref{EQ:KlausmeierSystem} with an additional assumption on the boundary of vegetation density.
+\begin{asm}
+    We impose the following, desert state, boundary condition on vegetation density $u$
+    \begin{equation}
+        \label{EQ:DesertStateBoundary_U}
+        u(x, t) = 0 \quad (x, t) \in \partial\Omega_T.
+    \end{equation}
+\end{asm}
+
+\subsection{Ecological background}
+
+\subsection{Related results}
+
+\section{Mathematical analysis of the non-local Klausmeier system}
+
+\subsection{Well-posedness}
+
+We begin analysis by considering the local existence of solutions to \eqref{EQ:KlausmeierSystem}.
+
+\begin{thm}[Local existence]
+    \label{thm:Well-Posedness}
+    Let $u_0 \in C(\overline{\Omega})$ and $v_0 \in H^1_0(\Omega)\cap C(\overline{\Omega})$ such that $\Delta v_0 \in C(\overline{\Omega})$. Let $J$ be the integral kernel satisfying Assumption \ref{assumptions_general_kernel}. Then there exists $T > 0$ and solution $u, v$ to the problem \eqref{EQ:KlausmeierSystem}. In particular we have that
+    \begin{equation}
+        u \in C^{0, 1}(\overline{\Omega}, [0, T]) \quad \text{and} \quad v \in C^{0, 1}(\overline{\Omega}, [0, T]).
+    \end{equation}
+    Moreover, if $u_0, v_0$ are non-negative in $\Omega$, then both $u, v$ are non-negative in $\Omega$ for all $t \in [0, T]$ and there exist a number $R_1 > 0$ such that $v \leq R_1$.
+\end{thm}
+\begin{proof}
+    We denote that $\mathcal{L}: C(\overline{\Omega}) \mapsto C(\overline{\Omega})$ is a bounded, linear operator
+    \begin{equation}
+        \| \mathcal{L} \| = \sup_{\|u\|_\infty = 1} \| \int_\Omega J(\cdot - y) u(y)\:dy - \int_\Omega J(\cdot - y)\:dy\: u(\cdot) \|_\infty \leq 2 b_\infty
+    \end{equation}
+    In particular, observe that the operator $A_u : C(\overline{\Omega}) \mapsto C(\overline{\Omega})$ defined by the formula
+    \begin{equation}
+        A_u = d_u \mathcal{L} - B I.
+    \end{equation}
+    is a bounded operator. Thus it generates uniformly continuous semigroup $\{T_u(t)\}_{t \geq 0}$ with exponential representation. In particular we have that
+    \begin{equation}
+        T_u(t) = e^{A_u t} = e^{(d_u \mathcal{L} - B I) t}
+    \end{equation}
+    Since $B > 0$ and the largest eigenvalue of $\mathcal{L}$ is zero we get that the spectrum $\sigma(\mathcal{L} - B I)$ is strictly contained in the left semiaxis. Thus, $T_u(t)$ is also a contraction semigroup for some $T > 0$, see Proposition V.1.7 in \cite{EngelNagel2000} for details. From boundedness of $A_u$ it also follows that $A_u$ is a sectorial operator. Let $A_v: D(A_v) \mapsto C(\overline{\Omega})$ be defined by the formula
+    \begin{equation}
+        A_v = d_v\Delta - I, 
+    \end{equation}
+    where $\Delta$ denotes Laplacian supplied with homogeneous, Dirichlet boundary conditions. Define a set
+    \begin{equation}
+        D(A_v) = \left\{ v \in H^1_0(\Omega) \cap C(\overline{\Omega}):\: \Delta v \in C(\overline{\Omega}) \right\}.
+    \end{equation}
+    Then $A_v$ generates an analytic semigroup $\{T_v(t)\}_{t\geq 0}$ with exponential representation 
+    \begin{equation}
+        T_v(t) = e^{A_v t} = e^{(d_v \Delta - I) t}.
+    \end{equation}
+    Moreover, $A_v$ is a sectorial operator, for the proof see \textcolor{red}{here I need to add citation}. Now, let us define the operator $A: C(\overline{\Omega}) \times D(A_v) \mapsto C(\overline{\Omega}) \times C(\overline{\Omega})$
+    \begin{equation}
+        A = 
+        \begin{bmatrix}
+            A_u & 0\\ 0 & A_v
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+            d_u \mathcal{L} - B I & 0 \\ 0 & d_v \Delta - I
+        \end{bmatrix}.
+    \end{equation}
+    Since both $A_u$ and $A_v$ are sectorial, it follows that $A$ is also the sectorial operator. This allows us to re-write the problem \eqref{EQ:KlausmeierSystem} with $w = (u, v)$
+    \begin{align}
+        \label{EQ:SemigroupFormulation}
+        \begin{split}
+        D(A) &= C(\overline{\Omega}) \times \left\{ v \in H^1_0(\Omega) \cap C(\overline{\Omega}):\: \Delta v \in C(\overline{\Omega}) \right\} \\
+        A: D(A) &\mapsto C(\overline{\Omega}), \quad w'(t) = A w(t) + F(w(t)), \quad w(0) = w_0,
+        \end{split}
+    \end{align}
+    where a nonlinear function $F: C(\overline{\Omega}) \times C(\overline{\Omega}) \mapsto C(\overline{\Omega}) $ is defined by
+    \begin{equation}
+        F(w) = F(u, v) = (u^2 v, -u^2 v + A).
+    \end{equation}
+    Observe that $F$ is a locally Lipschitz function. It follows from the standard theory for sectorial operators that there exists maximal time of existence $0 < T := T(w_0)$ such that $w \in C^{0,1}\left(\overline{\Omega}, [0, T]\right) \times C^1\left( [0, T], C(\overline{\Omega}) \right)$. We refer reader to classical works, e.g. \textcolor{red}{Here, I need to add references}. 
+\end{proof}
+\begin{thm}[Non-negativity and invariant region]
+    \label{thm:Non-negativity}
+     Let $u_0 \in C(\overline{\Omega})$ and $v_0 \in H^1_0(\Omega)\cap C(\overline{\Omega})$ such that $\Delta v_0 \in C(\overline{\Omega})$ be the non-negative initial data. Let $J$ be the integral kernel satisfying Assumption \ref{assumptions_general_kernel}. Then there exists a number $R_1 > 0$, independent of $u_0$, such that the solutions $(u, v)$ obtained in Theorem \ref{thm:Well-Posedness} satisfy
+     \begin{align*}
+        \begin{split}
+             0 &\leq v(x, t) \leq R_1 \\
+             0 &\leq u(x, t)
+        \end{split}
+        \quad\quad (x, t) \in \Omega_T
+     \end{align*}
+     Moreover, define the set $\Gamma = [0, B/R_1]$, then it is an invariant region of the  vegetation density $u$ in the non-local Klausmeier system \eqref{EQ:KlausmeierSystem}. In particular, if $u_0 \in \Gamma$ for $x \in \overline{\Omega}$ then $u \in \Gamma$ for all $(x, t) \in \overline{\Omega} \times [0, T]$.
+\end{thm}
+\begin{proof}
+    From the standard parabolic maximum principle, it follows that for $(x, t) \in \overline{\Omega} \times [0, T)$
+    \begin{equation}
+        \label{EQ:AprioriEstimate_V}
+        0 \leq v(x, t) \leq \max\{\|v_0\|_\infty, A\} =: R_1.
+    \end{equation}
+    Define the minimum point $\xi := \xi(t) \in \overline{\Omega}$, that is a coordinate such that 
+    \begin{equation*}
+        \mu(t) := u(\xi(t), t) = \min_{x \in \overline{\Omega}} u(x, t).
+    \end{equation*}
+    Since $u$ is continuously differentiable in time, we get from the Radamacher Theorem that $\mu$ is differentiable almost everywhere in $[0, T]$. We estimate the difference quotient as follows
+    \begin{align*}
+        \frac{\mu(t+h) - \mu(t)}{h} &\leq \frac{u(\xi(t+h), t+h) - u(\xi(t + h), t)}{h} = u_t(\xi(t + h), c(t+h)), \\
+        \frac{\mu(t+h) - \mu(t)}{h} &\geq \frac{u(\xi(t), t+h) - u(\xi(t), t)}{h} = u_t(\xi(t), c(t+h)),
+    \end{align*}
+    where we used the Mean Value Theorem with $c(t, h) \in [t-h, t+h]$. Passing to the limit we obtain that
+    \begin{align}
+        \begin{split}
+            \mu'(t) &= \mathcal{L} u(\xi(t), t) + \mu^2(t) v(\xi(t), t) - B \mu(t) \geq - B \mu(t), \\
+            \mu(0) &= \min_{x \in \overline{\Omega}} u_0(x) \geq 0.
+        \end{split}
+    \end{align}
+    When solved, this differential inequality yields the lower bound for $u$ over the time interval $[0, T]$.
+    \begin{equation*}
+        u(x,t) \geq \mu(t) \geq \mu(0) e^{-B t} \geq 0.
+    \end{equation*}
+    Now, suppose that $u_0 \leq B / R_1$. We define the maximum point $\zeta := \zeta(t) \in \overline{\Omega}$, that is a coordinate such that
+    \begin{equation*}
+        \nu(t) := u(\zeta(t), t) = \max_{x \in \overline{\Omega}} u(x,t).
+    \end{equation*}
+    Proceeding as previously, we arrive at the following differential inequality
+    \begin{align}
+        \begin{split}
+            \nu'(t) &= \mathcal{L} u(\zeta(t), t) + \nu^2(t) v(\zeta(t), t) - B \nu(t) \leq R_1 \nu^2(t) - B \nu(t), \\
+            \nu(0) &= \max_{x \in \overline{\Omega}} u_0(x) \leq B/R_1.
+        \end{split}
+    \end{align}
+    That is a problem with separable variables. Hence, when solved, it yields the following estimate
+    \begin{equation}
+        \label{EQ:AprioriEsitmate_U_Invariant_Region}
+        u(x,t) \leq \nu(t) \leq \frac{B\nu(0)}{R_1 \nu(0) + 
+        (B - R_1 \nu(0)) e^{B t}} < B / R_1.
+    \end{equation}
+    Hence $\Gamma = [0, B/R_1]$ is an invariant region. This ends the proof of the Theorem \ref{thm:Non-negativity}.
+\end{proof}
+\begin{thm}[Global existence and extinction of plants]
+    \label{thm:Global-Existence}
+     Let $u_0 \in C(\overline{\Omega})$ and $v_0 \in H^1_0(\Omega)\cap C(\overline{\Omega})$ be the non-negative initial data such that $\Delta v_0 \in C(\overline{\Omega})$ and $u_0 \in \Gamma$ for all $x \in \overline{\Omega}$, where $\Gamma$ is an invariant set given by Theorem \ref{thm:Non-negativity}. Let $J$ be the integral kernel satisfying Assumption \ref{assumptions_general_kernel}. Then the solutions $u, v$ obtained in Theorem \ref{thm:Well-Posedness} are global in time and satisfy
+     \begin{equation*}
+         u(x,t) \rightarrow 0 \quad \text{as} \quad t \rightarrow \infty.
+     \end{equation*}
+\end{thm}
+\begin{proof}
+    Suppose that the time of evolution $T < \infty$. From the estimates \eqref{EQ:AprioriEstimate_V} and \eqref{EQ:AprioriEsitmate_U_Invariant_Region} we get that
+    \begin{equation*}
+        \sup_{t \in [0, T]} \|u(\cdot, t)\|_\infty < \infty, \quad
+        \sup_{t \in [0, T]} \|v(\cdot, t)\|_\infty < \infty.
+    \end{equation*}
+    But this means that the solutions can be continued globally in time. The second part of the Theorem is the consequence of the bound \eqref{EQ:AprioriEsitmate_U_Invariant_Region}. Namely
+    \begin{equation*}
+        u(x,t) \leq \frac{B\nu(0)}{R_1 \nu(0) + 
+        (B - R_1 \nu(0)) e^{B t}} \rightarrow 0 \quad \text{as} \quad t \rightarrow \infty.
+    \end{equation*}
+    With this, we end the proof of the Theorem \ref{thm:Global-Existence}.
+\end{proof}
+\subsection{Blow-up in finite time}
+
+In the previous section we discussed the well-posedness and basic properties of the system \eqref{EQ:KlausmeierSystem}. Specifically, we have that existence of invariant region leads to global existence of solutions and exitinction of plants. Here $u \notin \Gamma$. This section extends the results presented in \cite{ZenekArticle}, which focused on reaction-diffusion-ODE systems. Here, we adapt their approach to the context of reaction-diffusion-dispersal problems. First, we define a class of initial density functions for plant vegetation that lead to blow-up.
+
+\begin{lem}
+    Suppose that $\Omega \subset \mathbb{R}^n$ is a symmetric, bounded domain. Suppose that $(u_0, v_0)$ is a positive, even initial data. Then the solution of \eqref{EQ:KlausmeierSystem} denoted by $(u, v)$, is also positive and even.
+\end{lem}
+\begin{proof}
+    Suppose $(u(x,t), v(x,t))$ solves \eqref{EQ:KlausmeierSystem}. Then $(u(-x,t), v(-x,t))$ solves
+    \begin{align*}
+        \begin{cases}
+            \partial_t ( u(-x, t)) = d_u\mathcal{L} u(-x, t) + u(-x, t)^2 v(-x, t) - Bu(-x,t), \\
+            \partial_t ( v(-x, t)) = d_v\Delta v(-x, t) - u(-x, t)^2 (v(-x, t)) - v(-x, t) + A, \\
+            u(-x, 0) = u_0(-x), v(-x, 0) = v_0(-x).
+        \end{cases}
+    \end{align*}
+    where $(x, t) \in \Omega \times [0, T]$. When $(x, t) \in \partial \Omega \times [0, T]$, then $v(-x, t) = 0$. Observe that $u_0(-x) = u_0(x)$ and similarly $v_0(-x) = v_0(x)$. But Theorem \ref{thm:Well-Posedness} yields uniqueness of solutions $(u, v)$. Hence $u(x, t) = u(-x, t)$ and $v(x, t) = v(-x, t)$. Positivity of $(u, v)$ follows from Theorem \ref{thm:Non-negativity}.
+\end{proof}
+\begin{lem}
+    Suppose that $\Omega \subset \mathbb{R}^n$ is a symmetric, bounded domain. Let $(u_0, v_0)$ be strictly positive, initial data such that $x = 0$ is a global maximum of $u_0$ and global minimum of $v_0$. Then $x = 0$ is a global maximum of $u$ and there exists $v_{min}$ such that $v(0, t) \geq v_{min} > 0$.
+\end{lem}
+\begin{proof}
+    
+\end{proof}
+\begin{asm}
+    \label{asm:InitialDatumSpikes}
+    Assume that there exist parameters $\delta \in (0,1), \varepsilon > 0, R_1 > 0$ such that the initial datum $u_0 \in C(\overline{\Omega})$ satisfies for all $x \in \overline{\Omega}$
+    \begin{align}
+        &0 < u_0(x) \leq \left( \frac{1}{u_0(0)} + \frac{2 |x|^\delta}{\varepsilon} \right)^{-1}, \\
+        &u_0(0) \geq \frac{B + b_\infty}{(1-e^{-(B + b_\infty)}) R_1},
+    \end{align}
+    where
+    $$b_\infty = \max_{x \in \overline{\Omega}} \int_\Omega J(x-y)\:dy \geq 1$$
+    Moreover we take the initial datum $v_0$ either to be constant positive number or to be suitable (\textcolor{red}{what other distributions would fit?}) strictly positive, continuous function over $\overline{\Omega}$.
+\end{asm}
+\begin{rem}
+    It follows from Assumption \ref{asm:InitialDatumSpikes} that the initial datum is bounded in all $x \in \Omega$ by
+    \begin{equation*}
+        0 < u_0(x) \leq \frac{\varepsilon}{2} |x|^{-\alpha}.
+    \end{equation*}
+\end{rem}
+\begin{lem}
+    Denote $T_{max} > 0$ being the maximal time of existence obtained by Theorem \ref{thm:Well-Posedness}. If $T_{max} < \infty$ then $sup_{t \in [0, T_{max}]} \|u(\cdot, t)\|_\infty
+    = \infty$.
+\end{lem}
+\begin{proof}
+    \textcolor{red}{TO DO: based on my notes from non-linear functional analysis}.
+\end{proof}
+\begin{lem}
+    Denote $v_0 \in H^1_0(\overline{\Omega}) \cap C(\overline{\Omega})$ such that $v_0(x) > 0$. Consider the following reaction diffusion problem with arbitrary function $u := u(x,t)$
+    \begin{align}
+        \label{EQ:PDE_FOR_V}
+        \begin{cases}
+            v_t = d_v \Delta v - u^2 v - v + A &\quad (x, t) \in \Omega \times [0, T_{max}], \\
+            v = 0 &\quad (x, t) \in \partial\Omega \times[0, T_{max}]
+        \end{cases}
+    \end{align}
+    Suppose there is a number $\varepsilon > 0$ and if dimension $n=1$ assume there exists a number $\delta \in (0, 1/2)$ or $\delta \in (0,1)$ when $n > 1$ such that
+    \begin{equation}
+        \label{EQ:AprioriUpperBound_U}
+        u(x,t) < \varepsilon |x|^{-\delta} \quad \text{for} \quad (x, t) \in \Omega \times [0, T_{max}].
+    \end{equation}
+    Then, there exists a number $R_0 > 0$ such that
+    \begin{equation}
+        \label{EQ:Strict-Nonnegativity-V}
+        v(x,t) > R_0 \quad \text{for} \quad (x, t) \in \Omega \times [0, T_{max}].
+    \end{equation}
+\end{lem}
+
+\begin{proof}
+    We re-write the equation \eqref{EQ:PDE_FOR_V} into the Duhamel, integral form and compute
+    \begin{align}
+        \begin{split}
+            \label{EQ:Duhamel_FOR_V}
+            v(t) 
+            &= e^{t(\Delta - I) t} v_0 + \int_0^t e^{(t-s)(\Delta - I)} A\:ds - \int_0^t e^{(t-s)(\Delta - I)} u^2 v\:ds \\
+            &= e^{-t} v_0 + A(1 - e^{-t}) - \int_0^t e^{(t-s)(\Delta - I)} u^2 v\:ds.
+        \end{split}
+    \end{align}
+    One can easily see that
+    \begin{equation*}
+        e^{-t} v_0 + A (1 - e^{-t}) \geq \min\{ v_0, A \}.
+    \end{equation*}
+    Next, we recall the following well-known estimate for abstract functions $w \in L^q(\Omega)$, with $q \in [1, \infty]$
+    \begin{equation*}
+        \left\| e^{t(\Delta - I)} w \right\|_\infty \leq C_q\left( 1 + t^{-\frac{n}{2q}} \right) \| w \|_q,
+    \end{equation*}
+    where $C_q := C_q(q, n, \Omega)$ is independent of $w$ and $t$, see p. 25 in \cite{Rothe2006} for details. This allows us to bound $v$ from below
+    \begin{align*}
+        v(t) 
+        &= e^{-t} v_0 + A(1 - e^{-t}) - \int_0^t e^{(t-s)(\Delta - I)} u^2 v\:ds. \\
+        &\geq \min\{v_0, A\} -  \int_0^t \left\| e^{(t-s)(\Delta - I)} u^2 v \right\|_\infty  \:ds \\
+        &\geq \min\{v_0, A\} - C_q \int_0^t \left( 1 + (t-s)^{-\frac{n}{2q}} \right) \| u^2 v \|_q \:ds
+    \end{align*}
+    Now, from the upper bound for $v$ obtained in \eqref{EQ:AprioriEstimate_V} and assumption on the upper bound of $u$, e.g. \eqref{EQ:AprioriUpperBound_U} we find that
+    \begin{align*}
+        v(t)
+        &\geq \min\{v_0, A\} - \varepsilon^2 R_1 C_q \| |x|^{-2\delta} \|_q \int_0^t \left( 1 + (t-s)^{-\frac{n}{2q}} \right) \:ds \\
+        &= \min\{v_0, A\} - \varepsilon^2 R_1 C_q \| |x|^{-2\delta} \|_q \left( t + \left(1 - \frac{n}{2q}\right)^{-1} t^{1-\frac{n}{2q}} \right) \\
+        &\geq \min\{v_0, A\} - \varepsilon^2 R_1 C_q \| |x|^{-2\delta} \|_q \left(T_{max} + \left( 1 - \frac{n}{2q}\right)^{-1} T_{max}^{1-\frac{n}{2q}} \right) := R_0,
+    \end{align*}
+    where we have chosen $q$ to satisfy $q > n/2$ in order to evaluate the integral in the first line and $q < n/2\delta$ to assure that $|x|^{-2\delta} \in L^q(\Omega)$. This is possible since $\delta \in (0,1)$. This ends the proof of the Lemma.
+\end{proof}
+\begin{rem}[Control of the vegetation mass]
+    Since $u$ is non-negative and $\Omega$ is bounded we may assume, without loss of generality, that the mass of $u$ is bounded from above up to the maximal time of evolution $T_{max}$. Otherwise we have a blow-up of vegetation density $u$. Namely, we may assume that there exists a constant $M := M(T_{max}) > 0$ such that
+    \begin{equation}
+        \int_\Omega u(x, t)\:dx \leq M < \infty
+    \end{equation}
+\end{rem}
+\begin{thm}
+    Let $u_0, v_0 \in C(\overline{\Omega})$ be a non-negative functions satisfying Assumption \ref{asm:InitialDatumSpikes}. Denote by $u, v$ solutions obtained in the Lemma \ref{lem:LocalExistence}. Then there exists $t_* \in [0, T_*)$, where $T_*$ is a maximal time of existence, such that
+    \begin{equation}
+        \label{EQ:VegetationBlowUp}
+        \| u(\cdot, t) \|_\infty \rightarrow +\infty \quad \text{for} \quad t \rightarrow t_*
+    \end{equation}
+\end{thm}
+
+\begin{proof}
+    Let us denote the following ordinary differential equation with arbitrary function $R_1 \leq v \leq R_2$ and parameter $x \in \Omega$
+    \begin{align}
+        \label{EQ:PDE_FOR_U}
+        \begin{split}
+            u_t 
+            &= \mathcal{L} u + u^2v - B u \\
+            &= \int_\Omega J(x-y) u(y,t) \:dy - b(x) u(x,t) + u^2(x,t)v(x,t) - B u(x,t),
+        \end{split}
+    \end{align}
+    where 
+    \begin{equation}
+        b(x) = \int_\Omega J(x-y)\:dy \leq \max_{x\in \overline{\Omega}} b(x) = b_\infty
+    \end{equation}. 
+    Since $u_0$ is non-negative we have that $u$ is non-negative. Thus, estimating the first integral in \eqref{EQ:PDE_FOR_U} from below by 0, we can write the following ordinary differential inequality
+    \begin{align}
+        \label{EQ:ODI_FOR_U}
+        u_t \geq -(B + b_\infty) u + u^2 v \geq -(B + b_\infty) u + R_1 u^2.
+    \end{align}
+    When solved with respect to initial datum $u_0(x)$ we obtain
+    \begin{align}
+        \label{ODI_FOR_U_SOL}
+        u(x, t) \geq \frac{e^{-(B + b_\infty ) t}}{\frac{1}{u_0(x)} - R_1 \int_0^t e^{-(B + b_\infty ) t}\:ds} = \frac{e^{-(B + b_\infty ) t}}{\frac{1}{u_0(x)} - \frac{R_1}{B + b_\infty} (1 - e^{-(B + b_\infty) t} )}
+    \end{align}
+    Observe that in order to show further lower bounds we need to estimate $1/u_0(x)$ from above. Thus we use Assumption \ref{asm:InitialDatumSpikes} to estimate
+    \begin{equation*}
+        u_0(0) \geq \frac{B + b_\infty}{R_1 (1 - e^{-(B+b_\infty)}) } \implies \frac{1}{u_0(0)} \leq \frac{R_1}{B + b_\infty} (1 - e^{-(B+b_\infty)}).
+    \end{equation*}
+    From that we see have the final bound for $x = 0$ of the following form
+    \begin{align*}
+        u(0, t) 
+        &\geq \frac{e^{-(B + b_\infty ) t}}{\frac{1}{u_0(x)} - \frac{R_1}{B + b_\infty} (1 - e^{-(B + b_\infty) t} )} \\
+        &\geq \frac{e^{-(B + b_\infty ) t}}{\frac{R_1}{B + b_\infty} (1 - e^{-(B+b_\infty)}) - \frac{R_1}{B + b_\infty} (1 - e^{-(B + b_\infty) t} )} \\
+        &= \frac{e^{-(B + b_\infty ) t}}{\frac{R_1}{B + b_\infty} (e^{-B + b_\infty} - e^{-(B+b_\infty) t})},
+    \end{align*}
+    which explodes as $t \rightarrow t_* := 1$. This ends the proof of the Theorem.
+\end{proof}
+
+\subsection{Stability in the kinetic system}
+
+The kinetic system corresponding to the problem \eqref{EQ:KlausmeierSystem} is given by
+\begin{align}
+    \label{EQ:KineticSystem}
+    \begin{cases}
+        \frac{du}{dt} = f(u, v) &t > 0,\\
+        \frac{dv}{dt} = g(u, v) &t > 0,\\
+        u(0) \in \mathbb{R}, v(0) \in \mathbb{R}.
+    \end{cases}
+\end{align}
+The starting point of this subsection is to show that there exists stable, stationary solution $(u^*, v^*)$ for the kinetic problem \eqref{EQ:KineticSystem}.
+\begin{prp}
+    \label{prp:ExistenceOfConstantSSKineticSystem}
+    Let $f, g$ be defined as in the equations \eqref{EQ:KlausmeierNonliniearities}. The following statements are true about number of steady states for kinetic system \eqref{EQ:KineticSystem}.
+    \begin{itemize}
+        \item If $A > 2B$ then there are $3$ constant stationary solutions of \eqref{EQ:KineticSystem}.
+        \item If $A = 2B$ then there are $2$ constant stationary solutions of \eqref{EQ:KineticSystem}.
+        \item If $A < 2B$ then there is $1$ constant stationary solution of \eqref{EQ:KineticSystem}.
+    \end{itemize}
+\end{prp}
+\begin{proof}
+    To find the stationary solutions of \eqref{EQ:KineticSystem} one needs to solve for $(u, v)$ the following system of equations
+    \begin{align*}
+        u^2 v - Bu &= 0 ,\\
+        A - v - u^2 v &= 0.
+    \end{align*}
+    From the second equation we get $v = \frac{A}{u^2 + 1}$. Thus the first equation becomes
+    \begin{equation}
+        \label{EQ:StationaryPolynomial}
+        -B u^3 + A u^2 - B u = 0
+    \end{equation}
+    For all parameters $A > 0, B > 0$ we can find the solution of following form
+    \begin{align}
+        \label{EQ:FirstSS}
+        \left(u_1^*, v_1^*\right) &= \left(0, A\right),
+    \end{align}
+    Provided that $A > 2B$, the equation \eqref{EQ:StationaryPolynomial} admits two more solutions
+    \begin{align}
+        \left(u_2^*, v_2^*\right) &= \left(\frac{A - \sqrt{A^2 - 4B^2}}{2B}, \frac{2 B^2}{A - \sqrt{A^2 - 4B^2}}\right), \label{EQ:SecondSS}\\
+        \left(u_3^*, v_3^*\right) &= \left(\frac{A + \sqrt{A^2 - 4B^2}}{2B}, \frac{2 B^2}{A + \sqrt{A^2 - 4B^2}}\right) \label{EQ:ThirdSS}.
+    \end{align}
+    Finally, if $A = 2B$, then the solutions \eqref{EQ:SecondSS} and \eqref{EQ:ThirdSS} merge into 
+    \begin{align}
+        \label{EQ:FourthSS}
+        \left( u_4^*, v_4^* \right) &= \left(1, B\right).
+    \end{align}
+    For $A < 2B$ there are no other, real solutions of \eqref{EQ:StationaryPolynomial} then \eqref{EQ:FirstSS}.
+\end{proof}
+Now, we define the perturbations of an equilibrium $(u^*, v^*)$ by the formulas
+\begin{equation}
+    \label{EQ:PerturbationsofSSKineticSystem}
+    \Tilde{u}(t) = u^* + \varepsilon \varphi(t) \quad \text{and} \quad \Tilde{v}(t) = v^* + \varepsilon \psi(t) 
+\end{equation}
+We plug \eqref{EQ:PerturbationsofSSKineticSystem} into \eqref{EQ:KineticSystem} and use the Taylor Theoem to obtain the system
+\begin{align}
+    \label{EQ:LinearizedKineticSystem}
+    \begin{pmatrix}
+        \varphi \\ \psi
+    \end{pmatrix} ' 
+    = 
+    \begin{pmatrix}
+        f_u^* & f_v^* \\ g_u^* & g_v^*
+    \end{pmatrix}
+    \begin{pmatrix}
+        \varphi \\ \psi
+    \end{pmatrix},
+\end{align}
+where the entries of the matrix on the right hand side are given by the Jacobian of the dynamical system \eqref{EQ:KineticSystem}. It is a well known fact that the solution $(\varphi, \psi) = (0, 0)$ of \eqref{EQ:LinearizedKineticSystem} is asymptotically stable if and only if
+\begin{equation*}
+    f_u^*g_v^* - f_v^*g_u^* > 0 \quad \text{and} \quad f_u^* + g_v^* < 0
+\end{equation*}
+\begin{prp}
+    \label{prp:StabilityOfConstanstKineticSystem}
+    Let $f, g$ be defined as in the equations \eqref{EQ:KlausmeierNonliniearities}. The following statements are true about number of stable steady states for kinetic system \eqref{EQ:KineticSystem}
+    \begin{itemize}
+        \item If $A > 2B$ then there are two asymptotically stable steady states.
+        \item If $A \leq 2B$ then there is one asymptotically stable steady state.
+    \end{itemize}
+\end{prp}
+\begin{proof}
+    Observe that the Jacobian of the dynamical system \eqref{EQ:KineticSystem} is given by
+    \begin{equation}
+        \label{EQ:JacobianOfKineticSystem}
+        J(u, v) = \begin{pmatrix}
+            2uv - B & u^2 \\ -2uv & -1 - u^2
+        \end{pmatrix}
+    \end{equation}
+    Substituting  $(u^*, v^*)$, given by the formula \eqref{EQ:FirstSS}, into \eqref{EQ:JacobianOfKineticSystem} we obtain that
+    \begin{equation*}
+        J(u^*_1, v^*_1) = \begin{pmatrix}
+            - B & 0 \\ 0 & -1
+        \end{pmatrix} \quad \text{with} \quad \det J(u^*_1, v^*_1) > 0, \quad \Tr J(u^*_1, v^*_1) < 0.
+    \end{equation*}
+    This means that $(u^*_1, v^*_1)$ is stable for all $A > 0, B > 0$. Next, we see that 
+    \begin{equation*}
+        u_i^* v_i^* = B \quad i \in \{2, 3, 4\}
+    \end{equation*}
+    It follows that \eqref{EQ:JacobianOfKineticSystem} becomes
+    \begin{equation}
+        \label{EQ:JacobianOfKineticSystemPlugged}
+        J(u^*_i, v^*_i) = \begin{pmatrix}
+            B & (u^*_i)^2 \\ -2B & -1 - (u^*_i)^2
+        \end{pmatrix}
+    \end{equation}
+    The determinant is given by
+    \begin{equation}
+        \label{EQ:DeterminantLinearizationKinetic}
+        \det J(u^*_i, v^*_i) = -B -B(u_i^*)^2 + 2B(u_i^*)^2 = -B(1-(u_i^*)^2)
+    \end{equation}
+    Observe that it is positive if and only if $u_i > 1$. For sake of exposition we list if this is satisfied with respect to $i \in \{2, 3, 4\}$.
+    \begin{itemize}
+        \item $u_2^* \leq 1$ for all positive $B$, thus determinant is negative. This already yields instability of $u_2$ as one of the eigenvalues of $J(u_2^*, v_2^*)$ must have positive sign.
+        \item $u_3^* > 1$ as we assumed $A > 2B$. Hence, we have that the determinant is positive.
+        \item $u_4^* = 1$ and so the determinant vanishes. This means that one of the eigenvalues is zero.
+    \end{itemize}
+    Now, the trace of \eqref{EQ:JacobianOfKineticSystemPlugged} can be computed as
+    \begin{equation}
+        \label{EQ:TraceLinearizationKinetic}
+        \Tr J(u^*_i, v^*_i) = B - 1 - (u_i^*)^2,
+    \end{equation}
+    which is negative if and only if $(u_i^*)^2 > B - 1$. As we have shown earlier, only $u_3^*$ could be asymptotically stable solution. Observe that $u_3^* > 1$ and consequently if $B < 2$ then the trace is negative, and thus both eigenvalues must be strictly negative real numbers. This means that $u_3^*$ is asymptotically stable. When $B > 2$ we need a stronger lower bound. This bound can be achived for $A > 2$, however itself is nasty, a thus we do not present it.
+\end{proof}
+\begin{rem}
+    Observe that
+    \begin{itemize}
+        \item Steady state $u_1^*$ given by equation \eqref{EQ:FirstSS} is always asymptotically stable. Thus desert will always propagate when the initial vegetation is sufficiently small.
+        \item It follows from Proposition \ref{prp:StabilityOfConstanstKineticSystem} that $u_3^*$ given by the formula \eqref{EQ:ThirdSS} is asymptotically stable, positive equilibrium of vegetation.
+    \end{itemize}
+\end{rem}
+
+\subsection{Turing instability}
+
+The main idea behind the Turing instability is that stable stationary solutions obtained with Proposition \ref{prp:ExistenceOfConstantSSKineticSystem} and Proposition \ref{prp:StabilityOfConstanstKineticSystem} become unstable for certain range of parameters $d_u, d_v$ under the following perturbations.
+\begin{equation}
+    \label{EQ:SpatiallyHeteroPerturbations}
+    \Tilde{u}(x,t) = u^* + \varepsilon z_u(x, t), \quad \text{ and } \quad \Tilde{v}(x,t) = v^* + \varepsilon z_v(x, t),
+\end{equation}
+where $\varepsilon > 0$ is a small number. Plugging \eqref{EQ:SpatiallyHeteroPerturbations} into \eqref{EQ:KlausmeierSystem} and using Taylor expansion one obtains the linearized system
+\begin{align}
+    \partial_t z_u(x, t) &= d_u \mathcal{L} z_u(x, t) + f_u(u^*, v^*) z_u(x, t) + f_v(u^*, v^*) z_v(x,t), \label{EQ:LinearizedKlausmeier_U}\\
+    \partial_t z_v(x, t) &= d_v \Delta z_v(x, t) + g_u(u^*, v^*) z_u(x, t) + g_v(u^*, v^*) z_v(x,t). \label{EQ:LinearizedKlausmeier_V}
+\end{align}
+If the dispersal operator $\mathcal{L}$ was replaced in \eqref{EQ:LinearizedKlausmeier_U} by Laplacian with Dirichlet boundary conditions $\Delta$, one could use the Fourier method of separation of variables to get the series solution. We can not be sure about existence of eigenfunctions of $\mathcal{L}$ for general kernels $J$. Hence, we assume the following
+\begin{asm}
+    \label{asm:eigenbasisforDispersal}
+    Suppose that $J$ is an integral kernel satisfying Assumption \ref{assumptions_general_kernel}. We assume that there exists an orthonormal basis $\{ \varphi_k \}_{k \geq 0}$ of $L^2(\Omega)$ such that 
+    \begin{equation}
+        \mathcal{L} \varphi_k = \beta_k \varphi_k,
+    \end{equation}
+    where $\{ \beta_k \}_{k \geq 0}$ is a real sequence of eigenvalues contained in the left semiaxis.
+\end{asm}
+Let $\psi_k$ be $k$-th eigenfunction of $\Delta$ with Dirichlet boundary conditions. Now, Assumption \ref{asm:eigenbasisforDispersal} yields an explicit form of the solutions to \eqref{EQ:LinearizedKlausmeier_U}-\eqref{EQ:LinearizedKlausmeier_V}
+\begin{equation}
+    \label{EQ:FourierSeriesLinearizedProblem}
+    z_u(x,t) = \sum_{k \geq 0} T_{u, k}(t) \varphi_k(x), \quad z_v(x,t) = \sum_{k \geq 0} T_{v, k}(t) \psi_k(x)
+\end{equation}
+When we plug \eqref{EQ:FourierSeriesLinearizedProblem} into the equations \eqref{EQ:LinearizedKlausmeier_U}-\eqref{EQ:LinearizedKlausmeier_V}, then we multiply them by $\varphi_k, \psi_k$ respectively and integrate in $\Omega$, we get the system of ODEs
+\begin{equation}
+    \label{EQ:ODEFORT_U_T_V}
+    \begin{pmatrix}
+        T_{u, k} \\ T_{v, k}
+    \end{pmatrix}'
+    =
+    \begin{pmatrix}
+        d_u \beta_k + f_u^* & f_v^* \int_\Omega \varphi_k \psi_k \:dx \\
+        g_u^* \int_\Omega \varphi_k \psi_k \:dx & d_v \lambda_k + g_v^*
+    \end{pmatrix}
+    \begin{pmatrix}
+        T_{u, k} \\ T_{v, k}
+    \end{pmatrix}
+\end{equation}
+To show the instability of $(u^*, v^*)$ one needs to find at least one non-zero $k$ such that the linearization matrix $L_k$, defined above, has at least one positive eigenvalue.
+\begin{thm}
+    Suppose that the Assumption \ref{asm:eigenbasisforDispersal} holds true.Let $A > 2B$ and $B < 2$. The following statements hold true
+    \begin{itemize}
+        \item Stationary solution $(u_1^*, v_1^*) = (0, A)$ can not be destabilized by the spatially hetereogeneous perturbation of the form \eqref{EQ:FourierSeriesLinearizedProblem}.
+        \item For all $k > 0$ there exist $d_u$ sufficiently small and $d_v$ sufficiently large, such that the stationary solution $(u_3^*, v_3^*)$ given by formula \eqref{EQ:ThirdSS} becomes unstable stationary solution of \eqref{EQ:KlausmeierSystem} under spatially heterogeneous perturbation.
+    \end{itemize}
+\end{thm}
+\begin{proof}
+    Observe that the linearization matrix $L_k$ given in \eqref{EQ:ODEFORT_U_T_V} is given by
+    \begin{equation}
+        \label{EQ:LinearizationMatrixTuringInstability}
+        L_k(u, v) 
+        = 
+        \begin{pmatrix}
+            d_u \beta_k + 2 u v - B & u^2 \int_\Omega \varphi_k \psi_k \:dx \\ -2u v \int_\Omega \varphi_k \psi_k \:dx & d_v\lambda_k -1-u^2
+        \end{pmatrix}
+    \end{equation}
+    We plug the stationary solution $(u_1^*, v_1^*) = (0, A)$ into the equation \eqref{EQ:LinearizationMatrixTuringInstability}. Thus, the determinant becomes
+    \begin{align*}
+        \det L_k(u_1^*, v_1^*) = (d_u \beta_k - B) (d_v \lambda_k - 1) > 0.
+    \end{align*}
+    And the trace is
+    \begin{align*}
+        \Tr L_k(u_1^*, v_1^*) = d_u \beta_k - B + d_v \lambda_k - 1 < 0.
+    \end{align*}
+    Thus $(u_1^*, v_1^*)$ can not become unstable under any spatially heterogeneous perturbation. Next, we supply \eqref{EQ:LinearizationMatrixTuringInstability} with $(u_3^*, v_3^*)$ which is given by the formula \eqref{EQ:ThirdSS}. Note, that this is asymptotically stable solution of the kinetic system \eqref{EQ:KineticSystem} provided that $B < 2,$ and $ 2 B < A$. Using the Cauchy-Schwarz inequality the determinant is estimated by
+    \begin{align*}
+        \det L_k(u_3^*, v_3^*) 
+        &= (d_u \beta_k + B) (d_v \lambda_k - 1 - (u_3^*)^2) + 2 B (u_3^*)^2 \left(\int_\Omega \varphi_k \psi_k \:dx\right)^2 \\
+        &\leq (d_u \beta_k + B) (d_v \lambda_k - 1 - (u_3^*)^2) + 2 B (u_3^*)^2 \\
+        &= \det J(u_3^*, v_3^*) - d_u \beta_k (1 + (u_3^*)^2 ) + d_v \lambda_k B + d_u d_v \lambda_k \beta_k.
+    \end{align*}
+    Now, let us choose any number $\alpha \in \left(\frac{(u_3^*)^2 - 1}{(u_3^*)^2 + 1}, 1\right)$ and suppose that
+    \begin{equation*}
+        |d_u \beta_k| < \alpha B \implies d_u < \alpha B / |\beta_k|
+    \end{equation*}
+    Then we can estimate
+    \begin{equation*}
+        \det L_k(u_3^*, v_3^*) < \det J(u_3^*, v_3^*) + \alpha B (1 + (u_3^*)^2) + d_v \lambda_k (1 - \alpha) B
+    \end{equation*}
+    But from this, we deduce that the determinant becomes negative when
+    \begin{align*}
+        d_v 
+        &> \frac{\det J(u_3^*, v_3^*) + \alpha B (1 + (u_3^*)^2)}{|\lambda_k| (1-\alpha) B} \\
+        &= \frac{-B(1-(u_3^*)^2) + \alpha B (1 + (u_3^*)^2)}{|\lambda_k|(1-\alpha) B} \\
+        &= \frac{(1 + \alpha) - (1 - \alpha) (u_3^*)^2}{|\lambda_k|(1 - \alpha)} > 0.
+    \end{align*}
+    This yields existence of the positive eigenvalue of $L_k$. This is Turing instability.
+\end{proof}
+\begin{rem}
+    We list here several examples of integral kernels $J$ satisfying Assumption \ref{assumptions_general_kernel} and resulting in the existence of an orthonormal eigenbasis of $\mathcal{L}$.
+    \begin{itemize}
+        \item When $\Omega \subset \mathbb{R}^n$ is an arbitrarily bounded region and the kernel $J \equiv 1 / |\Omega|$, it is easy to show that $\mathcal{L}$ admits two eigenvalues $\beta_0 = 0$ with corresponding constant eigenfunction $\varphi_0 \equiv 1$ and $\beta_1 = -1$ with corresponding eigenspace spanned by Laplacian eigenfunctions $\{\psi_k\}_{|k| \geq 1}$ with homogeneous Neumann boundary conditions.
+        \item When $\Omega = [-\pi, \pi]^n$ and the kernel $J$ is periodic we find that $\mathcal{L}$ admits the sequence of eigenvalues $\beta_k = \hat{J}(k)$, given by the Fourier coefficients of $J$ with multiplicity equal to $2$ and the corresponding eigenfunctions $\varphi_k^1(x) = \sin(k\cdot x), \varphi_k^2(x) = \cos(k\cdot x)$. The proof can be found, for instance, in Theorem 2.2 in \cite{Tadej2025}.
+        \item When $\Omega = \mathbb{S}^2 \subset \mathbb{R}^3$ is the unit sphere then for any kernel $J$ we get that the spherical harmonics $Y^m_l$ with $m, l \in \mathbb{N}$ are eigenfunctions of $\mathcal{L}$. The proof can be found in Section 2 in \cite{SlevinskyMontanelliDu2018}.
+        \item We point out that the matter of existence of the non-trivial eigenfunctions of operator $\mathcal{L}$ still has not been fully answered.
+    \end{itemize}
+\end{rem}
+
+\section{Numerical analysis of the non-local Klausmeier system}
+
+\subsection{Approximation with finite dimensional kernels}
+
+Now, it is convenient to denote the integral kernel $K: \Omega \times \Omega \rightarrow \mathbb{R}_{\geq 0}$ as
+\begin{equation}
+    \label{EQ:KernelKDef}
+    K(x, y) = J(x-y),
+\end{equation}
+where $J$ is an integral kernel as in Assumption \ref{assumptions_general_kernel}. Observe that $K \in L^2(\Omega \times \Omega)$. Since $L^2(\Omega \times \Omega) = L^2(\Omega) \otimes L^2(\Omega)$ we can expand \eqref{EQ:KernelKDef} into
+\begin{equation*}
+    K(x, y) = \sum_{k=0}^\infty \sum_{l=0}^\infty c_{k, l} \varphi_k(x) \varphi_l(y),
+\end{equation*}
+where $\{\varphi_k\}_{k=0}^\infty$ is an orthonormal basis of $L^2(\Omega)$ and $c_{k,l}$ are given coefficients. Hence, we may define the truncated kernel $K_N : \Omega \times \Omega \rightarrow \mathbb{R}_{\geq 0}$
+\begin{equation}
+    \label{EQ:TruncatedKernelKDef}
+    K_N(x, y) = \sum_{k=0}^N \sum_{l=0}^N c_{k, l} \varphi_k(x) \varphi_l(y).
+\end{equation}
+Analogously we denote the corresponding, truncated dispersal operator $\mathcal{L}_N: C(\overline{\Omega}) \rightarrow C(\overline{\Omega})$ by the formula below
+\begin{equation}
+    \label{EQ:TruncatedDispersalOperatorDef}
+    \mathcal{L}_N u(x, t) = \int_\Omega K_N(x,y) \left(u(y,t) - u(x,t) \right)\:dy
+\end{equation}
+Finally, we want to study the resulting truncated Klausmeier model
+\begin{align}
+    \label{EQ:TruncatedKlausmeierSystem}
+    \begin{cases}
+        u_t(x,t) = d_u\mathcal{L}_N u(x, t) + f(u(x,t), v(x,t)) &(x, t) \in \Omega \times [0, T] \\
+        v_t(x,t) = d_v\Delta v(x,t) + g(u(x,t), v(x,t)) &(x, t) \in \Omega \times [0, T] \\
+        v(x,t) = \Bar{v} \in \mathbb{R}_{\geq 0} &(x, t) \in \partial\Omega \times [0, T]. \\
+        u(x,0) = u_0(x), v(x,0) = v_0(x) &x \in \Omega,
+    \end{cases}
+\end{align}
+where $f, g, d_v, \nu$ are the same as in \eqref{EQ:KlausmeierSystem}. Now, we shall prove the convergence of system \eqref{EQ:TruncatedKlausmeierSystem} to \eqref{EQ:KlausmeierSystem} as $N \rightarrow \infty$.
+\begin{thm}
+    \label{thm:ApproximationWithFiniteKernels}
+    Consider the initial data 
+    $$(u_0, v_0) \in C(\overline{\Omega}) \times \{v \in H^1_0(\Omega) \cap C(\overline{\Omega}): \Delta v \in C(\overline{\Omega})\}$$
+    Let us denote the solution of the problem \eqref{EQ:TruncatedKlausmeierSystem} with maximal time of evolution $T_N > 0$ such that
+    $$(u_N, v_N) \in C^{0, 1}(\overline{\Omega}, [0,T]) \times C^{0, 1}(\overline{\Omega}, [0,T])$$
+    Let us also denote the solution of the problem \eqref{EQ:KlausmeierSystem} with maximal time of evolution $T > 0$ such that
+    $$(u, v) \in C^{0, 1}(\overline{\Omega}, [0,T]) \times C^{0, 1}(\overline{\Omega}, [0,T])$$
+    Then
+    \begin{equation*}
+        (u_N, v_N) \xrightarrow{N \rightarrow \infty} (u, v),
+    \end{equation*}
+    where the convergence is understood in the sense of the product norm $||| \cdot |||$ defined by the formula
+    \begin{equation}
+        ||| (u, v) ||| = \sup_{t \in [0, T_{min}]}\left(\| u(\cdot, t) \|_2 + \|v(\cdot, t) \|_2 \right).
+    \end{equation}
+\end{thm}
+\begin{proof}
+    Let us denote $U_N = u - u_N$ and $V_n = v - v_n$. Next, we plug $U_N$ and $V_N$ into \eqref{EQ:KlausmeierSystem}. Observe that $U_N$ satisfies the following equation
+    \begin{align*}
+        \partial_t U_N 
+        &= d_u \mathcal{L}_N U_N \\
+        &+ d_u \sum_{k > N}\sum_{l > N} c_{k, l}\int_\Omega \varphi_k(x, s) \varphi_l(y, s) (u(y, s) - u(x, s))\:dy \\
+        &+ f(u(x,s), v(x,s)) - f(u_N(x,s), v_N(x,s)).
+    \end{align*}
+    Multiplying this equation by $U_N$ and integrating in $\Omega$, we obtain the inequality
+    \begin{align}
+        \label{EQ:U_NDifferentialInequality_PRE}
+        \begin{split}
+            \frac{1}{2}\partial_t\|U_N(\cdot, t)\|_2^2 
+            &\leq 2 b_\infty d_u  \langle \mathcal{L} U_N(\cdot, s), U_N(\cdot, s)\rangle \\
+            &+ d_u |\Omega| \max_{t \in [0, T]}\|u(\cdot, t)\|_2^2 \sum_{k > N}\sum_{l > N} c_{k, l} \\
+            &+ \|f_u\|_\infty \|U_N(\cdot, s)\|_2^2  + \|f_v\|_\infty \|V_N(\cdot, s)\|_2^2.
+        \end{split}
+    \end{align}
+    Observe that $\mathcal{L}$ annihilates constants and is a conservative operator. Thus, we estimate the first term by
+    \begin{equation*}
+        \langle \mathcal{L} U_N(\cdot, s), U_N(\cdot, s)\rangle
+        \leq
+        \sup_{\|w\|_2 = 1, \int_\Omega w \:dx = 0} \langle \mathcal{L}w, w \rangle \|U_N(\cdot, s)\|_2^2 = \beta_1 \|U_N(\cdot, s)\|_2^2,
+    \end{equation*}
+    where $\beta_1 < 0$, see \cite{ChasseigneChavesRossi2006} for details. Plugging this into \eqref{EQ:U_NDifferentialInequality_PRE} we obtain that
+    \begin{align}
+        \label{EQ:U_NDifferentialInequality_Final}
+        \begin{split}
+            \frac{1}{2}\partial_t\|U_N(\cdot, t)\|_2^2
+            &\leq (2 b_\infty d_u \beta_1 + \|f_u\|_\infty) \|U_N(\cdot, t)\|_2^2 + \|f_v\|_\infty \|V_N(\cdot, t)\|_2^2 \\
+            &+ d_u |\Omega| \max_{t \in [0, T]}\|u(\cdot, t)\|_2^2 \sum_{k > N}\sum_{l > N} c_{k, l}.
+        \end{split}
+    \end{align}
+    Proceeding similarly with $V_N$ one finds out that
+    \begin{equation}
+        \label{EQ:V_NDifferentialInequality_Final}
+            \frac{1}{2}\partial_t\|V_N(\cdot, t)\|_2^2 \leq ( d_v \lambda_1 + \|g_v\| ) \|V_N(\cdot, t)\|_2^2 + \|g_u\|_\infty \|U_N(\cdot, t)\|_2^2.
+    \end{equation}
+    Now, combining inequalities \eqref{EQ:U_NDifferentialInequality_Final} and \eqref{EQ:V_NDifferentialInequality_Final} we obtain further bounds
+    \begin{align}
+        \label{EQ:U_NV_N_FinalDifferentialInequality}
+        \begin{split}
+            \frac{1}{2}\partial_t( \|V_N(\cdot, t)\|_2^2 + \|U_N(\cdot, t)\|_2^2 )
+            &\leq M ( \|V_N(\cdot, t)\|_2^2 + \|U_N(\cdot, t)\|_2^2 ) \\
+            &+ d_u |\Omega| \max_{t \in [0, T]}\|u(\cdot, t)\|_2^2 \sum_{k > N}\sum_{l > N} c_{k, l}.
+        \end{split}
+    \end{align}
+    where we denoted the following finite, real number 
+    $$M = \max\left\{ 2 b_\infty d_u \beta_1 + \|f_u\|_\infty + \|g_u\|_\infty,\: d_v \lambda_1 + \|g_v\|_\infty + \|f_v\|_\infty \right\}$$
+    Now, integrating \eqref{EQ:U_NV_N_FinalDifferentialInequality} in time and applying the integral Gr\"onwall inequality we obtain that
+    \begin{equation*}
+        ||| (U_N, V_N) ||| \leq d_u |\Omega| T_{min} \max_{t \in [0, T_{min}]}\|u(\cdot, t)\|_2^2 e^{M t} \sum_{k > N}\sum_{l > N} c_{k, l}.
+    \end{equation*}
+    We end the proof of this Theorem by passing to the limit with $N \rightarrow \infty$.
+\end{proof}
+
+\subsection{Numerical scheme}
+
+Here, we consider $\{ P_k \}_{k \geq 0}$ to be the set of Legendre polynomials. Note that this is an orthonormal set on $L^2(\Omega)$. Since they are dense in $C(\overline{\Omega})$ we can approximate $K$ as tensorial product of Legendre polynomials, e.g. there exists sequence of symmetric coefficients $c_{k,l} = c_{l, k}$ such that
+\begin{equation}
+    K(x, y) = \sum_{k \geq 0} \sum_{l \geq 0} c_{k, l} P_k(x) P_l(y)
+\end{equation}
+Theorem \ref{thm:ApproximationWithFiniteKernels} yields that for any $\varepsilon > 0$ there exists a natural number $0 < N < \infty$ such that the solution $(u_N, v_N)$ of the problem \eqref{EQ:TruncatedKlausmeierSystem} and solution $(u, v)$ of the system \eqref{EQ:KlausmeierSystem} satisfy
+\begin{equation}
+    |||(u_N, v_N) - (u, v)||| \leq \varepsilon.
+\end{equation}
+Thus we will numerically solve the truncated system \eqref{EQ:TruncatedKlausmeierSystem}. We particularly look for solutions of the following form
+\begin{equation}
+    \label{EQ:UDefinedAsLegendrePolys}
+    u(x, t) = \sum_{i, j = 0}^N a_{i, j} P_i(x) P_j(t).
+\end{equation}
+Recall that the dispersal operator decomposes into sum of integral operator and multiplication operator as follows
+\begin{equation}
+    \mathcal{L}_N f(x) = \int_\Omega K_N(x,y) f(y)\:dy - b(x) f(x).
+\end{equation}
+Now, let us plug the formula \eqref{EQ:UDefinedAsLegendrePolys} into the first term
+\begin{align*}
+    \int_\Omega K_N(x,y) u(x,t) \:dy
+    &= \sum_{i, j, k, l = 0}^N a_{i, j} c_{k, l} P_k(x) P_j(t) \int_\Omega P_l(y) P_i(y) \:dy \\
+    &= \sum_{j, k = 0}^N \Tilde{a}_{j, k} P_k(x) P_j(t),
+\end{align*}
+where we denoted the coefficients
+\begin{equation*}
+    \Tilde{a}_{j ,k} = \sum_{i=1}^N a_{i, j} c_{k, i}
+\end{equation*}
+\subsection{Stability of the numerical scheme}
+
+\subsection{Experiments}
+
+\newpage
+
+\bibliographystyle{siam}
+\bibliography{bibliography}
+
+% \begin{thebibliography}{100}
+
+% \end{thebibliography}
+
+\end{document}

@@ -1,0 +1,645 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[margin=1in, top=1.5in, bottom=1.5in]{geometry}
+\usepackage{subcaption}
+\usepackage{graphicx}
+% \usepackage{subfigure}
+\usepackage{float}
+\usepackage{titlesec}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{cases}
+\usepackage[english]{babel}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{authblk}
+\usepackage{dsfont}
+\usepackage{sectsty}
+\usepackage{xcolor}
+
+\usepackage{todonotes}
+\providecommand{\MH}[1]{\todo[inline,author={MH},color=red!20!white]{#1}}
+\providecommand{\MT}[1]{\todo[inline,author={MT},color=blue!20!white]{#1}}
+\providecommand{\RM}[1]{\todo[inline,author={RM},color=green!20!white]{#1}}
+
+% THEOREM / PROPOSITIONS / LEMMAS etc...
+
+\theoremstyle{break}
+	\newtheorem{thm}{Theorem}[section]
+\theoremstyle{break}
+    \newtheorem{prp}{Proposition}[section]
+\theoremstyle{break}
+	\newtheorem{asm}{Assumption}[section]
+\theoremstyle{break}
+	\newtheorem{rem}{Remark}[section]
+\theoremstyle{break}
+	\newtheorem{lem}{Lemma}[section]
+\theoremstyle{break}
+	\newtheorem{cor}{Corollary}[section]
+    \theoremstyle{break}
+	\newtheorem{con}{Conclusion}[section]
+\theoremstyle{break}
+	\newtheorem{defi}{Definition}[section]
+\theoremstyle{break}
+	\newtheorem{example}{Example}[section]
+
+% USEFUL COMMANDS
+
+% writing - labels
+\makeatletter
+\newcommand{\mylabel}[2]{#2\def\@currentlabel{#2}\label{#1}}
+\makeatother
+
+\providecommand{\keywords}[1]
+{
+  \small	
+  \textbf{\textit{Keywords}} #1
+}
+
+% objects
+\newcommand{\Leo}{\mathcal{L}_{\varepsilon}}
+\newcommand{\Seq}[2]{\left\{#1_#2\right\}_{#2 = 0}^\infty}
+
+% spaces
+\newcommand{\Leb}{L^2\left(\Omega\right)}
+\newcommand{\Lei}{L^\infty\left(\Omega\right)}
+\newcommand{\CDR}{C^1\left(\mathbb{R}\right)}
+\newcommand{\CCSRn}{C_c\left(\mathbb{R}^n\right)}
+
+% operators
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\Ima}{Im}
+\DeclareMathOperator{\divergence}{div}
+
+\DeclareMathOperator{\Tr}{Tr}
+
+\counterwithin{equation}{section}
+
+\title{Eigenvalues and eigenfunctions of the non-local dispersal with Neumann-type boundary condition}
+
+
+
+\author[1]{Maciej Tadej \thanks{maciej.tadej@math.uni.wroc.pl}}
+
+\affil[1]{\textit{Institute of Mathematics, University of Wrocław, pl. Grunwaldzki 2, 50-384 Wrocław, Poland}}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\hspace{20pt}
+
+\begin{abstract}
+TO DO
+\end{abstract}
+
+\begin{keywords}
+TO DO
+\end{keywords}
+
+\newpage
+
+\section{Introduction}
+
+In this work, we study the non-local dispersal operator $\mathcal{L}$, which serves as a non-local analogue of the classical Laplacian with Neumann boundary conditions. It is defined by the formula
+\begin{equation}
+    \label{EQ:NonLocalNeumann}
+    \mathcal{L}v(x) = \int_{\Omega} J(x-y) (v(y) - v(x)) \, dy \quad x \in \Omega.
+\end{equation}
+where we assume the following properties of the integral kernel $J$.
+
+\begin{asm} 
+    \label{asm:KernelProperties}
+    The integral kernel $J \in C^0(\mathbb{R}^n)$ satisfies
+    \begin{enumerate}[label=(\textit{J\arabic*})]
+        \item \textbf{Positivity:} $J(z) \geq 0$ for all $z \in \mathbb{R}^n$, and $J(0) > 0$.
+        \item \textbf{Symmetry:} $J(z) = J(-z)$ for all $z \in \mathbb{R}^n$.
+        \item \textbf{Normalization:} $\int_{\mathbb{R}^n} J(z) \, dz = 1$.
+        \item \textbf{Finite Second Moment:} $\int_{\mathbb{R}^n} J(z)|z|^2 \, dz < \infty$.
+    \end{enumerate}
+\end{asm}
+
+Furthermore, we need to impose the following assumption on the domain $\Omega$.
+
+\begin{asm}
+    \label{asm:DomainProperties}
+    The domain $\Omega \subset \mathbb{R}^n$ is open and bounded. There exist $\Omega_1, \Omega_2 \subset \Omega$ such that $\Omega_1 \cap \Omega_2 = \emptyset$, $\Omega_1 \cup \Omega_2 = \Omega$ and the following inequality holds true
+    \begin{equation}\label{eq:sufficient_cond}
+        \frac{4}{|\Omega|} \iint_{\Omega_1 \times \Omega_2} J(x-y) \, dx dy < \min_{x \in \overline{\Omega}} \int_\Omega J(x-y) \, dy.
+    \end{equation}
+\end{asm}
+
+The main objective of this work is to construct pairs $(\beta, v) \in \mathbb{R}\times L^2(\Omega)$ solving the non-local eigenvalue problem given below
+
+\begin{equation}
+    \label{eq:nonlocal_eigenvalue_problem}
+    \mathcal{L} v = \beta v.
+\end{equation}
+
+We aim to achieve this goal by means of the calculus of variations. In particular we seek the solutions of the following optimization problem
+
+\begin{equation}
+    \beta = \sup_{v \in L^2(\Omega)} \langle \mathcal{L} v, v\rangle.
+\end{equation}
+
+\paragraph{Literature Review}
+
+The spectral properties of non-local diffusion operators have attracted considerable attention in recent years. Foundational efforts to understand the eigenvalue problem for such operators were made by Coville, Rossi, and their collaborators (see e.g., \cite{ChasseigneChavesRossi2006, Coville2010, GarciaMelianRossi2009}), as well as comprehensively detailed in the monograph by Andreu-Vaillo et al. \cite{AndreuVaillo2010}. This line of research primarily focused on establishing maximum principles, exploring the asymptotic behavior of solutions, and analyzing the criteria for the existence of principal eigenvalues, often highlighting the fundamental differences between local and non-local operators under various boundary conditions.
+
+A central challenge in the study of non-local dispersal is the lack of compactness of the underlying integral operators, which fundamentally alters the spectral structure. The dynamical implications of this property were extensively investigated by Hutson, Shen, and Vickers \cite{HutsonShenVickers2008}. Their research directed attention toward the evolutionary aspects of dispersal, showing how the lack of regularizing effects can prevent the existence of a principal eigenvalue in certain periodic or almost-periodic environments, thereby affecting the system's principal Lyapunov exponent and species invasion dynamics.
+
+Furthermore, Foss, Radu, and Wright \cite{FossRaduWright2021} established a robust framework for minimizing non-local energy functionals. Their work demonstrates how to derive non-local Euler-Lagrange equations and prove the existence and regularity of minimizers using joint convexity and non-local Poincar\'e inequalities, notably without relying on the restrictive growth conditions required in classical Sobolev spaces.
+
+\paragraph{Main result}
+
+Working in the framework of Assumptions \ref{asm:KernelProperties} and \ref{asm:DomainProperties}, we obtained the following spectral theorem for the non-local dispersal operators
+
+\begin{thm}[Non-local Spectral Theorem]
+\label{thm:spectral_theorem}
+There exists a finite or infinite sequence of pairs $(\beta_k, v_k) \in \mathbb{R} \times L^2(\Omega)$ solving equation \eqref{eq:nonlocal_eigenvalue_problem}. Moreover, the sequence of eigenvalues $\{\beta_k\}_{k \in \mathbb{N}}$ satisfies
+\begin{equation}
+    -\min_{x \in \overline{\Omega}} \int_\Omega J(x-y) \, dy < \beta_M < \dots < \beta_0 := 0,
+\end{equation}
+where $M \geq 1$.
+\end{thm}
+
+\begin{proof}
+The existence of the trivial eigenpair $(\beta_0, v_0)$ follows directly from the mass-conserving property of the non-local operator $\mathcal{L}$ with Neumann-type boundary conditions. For $k \ge 1$, the subsequent eigenpairs are constructed variationally via finite-dimensional Galerkin approximations, the algebraic solvability of which is guaranteed by Proposition \ref{prp:finite_dimensional_minimizer}. The strong $L^2(\Omega)$-convergence of these discrete approximations to the exact normalized eigenfunctions is established in Lemma \ref{thm:convergence}. Furthermore, the existence of the sequence of eigenpairs and the monotonic ordering of the corresponding eigenvalues are verified by the inductive argument detailed in Lemma \ref{lem:inductive_step}. Since $\mathcal{L}$ is a bounded operator, the sequence of eigenvalues must converge to the well-defined limit $\beta_\infty > -\infty$.
+\end{proof}
+
+To the author's best knowledge, this is the first, rigorous result establishing existence of eigenfunctions corresponding to non-trivial eigenvalues on a bounded domains in the Neumann-type case.
+
+\section{Preliminaries}
+
+We begin by recalling the fundamental mass conservation property of the non-local Neumann operator.
+
+\begin{rem}
+    For any integral kernel $J$ satisfying Assumption \ref{asm:KernelProperties}, the dispersal operator $\mathcal{L}$ defined in \eqref{EQ:NonLocalNeumann} admits a trivial principal eigenvalue $\beta_0 = 0$. The corresponding eigenfunction is given by the constant function 
+    \begin{equation}
+        \varphi_0(x) = \frac{1}{\sqrt{|\Omega|}}.
+    \end{equation}
+\end{rem}
+
+Unlike the classical Laplacian, whose spectrum on a bounded domain is purely discrete, the non-local operator $\mathcal{L}$ lacks compactness. Consequently, its spectrum contains a continuous (essential) part.
+
+\begin{thm}
+    Let $\Omega$ and $J$ satisfy Assumption 1.1. The essential (continuous) spectrum of the non-local operator $\mathcal{L}$, denoted by $\sigma_c$, is given by the range of its multiplication part
+    \begin{equation}
+        \sigma_c = \left\{ -\int_\Omega J(x-y) \,dy : x \in \overline{\Omega} \right\}.
+    \end{equation}
+\end{thm}
+\begin{proof}
+    For the detailed proof, we refer the reader to Theorem 2.1 in \cite{Tadej2025}.
+\end{proof}
+
+Any eigenvalue $\beta$ located strictly above this continuous band, i.e., $\beta > \sup \sigma_c$, belongs to the discrete spectrum and is isolated. We define the first non-trivial eigenvalue variationally as
+\begin{equation}\label{eq:beta1_def}
+    \beta_1 := \sup_{\|v\|_2 = 1 \\ \int_\Omega v(x) \:dx = 0} \langle \mathcal{L}v, v \rangle.
+\end{equation}
+The basic properties of $\beta_1$ are summarized in the following theorem.
+
+\begin{thm}
+    \label{thm:beta1_bounds}
+    Let $\beta_1$ be defined by equation \eqref{eq:beta1_def}. Then the following bounds hold true
+    \begin{equation}
+        \sup \sigma_c \leq \beta_1 < 0.
+    \end{equation}
+\end{thm}
+\begin{proof}
+    For the detailed proofs of lower and upper bounds of $\beta_1$ we refer the reader to Proposition 3.4 and Lemma 3.5 in \cite{AndreuVaillo2010} respectively.
+\end{proof}
+
+While Theorem \ref{thm:beta1_bounds} guarantees that $\beta_1$ cannot be lower than the continuous spectrum, it does not prevent $\beta_1$ from collapsing into $\sigma_c$ (i.e., $\beta_1 = \sup \sigma_c$), which would result in the non-existence of the first non-trivial eigenfunction. To ensure the existence of an isolated eigenvalue $\beta_1$, we introduce the following sufficient condition regarding the geometry of $\Omega$ and the kernel $J$.
+
+\begin{prp}
+    \label{prop:spectral_gap}
+    Let $\Omega$ and $J$ satisfy Assumptions \ref{asm:KernelProperties} and \ref{asm:DomainProperties}.
+    Then the following strict lower bound holds true
+    \begin{equation*}
+        \sup \sigma_c < \beta_1.
+    \end{equation*}
+\end{prp}
+\begin{proof}
+    We construct a test function $v \in A_1$ given by $v(x) = 1/\sqrt{|\Omega|}$ for $x \in \Omega_1$ and $v(x) = -1/\sqrt{|\Omega|}$ for $x \in \Omega_2$. Since $|\Omega_1|=|\Omega_2|$, we have $\int_\Omega v(x)\:dx = 0$ and $\|v\|_{L^2}=1$. Using the symmetrization identity, we compute the energy
+    \begin{align*}
+        \langle \mathcal{L}v, v \rangle &= -\frac{1}{2} \iint_{\Omega \times \Omega} J(x-y)(v(x)-v(y))^2 \, dx dy \\
+        &= -2 \iint_{\Omega_1 \times \Omega_2} J(x-y) \left( \frac{2}{\sqrt{|\Omega|}} \right)^2 \, dx dy \\
+        &= -\frac{4}{|\Omega|} \iint_{\Omega_1 \times \Omega_2} J(x-y) \, dx dy.
+    \end{align*}
+    On the other hand, $\sup \sigma_c = \max (-\int_\Omega J(x-y)dy) = - \min \int_\Omega J(x-y)dy$. 
+    By the assumption \eqref{eq:sufficient_cond}, multiplying both sides by $-1$ yields $\langle \mathcal{L}v, v \rangle > \sup \sigma_c$. Taking the supremum over all $v \in L^2(\Omega)$ with $\|v\|_2 = 1$ and $\int_\Omega v(x)\:dx = 0$ concludes the proof.
+\end{proof}
+
+For the sake of exposition, we provide an example of the kernel $J$ and domain $\Omega$ satisfying Assumptions \ref{asm:KernelProperties} and \ref{asm:DomainProperties}.
+\begin{example}
+    Let $\Omega = (-L, L)$ and the symmetric, normalized dispersal kernel be given by
+    \begin{equation}
+        J(z) = \frac{\lambda}{2} e^{-\lambda |z|}, \quad \lambda > 0,
+    \end{equation}
+    Then, for any $\lambda > 0$ and any domain length $L > 0$, this kernel satisfies the sufficient condition for the existence of the spectral gap \eqref{eq:sufficient_cond}.
+\end{example}
+
+\begin{proof}
+    We partition the domain into two equal halves: $\Omega_1 = (-L, 0]$ and $\Omega_2 = (0, L)$. We need to evaluate both the right-hand side and the left-hand side of the condition \eqref{eq:sufficient_cond}. Firstly, at any given point $x \in \Omega$ we have that
+    \begin{align*}
+        \int_\Omega J(x-y) \, dy &= \int_{-L}^x \frac{\lambda}{2} e^{-\lambda (x-y)} \, dy + \int_x^L \frac{\lambda}{2} e^{-\lambda (y-x)} \, dy \\
+        &= \frac{1}{2} \left( 1 - e^{-\lambda(x+L)} \right) + \frac{1}{2} \left( 1 - e^{-\lambda(L-x)} \right) \\
+        &= 1 - e^{-\lambda L} \cosh(\lambda x).
+    \end{align*}
+    This function attains its global minimum at the boundaries $x = \pm L$, thus
+    \begin{equation}
+        \min_{x \in \overline{\Omega}} \int_\Omega J(x-y) \, dy = 1 - e^{-\lambda L} \cosh(\lambda L) = \frac{1}{2} \left( 1 - e^{-2\lambda L} \right).
+    \end{equation}
+    Next, since $x \in \Omega_1$ and $y \in \Omega_2$, we have $y > x$, which implies $|x-y| = y-x$. This yields
+    \begin{align*}
+        \frac{4}{|\Omega|} \int \int_{\Omega_1 \times \Omega_2} J(x-y) \:dydx &= \frac{4}{2L} \int_{-L}^0 \int_0^L \frac{\lambda}{2} e^{-\lambda(y-x)} \, dy dx \\
+        &= \frac{\lambda}{L} \left( \int_{-L}^0 e^{\lambda x} \, dx \right) \left( \int_0^L e^{-\lambda y} \, dy \right) \\
+        &= \frac{\lambda}{L} \left( \frac{1 - e^{-\lambda L}}{\lambda} \right) \left( \frac{1 - e^{-\lambda L}}{\lambda} \right) = \frac{1}{\lambda L} \left( 1 - e^{-\lambda L} \right)^2.
+    \end{align*}
+    Hence, in order to fulfill Assumption \ref{asm:DomainProperties}, the following inequality must hold true
+    \begin{equation}
+        \frac{1}{\lambda L} \left( 1 - e^{-\lambda L} \right)^2 < \frac{1}{2} \left( 1 - e^{-2\lambda L} \right).
+    \end{equation}
+    Using the algebraic identity $1 - e^{-2\lambda L} = (1 - e^{-\lambda L})(1 + e^{-\lambda L})$ and recognizing that $1 - e^{-\lambda L} > 0$, we divide both sides by this term to obtain
+    \begin{equation}
+        \frac{1}{\lambda L} \left( 1 - e^{-\lambda L} \right) < \frac{1}{2} \left( 1 + e^{-\lambda L} \right).
+    \end{equation}
+    Rearranging the terms yields inequality
+    \begin{equation}
+        \frac{2}{\lambda L} \frac{1 - e^{-\lambda L}}{1 + e^{-\lambda L}} < 1,
+    \end{equation}
+    which is equivalent to
+    \begin{equation}
+        \frac{\tanh\left(\frac{\lambda L}{2}\right)}{\frac{\lambda L}{2}} < 1.
+    \end{equation}
+    Denote $u = \frac{\lambda L}{2} > 0$. It is a well-known property of the hyperbolic tangent that $\tanh(u) < u$ for all $u > 0$. Therefore, the inequality $\frac{\tanh(u)}{u} < 1$ holds strictly and unconditionally.
+\end{proof}
+
+\begin{lem}
+    \label{lem:termination}
+    Suppose there exists an integer $M \geq 1$ such that the first $M$ eigenvalues are discrete and strictly above the continuous spectrum ($\beta_M > \sup \sigma_c$), but the supremum of the energy on the next orthogonal complement satisfies:
+    \begin{equation}
+        \sup_{v \in A_{M+1}} \langle \mathcal{L}v, v \rangle = \sup \sigma_c.
+    \end{equation}
+    Then, the operator $\mathcal{L}$ admits exactly $M$ non-trivial discrete eigenvalues. Furthermore, $\beta_{M+1} := \sup \sigma_c$ belongs to the essential spectrum and does not admit a corresponding normalized eigenfunction $v \in A_{M+1}$.
+\end{lem}
+
+\begin{proof}
+    Let us analyze the supremum of the Rayleigh quotient on the subspace $A_{M+1}$. By assumption, we have $\beta_{M+1} = \sup \sigma_c$. 
+    According to the Min-Max theorem for bounded self-adjoint operators, the sequence of variational supremums on successively orthogonal subspaces characterizes the spectrum of the operator descending from its maximum. 
+    
+    If the supremum on $A_{M+1}$ is exactly $\sup \sigma_c$, it implies that the spectrum of $\mathcal{L}$ restricted to $A_{M+1}$ is bounded from above by $\sup \sigma_c$. Consequently, there are no spectral points strictly above $\sup \sigma_c$ remaining in this restricted subspace. Since isolated discrete eigenvalues must reside strictly above the essential spectrum, no further discrete eigenvalues can exist. Thus, the operator possesses exactly $M$ discrete eigenvalues.
+    
+    Moreover, because $\beta_{M+1} = \sup \sigma_c$, any maximizing sequence $\{v^N\}_{N=1}^\infty \subset A_{M+1}$ such that $\langle \mathcal{L}v^N, v^N \rangle \to \sup \sigma_c$ approximates the essential spectrum. Due to the lack of compactness of the non-local operator $\mathcal{L}$ (specifically its multiplication part), the essential spectrum is generated by singular sequences that do not possess strongly convergent subsequences in $L^2(\Omega)$. Therefore, the maximizing sequence converges weakly to zero, the energy dissipates, and the supremum is not attained by any function in $L^2(\Omega)$. As a result, $\beta_{M+1}$ is not an eigenvalue, and the sequence of eigenpairs rigorously terminates at $M$.
+\end{proof}
+
+\section{Nonlocal eigenvalue problem}
+
+We start, by constructing first non-trivial solution $(\beta_1, v_1) \in \mathbb{R} \times L^2(\Omega)$ of the non-local eigenvalue problem \eqref{eq:nonlocal_eigenvalue_problem}. The solution is obtained variationaly, that is we consider the optimization problem
+\begin{equation}
+    \label{eq:eigenvalue_problem_1}
+    \beta_1 = \sup_{v \in A_1} \: \langle \mathcal L v, v \rangle,
+\end{equation}
+where the closed set of admissible functions $A_1 \subset L^2(\Omega)$ is defined by the formula
+\begin{equation}
+    \label{eq:A_set_Def}
+    A_1 = \left\{ v \in L^2(\Omega) : \int_\Omega v(x) \:dx = 0, \: \int_\Omega v^2(x) \:dx = 1 \right\}
+\end{equation}
+
+\begin{lem}[Galerkin Approximation]
+\label{lem:galerkin_approximation}
+Let $V_N = \operatorname{span}\{\varphi_0, \dots, \varphi_N\} \subset L^2(\Omega)$ be a finite-dimensional subspace. The projection of the non-local eigenvalue problem \eqref{eq:nonlocal_eigenvalue_problem} onto $V_N$ is equivalent to the algebraic system 
+\begin{equation}
+    \label{eq:matrix_system_lemma}
+    (\mathbf{A} - \mathbf{B})\mathbf{c} = \beta_1^N \mathbf{c},
+\end{equation}
+    where $\mathbf{A}, \mathbf{B} \in \mathbb{R}^{(N+1) \times (N+1)}$ are symmetric matrices and $\mathbf{c} \in \mathbb{R}^{N+1}$ is the vector of coefficients. Under the assumption $\varphi_0 = \frac{1}{\sqrt{|\Omega|}}$, the condition $v \in A_1 \cap V_N$ holds if and only if
+    \begin{equation}
+        \label{eq:system_constraint_lemma}
+        c_0 = 0, \quad \mathbf{c}^T\mathbf{c} = 1.
+    \end{equation}
+\end{lem}
+
+\begin{proof}
+
+    Given an orthonormal set $\{\varphi_i\}_{i=0}^\infty$ in $L^2(\Omega)$, since $L^2(\Omega^2) = L^2(\Omega) \otimes L^2(\Omega)$, we expand function of two variables $K(x,y) = J(x-y)$ into series with symmetric coefficients $a_{k,l}$
+    \begin{equation}
+        \label{eq:kernel_expansion}
+        K(x,y) = \sum_{k,l = 0}^\infty a_{k, l} \varphi_k(x) \varphi_l(y).
+    \end{equation}
+    Plugging \eqref{eq:kernel_expansion} into the equation \eqref{eq:nonlocal_eigenvalue_problem} we get
+    \begin{equation}
+        \label{eq:nonlocal-eigenvalue-problem-kernel-expansion}
+        \sum_{k, l = 0}^\infty a_{k, l} \varphi_k(x)\int_\Omega \varphi_l(y) v_1(y)\:dy - \int_\Omega J(x-y)\:dy\: v_1(x) = \beta_1 v_1(x)
+    \end{equation}
+    For convenience, denote the function $b(x) = \int_\Omega J(x-y)\:dy$. We seek for a finite dimensional solution of the form
+    \begin{equation}
+        \label{eq:v_N_Def}
+        v_1^N(x) = \sum_{m=0}^N c_m \varphi_m(x).
+    \end{equation}
+    Substituting formula \eqref{eq:v_N_Def} into equation \eqref{eq:nonlocal-eigenvalue-problem-kernel-expansion}, we obtain
+    \begin{equation}
+        \label{eq:nonlocal-eigenvalue-problem-v_N_plugged-kernel-expansion}
+        \sum_{k, l = 0}^\infty \sum_{m=0}^N a_{k, l} c_m \varphi_k(x)\int_\Omega \varphi_l(y) \varphi_m(y)\:dy - \sum_{m=0}^N c_m b(x) \varphi_m(x) = \beta_1^N \sum_{m=0}^N c_m \varphi_m(x).
+    \end{equation}
+    For fixed $n \in \{0, \ldots, N\}$ we multiply equation \eqref{eq:nonlocal-eigenvalue-problem-v_N_plugged-kernel-expansion} by $\varphi_n$ and integrate in $\Omega$. Re-indexing and using orthogonality of $\{\varphi_i\}_{i=0}^N$, this yields the simplified form
+    \begin{equation}
+        \label{eq:coeffs_system}
+        \sum_{l=0}^N(a_{n, l} - b_{l,n}) c_l = \beta_1^N c_n.
+    \end{equation}
+    For our convenience we denote the real, symmetric matrices $\mathbf{A}, \mathbf{B}$ of size $(N+1) \times (N+1)$ with $\mathbf{A}_{i,j} = a_{i,j}, \mathbf{B}_{i, j} = b_{i,j}$, and a solution vector $\mathbf{c} = (c_0, c_1, \ldots, c_N)^T$. Then, we re-write equation \eqref{eq:coeffs_system} as
+    \begin{equation}
+        \label{eq:matrix_system}
+        (\mathbf{A} - \mathbf{B}) \mathbf{c} = \beta_1^N \mathbf{c}.
+    \end{equation}
+    Before we solve the eigenvalue problem \eqref{eq:matrix_system}, we need to impose the constraints as in the definition \eqref{eq:A_set_Def}. Namely, we get that the vector of coefficients $\mathbf{c}$ need to satisfy
+    \begin{equation}
+        \label{eq:matrix_system_constraint}
+        c_0 = 0, \quad \mathbf{c}^T \mathbf{c} = 1.
+    \end{equation}
+    
+\end{proof}
+
+We provide the following Proposition regarding solvability of the problem \eqref{eq:matrix_system}-\eqref{eq:matrix_system_constraint}.
+\begin{prp}
+    \label{prp:finite_dimensional_minimizer}
+    Let $\mathcal{C} = \left\{ \mathbf{c} \in \mathbb{R}^{N+1} : c_0 = 0, \, \|\mathbf{c}\| = 1 \right\}$ be the constraint set. 
+    The variational problem
+    \begin{equation}
+        \label{eq:variational_discrete}
+        \beta_1^N := \sup_{\mathbf{c} \in \mathcal{C}} \: \langle (\mathbf{A} - \mathbf{B}) \mathbf{c}, \mathbf{c} \rangle
+    \end{equation}
+    admits a maximizer $\mathbf{c}^* \in \mathcal{C}$. Moreover, the pair $(\beta_1^N, \mathbf{c}^*)$ is a solution to the algebraic system \eqref{eq:matrix_system}-\eqref{eq:matrix_system_constraint}.
+\end{prp}
+
+\begin{proof}
+    Let $\mathbf{M} = \mathbf{A} - \mathbf{B}$. Since $\mathbf{A}$ and $\mathbf{B}$ are symmetric, $\mathbf{M}$ is a real symmetric matrix. The constraint $c_0=0$ implies that we are effectively looking for the spectrum of the submatrix $\tilde{\mathbf{M}} \in \mathbb{R}^{N \times N}$ with indices $1 \dots N$.
+    
+    Since the set $\mathcal{C}$ is compact and the map $\mathbf{c} \mapsto \langle \mathbf{M}\mathbf{c}, \mathbf{c}\rangle$ is continuous, the supremum in \eqref{eq:variational_discrete} is attained. Let $\beta_1^N$ denote this maximum value and $\mathbf{c}^*$ be a corresponding maximizer. By the min-max principle restricted to the subspace $\mathbb{R}^N \cong \{ \mathbf{c} \in \mathbb{R}^{N+1} : c_0=0 \}$, $\beta_1^N$ coincides with the largest eigenvalue of $\tilde{\mathbf{M}}$, and $\mathbf{c}^*$ is the associated eigenvector. Consequently, the pair satisfies $(\mathbf{A}-\mathbf{B})\mathbf{c}^* = \beta_1^N \mathbf{c}^*$ with the required constraints.
+\end{proof}
+
+Finally, we show that the sequence $(\beta_1^N, v_1^N)$ of solutions to the finite dimensional problem \eqref{eq:matrix_system}-\eqref{eq:matrix_system_constraint}, converges to the solution $(\beta_1, v_1)$ of the original problem \eqref{eq:nonlocal_eigenvalue_problem}. We begin with the convergence of eigenvalues.
+
+\begin{lem}
+    \label{lem:convergence_principle_eigenvalue}
+    Let $\beta_1^N$ be the principle eigenvalue of the discrete problem \eqref{eq:variational_discrete}. Then
+    \begin{equation*}
+        \beta_1^N \rightarrow \beta_1 \quad \text{ as } N \rightarrow \infty.
+    \end{equation*}
+\end{lem}
+
+\begin{proof}
+    Let $V_N = \text{span}\{\varphi_0, \ldots, \varphi_N\}$ and $A_1$ be defined as in \eqref{eq:A_set_Def}. Since $V_N \cap A_1 \subset V_{N+1} \cap A_1 \subset A_1$, we have
+    \begin{equation}
+        \beta_1^N = \sup_{u \in V_N \cap A_1} \langle \mathcal{L} u, u \rangle \leq \sup_{u \in V_{N+1} \cap A_1} \langle \mathcal{L} u, u \rangle \leq \ldots \leq \beta_1.
+    \end{equation}
+    The sequence $\{\beta_1^N\}_{N \geq 1}$ is non-decreasing and bounded from above, thus it converges to a limit $\beta^* \leq \beta_1$. To prove that $\beta^* = \beta_1$, we utilize the density of the basis $\{\varphi_k\}$ in $L^2(\Omega)$. For any $u \in A_1$, there exists a sequence of projections $u_N \in V_N \cap A_1$ such that $u_N \to u$ in $L^2(\Omega)$. The continuity of the bilinear form associated with $\mathcal{L}$ yields
+    \begin{equation}
+        \lim_{N \to \infty} \beta_1^N = \lim_{N \to \infty} \sup_{u \in V_N \cap A_1} \langle \mathcal{L} u, u \rangle \geq \lim_{N \to \infty} \langle \mathcal{L} u_N, u_N \rangle = \langle \mathcal{L} u, u \rangle.
+    \end{equation}
+    Taking the supremum over $u \in A_1$ on the right-hand side confirms that $\lim_{N \to \infty} \beta_1^N = \beta_1$.
+\end{proof}
+
+Now, we prove the strong convergence of eigenfunctions.
+
+\begin{lem}
+    \label{thm:convergence_principle_eigenfunction}
+    Let $v_1^N$ be the function defined by formula \eqref{eq:v_N_Def} with vector of coefficients $\mathbf{c}$ being the maximizer of the problem \eqref{eq:variational_discrete}. Then 
+    \begin{equation*}
+        v_1^N \rightarrow v_1 \quad \text{ as } N \rightarrow \infty.
+    \end{equation*}
+\end{lem}
+
+\begin{proof}
+    Recall that $\|v_1^N\|_{L^2} = 1$. By the Banach-Alaoglu theorem, there exists a subsequence, still denoted by $v_1^N$, and a function $v \in L^2(\Omega)$ such that $v_1^N \rightharpoonup v_1$ weakly in $L^2(\Omega)$. The zero mass constraint is preserved under weak convergence
+    \begin{equation}
+        \int_\Omega v_1(x) \:dx = \lim_{N \to \infty} \int_\Omega v_1^N(x) \:dx = 0.
+    \end{equation}
+    To identify the limit, consider an arbitrary test function $\psi \in V_M$. For $N \geq M$, the discrete equation reads $\langle \mathcal{L} v_1^N, \psi \rangle = \beta_1^N \langle v_1^N, \psi \rangle$. Passing to the limit $N \to \infty$, and using the self-adjointness of $\mathcal{L}$, we obtain
+    \begin{align}
+        \langle v_1, \mathcal{L} \psi \rangle &= \lim_{N \to \infty} \langle v_1^N, \mathcal{L} \psi \rangle = \lim_{N \to \infty} \langle \mathcal{L} v_1^N, \psi \rangle \\
+        &= \lim_{N \to \infty} \beta_1^N \langle v_1^N, \psi \rangle = \beta_1 \langle v_1, \psi \rangle.
+    \end{align}
+    Since $\bigcup_{M} V_M$ is dense in $L^2(\Omega)$, this implies $\mathcal{L} v = \beta_1 v$ in the weak sense.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ABOVE OKAY ! %%%%%%%%%%%%%%%%
+    It remains to prove that the weak convergence $v_1^N \rightharpoonup v_1$ is strong in $L^2(\Omega)$, which is equivalent to showing that $\|v_1\|_{L^2} = 1$. By the Fatou's Lemma we have $\|v_1\|_{L^2}^2 \leq \liminf_{N \to \infty} \|v_1^N\|_{L^2}^2 = 1$. 
+    Assume, for the sake of contradiction, that the convergence is strictly weak, meaning $\|v_1\|_{L^2}^2 =: c < 1$. 
+    
+    We decompose the non-local operator $\mathcal{L}$ into a compact integral part $\mathcal{K}$ and a local multiplication part $\mathcal{M}$:
+    \begin{equation}
+        \mathcal{L}u(x) = (\mathcal{K}u)(x) - (\mathcal{M}u)(x) = \int_\Omega J(x-y)u(y)\,dy - b(x)u(x),
+    \end{equation}
+    where $b(x) = \int_\Omega J(x-y)dy$. The essential spectrum is generated by the multiplication operator, yielding $\sup \sigma_c = \max_{x \in \overline{\Omega}} (-b(x))$.
+    
+    From the Galerkin approximation, we evaluate the energy sequence:
+    \begin{equation} \label{eq:galerkin_energy}
+        \beta_1^N = \langle \mathcal{L} v_1^N, v_1^N \rangle = \langle \mathcal{K} v_1^N, v_1^N \rangle - \int_\Omega b(x) (v_1^N(x))^2 \, dx.
+    \end{equation}
+    Because $J \in C^0(\mathbb{R}^n)$ on the bounded domain $\Omega$, the integral operator $\mathcal{K}$ is compact on $L^2(\Omega)$. Since $v_1^N \rightharpoonup v_1$ weakly, the compact operator maps it to a strongly convergent sequence, i.e. $\mathcal{K} v_1^N \to \mathcal{K} v_1$ strongly in $L^2(\Omega)$. Therefore, the inner product associated with $\mathcal{K}$ converges:
+    \begin{equation} \label{eq:compact_limit}
+        \lim_{N \to \infty} \langle \mathcal{K} v_1^N, v_1^N \rangle = \langle \mathcal{K} v_1, v_1 \rangle.
+    \end{equation}
+    
+    Next, we bound the multiplication part in \eqref{eq:galerkin_energy} uniformly by the essential spectrum:
+    \begin{equation}
+        -\int_\Omega b(x) (v_1^N(x))^2 \, dx \leq \left( \sup \sigma_c \right) \int_\Omega (v_1^N(x))^2 \, dx = \sup \sigma_c,
+    \end{equation}
+    since $\|v_1^N\|_{L^2}^2 = 1$ for all $N$.
+    Taking the limit supremum as $N \to \infty$ on both sides of equation \eqref{eq:galerkin_energy}, and applying \eqref{eq:compact_limit}, we obtain:
+    \begin{equation} \label{eq:energy_bound_1}
+        \beta_1 = \limsup_{N \to \infty} \beta_1^N \leq \langle \mathcal{K} v_1, v_1 \rangle + \sup \sigma_c.
+    \end{equation}
+    
+    On the other hand, since $v_1$ is the weak solution to $\mathcal{L} v_1 = \beta_1 v_1$, taking the inner product with $v_1$ yields:
+    \begin{equation}
+        \beta_1 \|v_1\|_{L^2}^2 = \langle \mathcal{L} v_1, v_1 \rangle = \langle \mathcal{K} v_1, v_1 \rangle - \int_\Omega b(x) v_1(x)^2 \, dx.
+    \end{equation}
+    Rearranging this equality, we express the compact part in terms of the weak limit:
+    \begin{equation} \label{eq:weak_sol_K}
+        \langle \mathcal{K} v_1, v_1 \rangle = \beta_1 c + \int_\Omega b(x) v_1(x)^2 \, dx.
+    \end{equation}
+    
+    Substituting \eqref{eq:weak_sol_K} back into the inequality \eqref{eq:energy_bound_1}, we get:
+    \begin{equation}
+        \beta_1 \leq \beta_1 c + \int_\Omega b(x) v_1(x)^2 \, dx + \sup \sigma_c.
+    \end{equation}
+    Since $-b(x) \leq \sup \sigma_c$, we can bound the integral term: $\int_\Omega b(x) v_1(x)^2 dx \leq (-\sup \sigma_c) \|v_1\|_{L^2}^2 = -(\sup \sigma_c) c$. This yields:
+    \begin{equation}
+        \beta_1 \leq \beta_1 c - (\sup \sigma_c) c + \sup \sigma_c \implies \beta_1 \leq \beta_1 c + (\sup \sigma_c)(1 - c).
+    \end{equation}
+    Rearranging the terms produces:
+    \begin{equation}
+        \beta_1(1 - c) \leq (\sup \sigma_c)(1 - c).
+    \end{equation}
+    
+    By the strict spectral gap established in Proposition 2.1, we know that $\beta_1 > \sup \sigma_c$. Because we assumed $c < 1$, the term $(1 - c)$ is strictly positive. Dividing both sides by $(1 - c)$ gives:
+    \begin{equation}
+        \beta_1 \leq \sup \sigma_c,
+    \end{equation}
+    which is a contradiction. Thus $c = \|v_1\|_{L^2}^2 = 1$. In a Hilbert space, weak convergence combined with the convergence of norms implies strong convergence. Hence, $v_1^N \to v_1$ strongly in $L^2(\Omega)$, and $v_1 \in A_1$ is a valid, non-trivial eigenfunction.
+\end{proof}
+
+Naturally, we are now interested in existence of subsequent eigenpairs $(\beta_k, v_k) \in \mathbb{R}\times A_k$ solving equation \eqref{eq:nonlocal_eigenvalue_problem}, with the $k$-th set of admissible functions $A_k$ defined by relation
+\begin{align}
+    \begin{split}
+        A_k &= \left\{ v \in L^2(\Omega): v \perp \text{span}\{v_0, \ldots, v_{k-1}\}, \: \int_\Omega v^2(x) \: dx = 1 \right\} \quad k > 1.
+    \end{split}
+\end{align}
+We will achieve this goal using the induction. The following Lemma serves as an induction step.
+
+\begin{lem}
+    \label{lem:inductive_step}
+    Suppose that there exist $k$ pairs of eigenvalues and normalized orthonormal eigenfunctions $(\beta_j, v_j) \in \mathbb{R} \times A_j$ for $j=1, \ldots, k$ solving problem (3.1). Then, there exists a pair $(\beta_{k+1}, v_{k+1})$ solving (3.1) such that $v_{k+1} \in A_{k+1}$ and $\beta_{k+1}$ is characterized variationally as
+    \begin{equation}
+        \label{eq:eigenvalue_problem_k_plus_1}
+        \beta_{k+1} = \sup_{v \in A_{k+1}} \langle \mathcal{L} v, v \rangle.
+    \end{equation}
+\end{lem}
+
+\begin{proof}
+    Fix $k \geq 1$. We proceed using the approximation technique analogous to Lemma 3.1. Let us consider the truncated problem on the subspace $V_N = \text{span}\{\varphi_0, \ldots, \varphi_N\}$ with $N \geq k+1$. The discrete counterpart of the operator $\mathcal{L}$ again corresponds to the symmetric matrix $\mathbf{M} = \mathbf{A} - \mathbf{B}$ of size $(N+1) \times (N+1)$ restricted to the subspace orthogonal to $\mathbf{c}_0$. We know that $\mathbf{M}$ possesses a complete set of orthonormal eigenvectors $\mathbf{c}_1, \ldots, \mathbf{c}_N$ corresponding to eigenvalues $\beta_1^N \geq \beta_2^N \geq \ldots \geq \beta_N^N$. 
+    
+    Let us denote the functions constructed from the vector $\mathbf{c}_j$ for $j \in \{1, \ldots, k+1\}$
+    \begin{equation}
+        v_j^N(x) = \sum_{m=0}^N c^j_m \varphi_j(x).
+    \end{equation}
+    These functions satisfy the orthogonality condition $\langle v_i^N, v_j^N \rangle = \delta_{ij}$. Now, we show that the pair $(v_{k+1}^N, \beta_{k+1}^N)$ converges to the solution of the problem \eqref{eq:eigenvalue_problem_k_plus_1}.
+    
+    Firstly, the sequence of eigenvalues $\{\beta_{k+1}^N\}_{N \geq k+1}$ is non-decreasing with respect to $N$ due to the nesting of subspaces $V_N \subset V_{N+1}$, and obviously bounded from above by $\beta_1$. Thus, it converges to a limit, which we denote by $\beta_{k+1}$. Furthermore, the sequence $\{v_{k+1}^N\}_{N}$ is bounded in $L^2(\Omega)$, thus up to a subsequence, it converges weakly to a function $v_{k+1} \in L^2(\Omega)$.
+    
+    We verify the orthogonality constraints. By the inductive assumption, for any $j \leq k$, the exact eigenfunctions $v_j$ are limits of their discrete approximations $v_j^N$ in the strong $L^2$ topology (as proven in Lemma 3.1 for $j=1$, and assumed inductively). Using the strong-weak continuity of the scalar product, we obtain
+    \begin{equation}
+        \langle v_{k+1}, v_j \rangle = \lim_{N \to \infty} \langle v_{k+1}^N, v_j^N \rangle = 0.
+    \end{equation}
+    Since $\int_\Omega v_{k+1}^N = 0$, the limit also satisfies the zero mean condition. Thus, $v_{k+1} \in A_{k+1}$.
+    
+    Next, we verify the equation. For any test function $\psi \in V_M$ and $N$ sufficiently large, we have $\langle \mathcal{L} v_{k+1}^N, \psi \rangle = \beta_{k+1}^N \langle v_{k+1}^N, \psi \rangle$. Passing to the limit $N \to \infty$ yields $\langle \mathcal{L} v_{k+1}, \psi \rangle = \beta_{k+1} \langle v_{k+1}, \psi \rangle$ for all $\psi$ in the dense set $\bigcup V_M$, which implies $\mathcal{L} v_{k+1} = \beta_{k+1} v_{k+1}$ in the weak sense.
+    
+    Finally, we show strong convergence to ensure $\|v_{k+1}\|=1$. Since $\beta_{k+1}$ is the supremum of energy on $A_{k+1}$, and $\beta_{k+1}^N = \langle \mathcal{L} v_{k+1}^N, v_{k+1}^N \rangle \to \beta_{k+1}$, the sequence of energies converges to the limit energy. Note that $\beta_{k+1}$ is isolated from the rest of the spectrum in $A_{k+1}$, hence the convergence of Rayleigh quotients implies strong convergence of vectors. Thus, $\|v_{k+1}\| = \lim \|v_{k+1}^N\| = 1$.
+\end{proof}
+
+\section{Application to Turing instability}
+
+Here, we present the application of Theorem \ref{thm:spectral_theorem}. Consider the following evolution problem
+
+\begin{numcases}{}
+    \partial_t v = d_v \mathcal{L} v + f(v, w) & $(x, t) \in \Omega \times (0, T]$ \label{EQ:Gen_u} \\
+    \partial_t w = d_w \Delta w + g(v, w) & $(x, t) \in \Omega \times (0, T]$ \label{EQ:Gen_v} \\
+    \nabla w \cdot \mathbf{n} = 0 & $(x, t) \in \partial\Omega \times [0, T]$ \label{EQ:BC_v} \\
+    v(x,0) = v_0(x), \quad w(x,0) = w_0(x) & $x \in \Omega$ \label{EQ:IC}
+\end{numcases}
+
+where $d_v, d_w > 0$ are the dispersal and diffusion rates, and $f, g: \mathbb{R}^2 \to \mathbb{R}$ are non-linear reaction terms. We impose the following assumptions on $f, g$.
+
+\begin{asm} \label{asm:ReactionKinetics}
+    The nonlinear reaction functions $f, g \in C^2(\mathbb{R}^2)$ satisfy:
+    \begin{enumerate}[label=(\textit{F\arabic*})]
+        \item \textbf{Regularity:} $f$ and $g$ are twice continuously differentiable on $\mathbb{R}^2$.
+        \item \textbf{Equilibria:} There exist at least two distinct constant vectors $\mathbf{u}_1, \mathbf{u}_2 \in \mathbb{R}^2$ such that $f(\mathbf{u}_i) = g(\mathbf{u}_i) = 0$ for $i=1,2$.
+        \item \textbf{Non-degeneracy:} The Jacobian matrix $R(\mathbf{u})$ of the reaction term is invertible at the equilibria. That is, if $R(\mathbf{u}) = \frac{\partial(f,g)}{\partial(u,v)}$, then $\det(R(\mathbf{u}_i)) \neq 0$ for $i=1,2$.
+    \end{enumerate}
+\end{asm}
+
+The main idea behind the Turing instability is that the constant, stable stationary solution $(v^*, w^*)$ of system \eqref{EQ:Gen_u}--\eqref{EQ:IC} becomes unstable for a certain range of parameters $d_v, d_w$ under the following perturbations
+\begin{equation}
+    \label{EQ:SpatiallyHeteroPerturbations}
+    \Tilde{v}(x,t) = v^* + \varepsilon z_v(x, t), \quad \text{ and } \quad \Tilde{w}(x,t) = w^* + \varepsilon z_w(x, t),
+\end{equation}
+where $\varepsilon > 0$. Plugging \eqref{EQ:SpatiallyHeteroPerturbations} into \eqref{EQ:Gen_u}-\eqref{EQ:Gen_v} and using the Taylor expansion, one obtains the linearized system:
+\begin{align}
+    \partial_t z_v(x, t) &= d_v \mathcal{L} z_v(x, t) + f_v(v^*, w^*) z_v(x, t) + f_w(v^*, w^*) z_w(x,t), \label{EQ:LinearizedKlausmeier_V}\\
+    \partial_t z_w(x, t) &= d_w \Delta z_w(x, t) + g_v(v^*, w^*) z_v(x, t) + g_w(v^*, w^*) z_w(x,t). \label{EQ:LinearizedKlausmeier_W}
+\end{align}
+
+By virtue of the Non-local Spectral Theorem (Theorem \ref{thm:spectral_theorem}), we know that the dispersal operator $\mathcal{L}$ admits a non-positive sequence of eigenvalues $\{\beta_k\}_{k \geq 0}$ and corresponding eigenfunctions $\{\varphi_k\}_{k \geq 0}$ forming an orthonormal basis in $L^2(\Omega)$. Let $\psi_k$ be the $k$-th eigenfunction of the local Laplacian $\Delta$ with Neumann boundary conditions, corresponding to the non-positive eigenvalues $\lambda_k \le 0$. 
+
+This allows us to postulate an explicit form of the solutions to \eqref{EQ:LinearizedKlausmeier_V}-\eqref{EQ:LinearizedKlausmeier_W} via separation of variables:
+\begin{equation}
+    \label{EQ:FourierSeriesLinearizedProblem}
+    z_v(x,t) = \sum_{k \geq 0} T_{v, k}(t) \varphi_k(x), \quad z_w(x,t) = \sum_{k \geq 0} T_{w, k}(t) \psi_k(x).
+\end{equation}
+When we plug \eqref{EQ:FourierSeriesLinearizedProblem} into equations \eqref{EQ:LinearizedKlausmeier_V}-\eqref{EQ:LinearizedKlausmeier_W}, multiply them by $\varphi_k, \psi_k$ respectively, and integrate over $\Omega$, we obtain the following system of ODEs governing the amplitudes:
+\begin{equation}
+    \label{EQ:ODEFORT_V_T_W}
+    \begin{pmatrix}
+        T_{v, k} \\ T_{w, k}
+    \end{pmatrix}'
+    =
+    L_k(v^*, w^*)
+    \begin{pmatrix}
+        T_{v, k} \\ T_{w, k}
+    \end{pmatrix}
+    \quad 
+    k \in \mathbb{N},
+\end{equation}
+where the linearization matrix $L_k$ is defined in terms of the Jacobian derivatives at the equilibrium as
+\begin{equation}
+    \label{EQ:GeneralLinearizationMatrix}
+    L_k(v^*, w^*) = 
+    \begin{pmatrix}
+        d_v \beta_k + f_v^* & f_w^* \int_\Omega \varphi_k \psi_k \:dx \\
+        g_v^* \int_\Omega \varphi_k \psi_k \:dx & d_w \lambda_k + g_w^*
+    \end{pmatrix}.
+\end{equation}
+To demonstrate the instability of a steady state $(v^*, w^*)$, one needs to find at least one strictly positive wave number $k > 0$ such that the matrix $L_k(v^*, w^*)$ possesses at least one eigenvalue with a positive real part. 
+
+We now formulate general conditions for the occurrence of Turing instability in the RDD system \eqref{EQ:Gen_u}-\eqref{EQ:Gen_v}, assuming it exhibits an activator-inhibitor structure.
+
+\begin{thm}[General conditions for Turing instability]
+    \label{lem:general_turing_instability}
+    Let $(v^*, w^*)$ be an asymptotically stable equilibrium of the spatially homogeneous kinetic system, meaning that $\Tr(J) = f_v^* + g_w^* < 0$ and $\det(J) = f_v^* g_w^* - f_w^* g_v^* > 0$. Furthermore, assume the system acts as an activator-inhibitor system where $v$ is the activator, satisfying:
+    \begin{equation}
+        \label{eq:activator_inhibitor_conditions}
+        f_v^* > 0 \quad \text{and} \quad f_w^* g_v^* < 0.
+    \end{equation}
+    Then, for any $k > 0$, there exist a sufficiently small dispersal rate $d_v > 0$ and a sufficiently large diffusion rate $d_w > 0$ such that the state $(v^*, w^*)$ becomes unstable under spatially heterogeneous perturbations.
+\end{thm}
+
+\begin{proof}
+    For the matrix $L_k(v^*, w^*)$ given in \eqref{EQ:GeneralLinearizationMatrix}, the trace is 
+    \begin{equation}
+        \Tr L_k = d_v \beta_k + d_w \lambda_k + f_v^* + g_w^*.
+    \end{equation}
+    Since $\beta_k \le 0$, $\lambda_k \le 0$, and $f_v^* + g_w^* < 0$, the trace is always strictly negative. Thus, instability occurs if and only if the determinant $\det L_k$ becomes negative. 
+    
+    The determinant is given by:
+    \begin{equation}
+        \det L_k = (d_v \beta_k + f_v^*)(d_w \lambda_k + g_w^*) - f_w^* g_v^* \left(\int_\Omega \varphi_k \psi_k \:dx\right)^2.
+    \end{equation}
+    By the Cauchy-Schwarz inequality, $\left(\int_\Omega \varphi_k \psi_k \:dx\right)^2 \leq \|\varphi_k\|_{L^2}^2 \|\psi_k\|_{L^2}^2 = 1$. Because we assumed $f_w^* g_v^* < 0$, the term $-f_w^* g_v^*$ is strictly positive. Therefore, replacing the integral squared with $1$ provides a strict upper bound for the determinant:
+    \begin{align}
+        \det L_k &\leq (d_v \beta_k + f_v^*)(d_w \lambda_k + g_w^*) - f_w^* g_v^* \nonumber \\
+        &= (d_v \beta_k + f_v^*) d_w \lambda_k + (d_v \beta_k + f_v^*) g_w^* - f_w^* g_v^* \nonumber \\
+        &= (d_v \beta_k + f_v^*) d_w \lambda_k + d_v \beta_k g_w^* + \det(J). \label{eq:det_upper_bound}
+    \end{align}
+    Since $v$ is an activator ($f_v^* > 0$), we can choose the dispersal rate $d_v$ small enough such that $d_v < \frac{f_v^*}{|\beta_k|}$. This ensures that $(d_v \beta_k + f_v^*) > 0$. Because $\lambda_k < 0$ for $k > 0$, the coefficient of $d_w$ in the first term of \eqref{eq:det_upper_bound} is strictly negative. Consequently, taking the limit $d_w \to \infty$ drives the entire upper bound to $-\infty$. Thus, for sufficiently large $d_w$, we have $\det L_k < 0$, which implies the existence of a positive eigenvalue, leading to Turing instability.
+\end{proof}
+
+As an illustrative application, we now utilize Lemma \ref{lem:general_turing_instability} to establish the instability conditions for the specific non-local Klausmeier model introduced in Section 1.1, where $f(v,w) = v^2 w - Bv$ and $g(v,w) = A - w - v^2 w$.
+
+\begin{prp}[Turing instability in the Klausmeier model]
+    \label{prp:klausmeier_instability}
+    Let $A > 2B$ and $B < 2$. The following statements hold true for the non-local Klausmeier model:
+    \begin{enumerate}
+        \item The trivial stationary solution $(v_1^*, w_1^*) = (0, A)$ cannot be destabilized by any spatially heterogeneous perturbation.
+        \item For all $k > 0$, there exist $d_v$ sufficiently small and $d_w$ sufficiently large such that the coexistence stationary solution $(v_3^*, w_3^*)$ becomes unstable under spatially heterogeneous perturbations.
+    \end{enumerate}
+\end{prp}
+
+\begin{proof}
+    For the first statement, we evaluate the Jacobian at the trivial state $(v_1^*, w_1^*) = (0, A)$, yielding $f_v^* = -B$, $f_w^* = 0$, $g_v^* = 0$, and $g_w^* = -1$. The linearization matrix $L_k(0, A)$ is diagonal, with $\det L_k = (d_v \beta_k - B)(d_w \lambda_k - 1) > 0$ and $\Tr L_k = d_v \beta_k - B + d_w \lambda_k - 1 < 0$ for all $k \geq 0$. Thus, both eigenvalues have negative real parts, and the trivial state remains linearly stable.
+    
+    For the second statement, consider the coexistence steady state $(v_3^*, w_3^*)$, which is known to be an asymptotically stable solution of the kinetic system provided $B < 2$ and $2B < A$. Evaluating the Jacobian at this state yields the derivatives: $f_v^* = 2v_3^* w_3^* - B$, $f_w^* = (v_3^*)^2$, $g_v^* = -2v_3^* w_3^*$, and $g_w^* = -1 - (v_3^*)^2$.
+    
+    Using the steady-state relation $w_3^* = B/v_3^*$, we find that $f_v^* = 2v_3^*(B/v_3^*) - B = B$. Since $B > 0$, we have $f_v^* > 0$, satisfying the activator condition. Furthermore, $f_w^* g_v^* = (v_3^*)^2 (-2B) = -2B(v_3^*)^2 < 0$. Since all conditions of Lemma \ref{lem:general_turing_instability} are met, the coexistence state $(v_3^*, w_3^*)$ exhibits Turing instability for properly chosen parameters $d_v$ and $d_w$.
+\end{proof}
+
+\bibliographystyle{siam}
+\bibliography{bibliography}
+
+\end{document}

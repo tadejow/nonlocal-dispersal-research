@@ -1,0 +1,99 @@
+\pdfoutput=1
+
+\documentclass[12pt, a4paper]{article}
+\usepackage[margin=1.5in, top=1.5in, bottom=1.5in]{geometry}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{cases}
+\usepackage[english]{babel}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{authblk}
+\usepackage{dsfont}
+\usepackage{sectsty}
+\usepackage{xcolor}
+
+\sectionfont{\centering}
+% THEOREM / PROPOSITIONS / LEMMAS etc...
+
+\theoremstyle{break}
+	\newtheorem{thm}{Theorem}[section]
+\theoremstyle{break}
+    \newtheorem{prp}{Proposition}[section]
+\theoremstyle{break}
+	\newtheorem{asm}{Assumption}[section]
+\theoremstyle{break}
+	\newtheorem{rem}{Remark}[section]
+\theoremstyle{break}
+	\newtheorem{lem}{Lemma}[section]
+\theoremstyle{break}
+	\newtheorem{defi}{Definition}[section]
+
+% USEFUL COMMANDS
+
+% writing - labels
+\makeatletter
+\newcommand{\mylabel}[2]{#2\def\@currentlabel{#2}\label{#1}}
+\makeatother
+
+\providecommand{\keywords}[1]
+{
+  \small	
+  \textbf{\textit{Keywords}} #1
+}
+
+% objects
+\newcommand{\Leo}{\mathcal{L}_{\varepsilon}}
+\newcommand{\Seq}[2]{\left\{#1_#2\right\}_{#2 = 0}^\infty}
+
+% spaces
+\newcommand{\Leb}{L^2\left(\Omega\right)}
+\newcommand{\Lei}{L^\infty\left(\Omega\right)}
+\newcommand{\CDR}{C^1\left(\mathbb{R}\right)}
+\newcommand{\CCSRn}{C_c\left(\mathbb{R}^n\right)}
+
+% operators
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\Ima}{Im}
+\DeclareMathOperator{\divergence}{div}
+
+\setlength{\parindent}{0pt}
+\counterwithin{equation}{section}
+
+\title{Roadmap of the research on a pattern formation systems of plants vegetation in drylands}
+
+\begin{document}
+
+\maketitle
+
+\section{Theoretical TODOs}
+
+\begin{enumerate}
+    \item Change the boundary conditions to Dirichlet
+    \item Consider if it is reasonable to keep the advection term (in fact it is limiting the physicality of the model)
+    \item Well-posedness of the problem (\textcolor{blue}{in H\"older spaces!!!})
+    \item Complete the analysis of spatially homogeneous asymptotics (in particular \textit{steady states and their stability, \textcolor{blue}{(?) convergence to the mean mass}}
+    \item Complete the computations regarding the Turing instability
+    \item Double check the computations regarding the Turing instability
+    \item Triple check the computations regarding the Turing instability
+    \item \textcolor{red}{Existence of steady states - only if everything else is done!!!}
+    
+\end{enumerate}
+
+\section{Computational TODOs}
+
+\begin{enumerate}
+    \item Use the spectral method implemented for Gierer-Meinhardt system (or smth easily generating patterns) to compute the steady states (not via evolution!!!)
+    \item Derive a numerical scheme (in Legendre polynomials) for the Klausmeier model (via evolution)
+    \item Derive a numerical scheme (in Legendre polynomials) for the stationary Klausmeier model
+    \item We want to perform bifurcation analysis
+    
+\end{enumerate}
+
+\end{document}

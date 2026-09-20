@@ -1,0 +1,130 @@
+To bardzo niefortunna sytuacja, ale absolutnie się nie poddawaj! Desk rejections
+(odrzucenia bez wysyłania do recenzentów) w czołowych czasopismach
+matematycznych (jak JFA czy JDE) często wcale nie oznaczają, że praca jest
+błędna lub słaba. Najczęściej wynikają one z:
+
+1.  Niedopasowania do profilu czasopisma (edytorzy szukają czegoś bardzo
+    specyficznego).
+2.  Braku dostatecznej "nowości" (novelty) w oczach edytora (nawet jeśli wynik
+    jest nowy, to jeśli wydaje się być jedynie technicznym uogólnieniem znanych
+    metod, czasopisma topowe często go odrzucają).
+3.  Zbyt wąskiego zakresu (wynik jest elegancki, ale dotyczy bardzo
+    specyficznego operatora).
+
+Pójście do Discrete and Continuous Dynamical Systems (DCDS) – obojętnie czy
+Seria A, czy B – to bardzo solidny, racjonalny i dobry krok.
+
+Zrobiłem głęboki, krytyczny przegląd Twojego manuskryptu (jak recenzent /
+edytor). Poniżej znajdziesz szczero-do-bólu analizę słabych punktów oraz
+propozycje ulepszeń, które mogą zmienić decyzję kolejnych redaktorów.
+
+Główne słabe punkty pracy (Okiem Edytora/Recenzenta)
+
+1. Konstrukcja i celowość założeń (Assumptions 1.2, 1.3, 1.4) To jest największy
+problem tej pracy z punktu widzenia "czytelności" matematycznej.
+
+  - We wstępie uderzasz w czytelnika trzema różnymi wersjami "Assumption"
+    dotyczącymi domeny (1.2 z dipolem, 1.3 z I_{max} i 1.4 z ogólnym C(k)). To
+    wygląda na niedokończony warsztat, a nie na wygładzoną teorię.
+  - Edytor czytający wstęp myśli: "Autor sam nie wie, które założenie jest
+    ostateczne. Dlaczego mam zakładać istnienie jakiejś niejawnej stałej
+    C(k,n,\Omega_0) w Assumption 1.4?"
+  - Co więcej, Twoje Główne Twierdzenie (Theorem 1.4 na str. 5) stwierdza, że
+    używasz "either Assumption 1.2, 1.3 or 1.4". To bardzo psuje elegancję.
+
+2. Asymptotyka domeny a problem własny Twoje główne podejście do udowodnienia
+luki spektralnej (\beta_k > \sup \sigma_c) opiera się na skalowaniu domeny
+(\Omega_\lambda = \lambda \Omega_0 przy \lambda \to \infty).
+
+  - Tytuł i wstęp sugerują, że rozwiązujesz problem własny na ustalonej,
+    otwartej i ograniczonej domenie \Omega.
+  - Jednak połowa dowodów (np. Lemat 2.2, Prop 2.2) nagle przechodzi do dyskusji
+    o tym, co się dzieje z dziedziną rosnącą do nieskończoności
+    (\lambda \to \infty).
+  - Dla matematyka "twardej analizy" brzmi to tak: "Nie potrafię udowodnić
+    istnienia na ustalonej domenie \Omega, więc udowadniam, że jeśli \Omega
+    będzie gigantyczna, to rozwiązanie się pojawi". To prawda, ale sposób
+    podania tego faktu jest mylący.
+
+3. Brak charakteryzacji funkcji własnych Udowadniasz istnienie (existence)
+zbieżnego ciągu z Galerkina, co dowodzi, że v_k \in L^2. Ale:
+
+  - Czy v_1 jest gładka? (Czy w ogóle v_1 \in C^0(\Omega)?)
+  - Czy v_1 zmienia znak raz, czy wiele razy?
+  - W klasycznym laplasjanie \Delta mamy twierdzenie o wartościach węzłowych
+    (nodal domains). Tutaj praca urywa się na słabej/silnej zbieżności w L^2.
+    Edytorzy JDE/JFA lubią wiedzieć jakie są te rozwiązania.
+
+4. Ograniczony "Impact" (Brak powiązania z dynamiką) We wstępie piszesz o
+równaniach reakcji-dyfuzji (dyspersji), stabilności, zjawiskach ekologicznych.
+Ale w samej pracy... rozwiązujesz tylko liniowy problem własny dla samego
+operatora. Brak tu "kropki nad i", czyli pokazania np.: "Patrzcie, skoro
+udowodniłem istnienie \beta_1, to to konkretne równanie
+u_t = \mathcal{L}u + f(u) traci stabilność dla takich a takich parametrów".
+
+Co dodać/zmienić, aby praca była znacznie mocniejsza (Action Plan)
+
+Aby zwiększyć szanse w DCDS (gdzie ceni się dynamikę i zastosowania) lub innych
+mocnych czasopismach, musisz przemodelować artykuł.
+
+Zmiana 1: Uporządkowanie Zależeń (Czyszczenie Wstępu)
+
+Zamiast trzech dziwnych założeń we wstępie, zrób jedno, eleganckie i ostateczne.
+
+  - Wywal Assumption 1.2 i 1.3 ze wstępu.
+  - Zostaw tylko jedno ogólne założenie o luce spektralnej, np. "Assumption
+    (Spectral Gap Condition): We assume that the geometry of \Omega and the
+    kernel J satisfy the condition
+    \sup_{v \in A_k} \langle \mathcal{L}v, v \rangle > \sup \sigma_c."
+  - Dopiero w Sekcji 2 (Spectral Gap) wrzuć swoje przykłady i lematy jako
+    warunki dostateczne (Sufficient conditions for the spectral gap). Pokaż:
+    "Warunek ten jest trudny do sprawdzenia, ale udowadniamy, że jest spełniony
+    gdy: a) podzielimy domenę na dipol (stare Ass 1.2), b) domena jest
+    odpowiednio duża i zbadamy 2. moment (stare Ass 1.3), c) dla dowolnego k na
+    dużych domenach (stare Ass 1.4)". To natychmiast uporządkuje logikę pracy i
+    uczyni Twierdzenie Główne czystym!
+
+Zmiana 2: Regularyzacja i własności rozwiązań (To można łatwo dodać!)
+
+Metoda Galerkina daje Ci rozwiązanie w L^2. Dodaj krótki rozdział (lub Lemat),
+który mówi, że jeśli J \in C^0, to v_k są w rzeczywistości ciągłe! Dlaczego? Bo
+z równania własnego masz:  \beta v_k(x) = \int J(x-y)v_k(y)dy - b(x)v_k(x) 
+ v_k(x) = \frac{1}{\beta + b(x)} \int J(x-y)v_k(y)dy  Skoro J jest ciągłe, a
+v_k \in L^2, to z własności splotu całka jest ciągła. A skoro
+\beta + b(x) \neq 0 (bo udowodniłeś, że \beta > \sup \sigma_c = -b_{min}!), to z
+twierdzenia o mianowniku, funkcja własna v_k musi być ciągła
+(v_k \in C^0(\overline{\Omega})). To dodaje ogromnej wartości matematycznej "za
+darmo"!
+
+Zmiana 3: Dodanie aplikacji / Przykładu Dynamicznego (Kluczowe dla DCDS)
+
+Jeśli wysyłasz do Dynamical Systems, musisz pokazać dynamikę. Dodaj na końcu
+pracy nową, krótką sekcję: Section 4: Application to linear stability analysis.
+Rozważ liniowe równanie:  u_t = \mathcal{L}u + r(x)u  I pokaż, korzystając ze
+zbudowanych przez siebie funkcji własnych i metody Galerkina, że potrafisz
+sformułować twierdzenie o tym, kiedy stan u=0 traci stabilność (zależnie od
+znaku \beta_1 + \max r). Gwarantuję Ci, że to sprawi, że praca przestanie być
+tylko "suchym zadaniem z algebry i form dwuliniowych", a stanie się przydatnym
+narzędziem dla biologów matematycznych.
+
+Zmiana 4: Ulepszenie języka
+
+W dowodzie Lemma 2.1 piszesz: The difference evaluates to v_\lambda(x) -
+v_\lambda(y) = c_\lambda(x_k - y_k). The barycenter terms completely cancel out.
+Zamiast "completely cancel out", użyj bardziej formalnego języka matematycznego,
+np. "By linearity, the constant translations corresponding to the barycenter
+vanish in the finite difference."
+
+Werdykt
+
+Twoja matematyka w Sekcji 3 (trik z operatorem zwartym K i mnożenia M, oraz
+użycie równoważnej normy) jest bardzo dobra i absolutnie poprawna. Problem leżał
+w sposobie zapakowania i "sprzedania" pierwszych dwóch rozdziałów. Edytorzy
+prawdopodobnie odrzucali pracę, bo wstęp był przeładowany technicznymi,
+konkurującymi ze sobą założeniami na temat promieni domeny, zamiast uderzać
+czystym twierdzeniem.
+
+Zrób te porządki (1 Główne Twierdzenie zamiast 3 założeń, dodanie dowodu na
+ciągłość v_k z własności splotu, dodanie sekcji aplikacyjnej na końcu) i wyślij
+do DCDS-B (które skupia się bardziej na aplikacjach w biologii i równaniach
+reakcji-dyfuzji niż DCDS-A). Masz tam ogromne szanse.
