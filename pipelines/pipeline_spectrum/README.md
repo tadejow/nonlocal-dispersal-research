@@ -1,57 +1,35 @@
-# Non-local Dispersal Spectrum Pipeline (`pipeline_spectrum`)
+﻿# Spectral Analysis Pipeline (pipeline_spectrum)
 
-This module provides a robust, ISO-compliant numerical pipeline for computing the discrete spectrum (eigenvalues and eigenfunctions) of non-local dispersal operators on bounded domains $[-L, L]$.
-
-The operator solved here is:
-$$ \mathcal{L}u = \int_{-L}^L J(x-y)u(y)dy - b(x)u(x) $$
-where $b(x) = \int_{-L}^L J(x-y)dy$.
+This pipeline computes and visualizes the eigenvalues and eigenfunctions of the non-local Neumann dispersal operator using the Galerkin method. It adheres to strict modularity and numerical stability standards.
 
 ## Architecture
 
-The codebase is split into modular components adhering to clean software design principles:
+The system consists of independent modules:
+*   manager.py: The main CLI entry point.
+*   kernel.py: Defines dispersal kernels (Gaussian, Laplace, Quartic).
+*   galerkin.py: Constructs the Galerkin matrix with robust Mass Matrix Preconditioning (Cholesky, Lowdin).
+*   discretization.py: Numerical integration quadratures (Trapezoidal, Simpson, Clenshaw-Curtis).
+*   plotting.py: Visualization utilities for spectra and eigenfunctions.
+*   validator.py: A comprehensive benchmarking tool to evaluate the RMSE and Condition Number across various configurations.
 
-- `manager.py` - The CLI orchestrator providing a clean interface to configure and run experiments.
-- `kernel.py` - Defines continuous dispersal kernels (e.g., standard `GaussianKernel`).
-- `discretization.py` - Implements numerical quadratures (Trapezoidal, Simpson's, and Clenshaw-Curtis) for 1D and 2D integrals.
-- `galerkin.py` - Assembles the operator matrix using Galerkin projection with different bases (Laplacian eigenfunctions, Legendre polynomials, Canonical grid basis).
-- `plotting.py` - Handles generation of publication-ready visualizations ($\beta \times L$ sweeps and eigenfunction galleries).
+## Usage Examples
 
-## Requirements
+Run all commands from within the pipeline_spectrum directory using the root virtual environment.
 
-Ensure your virtual environment has the following packages installed:
-```bash
-pip install numpy scipy matplotlib
-```
+### 1. Sweep Experiment (Eigenvalues vs Domain Size)
 
-## Usage
+Generates a continuous spectrum band diagram showing eigenvalues beta as a function of the domain size L.
 
-The pipeline is driven via the `manager.py` CLI script, which supports two main modes: `single` and `sweep`.
+> ..\..\.venv\Scripts\python.exe manager.py sweep -b legendre -q clenshaw-curtis -p cholesky -K gaussian --L_min 0.2 --L_max 10.0 --num_L 20 -n 200 -k 2000 --output ./output/
 
-### 1. Single Domain Experiment (`single`)
-Computes the spectrum for a fixed domain size $L$ and generates a 3x2 gallery of the first 6 principal eigenfunctions.
+### 2. Single Experiment (Eigenfunction Gallery)
 
-**Example:**
-```bash
-python manager.py single -b legendre -q simpson -L 5.0 -n 40
-```
-This runs the solver on $[-5, 5]$ using 40 Legendre polynomials and Simpson's quadrature rule. 
+Computes the spectrum for a single domain size L=5.0 and generates a gallery of the top 6 corresponding eigenfunctions.
 
-### 2. Domain Size Sweep (`sweep`)
-Computes the principal eigenvalues across a range of domain sizes $L$ and generates a $\beta$ vs $L$ convergence plot.
+> ..\..\.venv\Scripts\python.exe manager.py single -b legendre -q clenshaw-curtis -p cholesky -K laplace -n 150 -k 1500 --output ./output/
 
-**Example:**
-```bash
-python manager.py sweep -b laplacian -q clenshaw-curtis --L_min 0.5 --L_max 8.0 --num_L 20
-```
-This sweeps $L \in [0.5, 8.0]$ in 20 steps, plotting the convergence of the top 6 eigenvalues.
+### 3. Run the Validator
 
-## CLI Arguments Reference
+Generates the convergence report, convergence plots, and error boxplots.
 
-Use `python manager.py --help` for full details. Common flags include:
-- `mode` : Required. Either `single` or `sweep`.
-- `-b, --basis` : Galerkin basis. Options: `laplacian` (default), `legendre`, `canonical`.
-- `-q, --quadrature` : Integration rule. Options: `trapezoidal`, `simpson` (default), `clenshaw-curtis`.
-- `-n, --N_basis` : Number of basis functions to use in projection (default: 30).
-- `-k, --N_quad` : Number of quadrature nodes (grid resolution) used for integrals (default: 500).
-- `-L` : Domain half-width for single runs (default: 5.0).
-- `-o, --output` : Output directory for plots (default: `output/`).
+> ..\..\.venv\Scripts\python.exe validator.py
