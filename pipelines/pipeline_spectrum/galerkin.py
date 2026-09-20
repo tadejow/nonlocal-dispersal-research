@@ -22,10 +22,9 @@ class LegendrePolynomials(Basis):
     def evaluate(self, n: int, x: np.ndarray, L: float) -> np.ndarray:
         # Scale x from [-L, L] to [-1, 1]
         x_scaled = x / L
-        P_n = scipy.special.legendre(n)
         # Normalization factor for orthonormal basis on [-L, L]
         norm = np.sqrt((2 * n + 1) / (2 * L))
-        return norm * P_n(x_scaled)
+        return norm * scipy.special.eval_legendre(n, x_scaled)
 
 class CanonicalBasis(Basis):
     """Piecewise constant indicator functions on N uniform subintervals."""
@@ -47,7 +46,7 @@ class GalerkinBuilder:
         self.kernel = kernel
         self.quadrature = quadrature
 
-    def build_matrix(self, basis: Basis, N_basis: int, L: float, N_quad: int = 500):
+    def build_matrix(self, basis: Basis, N_basis: int, L: float, N_quad: int = 500, preconditioner: str = 'none'):
         # 1. Get quadrature nodes and weights
         nodes, weights = self.quadrature.get_nodes_and_weights(L, N_quad)
         actual_N_quad = len(nodes)
@@ -60,6 +59,20 @@ class GalerkinBuilder:
                 Phi[:, n] = basis.evaluate(n, nodes, L, N_intervals=N_basis)
             else:
                 Phi[:, n] = basis.evaluate(n, nodes, L)
+                
+        # Optional basis preconditioning (Mass Matrix Orthogonalization)
+        if preconditioner != 'none':
+            S = Phi.T @ (weights[:, None] * Phi)
+            if preconditioner == 'cholesky':
+                # Cholesky factorization: S = L L^T
+                L_chol = scipy.linalg.cholesky(S, lower=True)
+                Phi = scipy.linalg.solve_triangular(L_chol, Phi.T, lower=True).T
+            elif preconditioner == 'lowdin':
+                # Lowdin symmetric orthogonalization
+                vals, vecs = scipy.linalg.eigh(S)
+                vals = np.clip(vals, 1e-15, None)
+                S_inv_half = vecs @ np.diag(1.0 / np.sqrt(vals)) @ vecs.T
+                Phi = Phi @ S_inv_half
                 
         # 3. Kernel matrix evaluated at quadrature pairs
         # J_mat shape: (N_quad, N_quad)
